@@ -1,0 +1,25 @@
+{
+    "name": "the-floor-is-lava",
+    "version": "1.0.0",
+    "description": "The floor is lava!",
+    "main": "index.html",
+    "scripts": {
+        "build": "webpack",
+        "start": "webpack-dev-server --hot"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "phaser": "^3.20.1"
+    },
+    "devDependencies": {
+        "@types/node": "^12.12.5",
+        "@types/facebook-instant-games": "^6.3.1",
+        "copy-webpack-plugin": "^5.0.4",
+        "ts-loader": "^6.2.1",
+        "typescript": "^3.6.4",
+        "webpack": "^4.41.2",
+        "webpack-cli": "^3.3.10",
+        "webpack-dev-server": "^3.9.0"
+    }
+}
