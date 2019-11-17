@@ -20,6 +20,8 @@ export class GameScene extends Phaser.Scene {
 	platformService: PlatformService;
 
 	gameOver: boolean;
+	pause: boolean;
+	pauseButton: Phaser.GameObjects.TileSprite;
 	space: Phaser.Input.Keyboard.Key;
 
     constructor() {
@@ -27,6 +29,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     public init(data: any): void {
+		this.pause = false;
+
 		this.roomService = new RoomService(this);
 		this.scoreService = new ScoreService(this);
 		this.playerService = new PlayerService(this);
@@ -38,15 +42,24 @@ export class GameScene extends Phaser.Scene {
 		this.load.spritesheet('player', 'assets/player.png',
 			{ frameWidth: 64, frameHeight: 64 });
 
-		this.load.spritesheet('lava',
-			'assets/lava-45px.png',
-			{ frameWidth: 45, frameHeight: 16 });
+		// this.load.spritesheet('lava',
+		// 	'assets/lava-45px.png',
+		// 	{ frameWidth: 45, frameHeight: 16 });
+		// this.load.image('lava', 'assets/lava.png');
+		this.load.spritesheet('lava', 'assets/lava-animated.png',
+			{ frameWidth: 32, frameHeight: 32 });
+
+		this.load.spritesheet('pauseButton', 'assets/play-pause-buttons.png',
+			{ frameWidth: 32, frameHeight: 32 });
 
 		this.load.image('particle', 'assets/particle.png');
 
 		this.load.image('platform', 'assets/new-platform.png');
 		this.load.image('concrete', 'assets/concrete.png');
+		this.load.image('concreteWithLava', 'assets/concrete-with-lava.png');
+		this.load.image('concreteWithRoof', 'assets/concrete-with-roof.png');
 		this.load.image('table', 'assets/table.png');
+		this.load.image('couch', 'assets/couch.png');
 		this.load.image('floor', 'assets/floor.png');
 		this.load.image('cobblestone', 'assets/cobblestone.png');
 		this.load.image('wood', 'assets/wood.png');
@@ -57,7 +70,6 @@ export class GameScene extends Phaser.Scene {
     public create(): void {
 		// Room Design
 		this.roomService.drawBackgrounds();
-		this.roomService.drawFloors();
 
 		// Score
 		this.scoreService.initScoreText();
@@ -68,7 +80,8 @@ export class GameScene extends Phaser.Scene {
 
 		// Lava
 		this.lavaService.init();
-		this.lavaService.addLavaParticles();
+		this.roomService.drawFloors();
+		// this.lavaService.animate();
 
 		// Start Platform
 		this.platformService.addStartPlatform();
@@ -88,6 +101,13 @@ export class GameScene extends Phaser.Scene {
 			null,
 			this
 		);
+		this.lavaService.addLavaParticles();
+
+		this.pauseButton = this.add.tileSprite(32, 32, 32, 32, 'pauseButton');
+		this.pauseButton.setInteractive();
+		this.pauseButton.on('pointerdown', () => {
+			this.pauseGame(!this.pause);
+		}, this);
 
 		// Controls
 		this.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE, true);
@@ -95,32 +115,55 @@ export class GameScene extends Phaser.Scene {
 	}
 
     public update(time: number): void {
-		if(!this.gameOver) {
-			if (this.playerService.getBounds().y > this.physics.world.bounds.bottom + this.playerService.getBounds().height) {
-				this.setGameOver(true);
+		if (!this.pause) {
+			this.playerService.enableDoubleJump();
+
+			if (!this.gameOver) {
+				if (this.playerService.getBounds().y > this.physics.world.bounds.bottom + this.playerService.getBounds().height) {
+					this.setGameOver(true);
+				}
+
+				if (this.space.isDown) {
+					this.playerService.jump();
+				}
+
+				this.playerService.animate();
+
+				this.platformService.update();
+
+				this.lavaService.updateLavaParticles();
+				this.scoreService.incrementScore();
+				this.roomService.updateTilePositions();
+			} else {
+				this.playerService.resetPosition();
+
+				this.platformService.addStartPlatform();
+				this.platformService.clearPlatforms();
+
+				this.scoreService.resetScore();
+
+				this.setGameOver(false);
 			}
-
-			if (this.space.isDown) {
-				this.playerService.jump();
-			}
-
-			this.playerService.animate();
-
-			this.platformService.update();
-
-			this.lavaService.updateLavaParticles();
-			this.scoreService.incrementScore();
-			this.roomService.updateTilePositions();
-		} else {
-			this.playerService.resetPosition();
-
-			this.platformService.addStartPlatform();
-			this.platformService.clearPlatforms();
-
-			this.scoreService.resetScore();
-
-			this.setGameOver(false);
 		}
+	}
+
+	public pauseGame(pause?: boolean) {
+		this.scene.launch('PauseMenu');
+		this.scene.pause();
+
+		return;
+		if (pause == null)
+			pause = false;
+
+		if (pause) {
+			this.pauseButton.setFrame(1);
+		} else {
+			this.pauseButton.setFrame(0);
+		}
+
+		this.pause = pause;
+		this.platformService.pauseGame(pause);
+		this.playerService.pauseGame(pause);
 	}
 
 	private setFriction(player: Phaser.Physics.Arcade.Sprite, platform: any) {

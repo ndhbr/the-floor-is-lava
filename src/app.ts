@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
 import { GameScene } from './scenes/game';
+import { PauseMenuScene } from './scenes/pause-menu';
 
 // const DEFAULT_HEIGHT = 1080;
 // const DEFAULT_WIDTH = (window.innerWidth / window.innerHeight) * DEFAULT_HEIGHT;
@@ -20,7 +21,7 @@ const config: Phaser.Types.Core.GameConfig = {
             debug: false
         }
     },
-	scene: [GameScene],
+	scene: [GameScene, PauseMenuScene],
 	backgroundColor: '#2b2b2b',
 	render: {
 		pixelArt: true
@@ -29,8 +30,8 @@ const config: Phaser.Types.Core.GameConfig = {
 
 export class FirstGame extends Phaser.Game {
     constructor(config: Phaser.Types.Core.GameConfig) {
-        super(config);
-    }
+		super(config);
+	}
 }
 
 window.onload = () => {

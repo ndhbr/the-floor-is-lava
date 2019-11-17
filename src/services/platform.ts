@@ -1,3 +1,5 @@
+const PLATFORM_SPEED = -350;
+
 export class PlatformService {
 
 	private platformGroup: Phaser.GameObjects.Group;
@@ -19,7 +21,27 @@ export class PlatformService {
 			}
 		});
 
-		this.nextPlatformDistance = Phaser.Math.Between(64, 250);
+		// this.nextPlatformDistance = Phaser.Math.Between(64, 250);
+		this.nextPlatformDistance = 180;
+	}
+
+	pauseGame(pause?: boolean) {
+		if (pause == null)
+			pause = false;
+
+		this.platformGroup.getChildren().forEach((platform: Phaser.Physics.Arcade.Sprite) => {
+			if (pause) {
+				platform.setVelocityX(0);
+			} else {
+				platform.setVelocityX(PLATFORM_SPEED);
+			}
+		});
+
+		if (pause) {
+			this.startPlatform.body.setVelocityX(0);
+		} else {
+			this.startPlatform.body.setVelocityX(PLATFORM_SPEED);
+		}
 	}
 
 	update() {
@@ -44,7 +66,7 @@ export class PlatformService {
 	}
 
 	private addPlatform(platformWidth: number, positionX: number) {
-		let platform: Phaser.GameObjects.TileSprite & any;
+		let platform: Phaser.Physics.Arcade.Sprite;
 
 		if (this.platformPool.getLength()) {
 			platform = this.platformPool.getFirst();
@@ -55,9 +77,12 @@ export class PlatformService {
 
 			this.platformPool.remove(platform);
 		} else {
-			platform = this.scene.physics.add.sprite(positionX, this.scene.physics.world.bounds.bottom - 16, 'table');
+			const textures = ['table', 'couch'];
+			const texture = textures[Phaser.Math.Between(0, 1)];
+
+			platform = this.scene.physics.add.sprite(positionX, this.scene.physics.world.bounds.bottom - 16 - 32, texture);
 			platform.setImmovable(true);
-			platform.setVelocityX(-350);
+			platform.setVelocityX(PLATFORM_SPEED);
 
 			this.platformGroup.add(platform);
 		}
@@ -69,7 +94,7 @@ export class PlatformService {
 		if (this.startPlatform == null) {
 			this.startPlatform = this.scene.add.tileSprite(
 				this.scene.physics.world.bounds.centerX,
-				this.scene.physics.world.bounds.bottom - 16,
+				this.scene.physics.world.bounds.bottom - 16 - 32,
 				this.scene.physics.world.bounds.width,
 				32,
 				'startPlatform'
@@ -81,7 +106,7 @@ export class PlatformService {
 
 			body.setEnable();
 			body.setImmovable(true);
-			body.setVelocityX(-350);
+			body.setVelocityX(PLATFORM_SPEED);
 		} else {
 			this.startPlatform.setX(this.scene.physics.world.bounds.centerX);
 			this.startPlatform.setActive(true);

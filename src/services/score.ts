@@ -10,7 +10,7 @@ export class ScoreService {
 	initScoreText(value?: number) {
 		this.scoreText = this.scene.add.text(
 			this.scene.physics.world.bounds.centerX,
-			30,
+			128,
 			null,
 			{
 				fontFamily: '"Roboto Condensed", sans-serif',

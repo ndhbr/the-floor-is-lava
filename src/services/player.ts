@@ -1,15 +1,42 @@
+const GRAVITY_Y = 2000;
+
 export class PlayerService {
 
 	player: Phaser.Physics.Arcade.Sprite;
 	playerJumps: number;
+	doubleJumpAllowed: boolean;
 
 	startPosition: { x: number; y: number; };
 
+	savedVelocity: number;
+
 	constructor(private scene: Phaser.Scene) {
+		this.savedVelocity = 0;
+
 		this.startPosition = {
 			x: 50,
-			y: this.scene.physics.world.bounds.centerY + 200
+			y: this.scene.physics.world.bounds.centerY + 64
 		};
+
+		this.doubleJumpAllowed = true;
+	}
+
+	pauseGame(pause?: boolean) {
+		if (pause == null)
+			pause = false;
+
+		if (pause) {
+			this.savedVelocity = this.player.body.velocity.y;
+
+			this.player.anims.pause();
+			this.player.setGravityY(0);
+			this.player.setVelocityY(0);
+		} else {
+			this.player.anims.resume();
+			this.player.setGravityY(GRAVITY_Y);
+			this.player.setVelocityY(this.savedVelocity);
+			this.savedVelocity = 0;
+		}
 	}
 
 	addPlayer() {
@@ -26,15 +53,22 @@ export class PlayerService {
 			repeat: -1
 		});
 
-		this.player.setGravityY(2000);
+		this.scene.anims.play('run', this.player);
+
+		this.player.setGravityY(GRAVITY_Y);
 	}
 
 	jump() {
-		if (this.player.body.touching.down) {
-			this.player.setVelocityY(-600);
-		}
+		if (this.player.anims.isPlaying) {
+			if (this.player.body.touching.down) {
+				this.player.setVelocityY(-600);
+			} else if (this.doubleJumpAllowed) {
+				this.player.setVelocityY(-600);
+				this.doubleJumpAllowed = false;
+			}
 
-		this.playerJumps++;
+			this.playerJumps++;
+		}
 	}
 
 	resetPosition() {
@@ -42,9 +76,7 @@ export class PlayerService {
 		this.player.setPosition(this.startPosition.x, this.startPosition.y);
 	}
 
-	animate() {
-		this.player.anims.play('run', true);
-	}
+	animate() {}
 
 	getPlayer(): Phaser.Physics.Arcade.Sprite {
 		return this.player;
@@ -59,6 +91,15 @@ export class PlayerService {
 			value = 0;
 
 		this.playerJumps = value;
+	}
+
+	enableDoubleJump(): boolean {
+		if (this.player.body.touching.down) {
+			this.doubleJumpAllowed = true;
+			return true;
+		}
+
+		return false;
 	}
 
 	getPlayerJumps() {
