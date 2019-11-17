@@ -106,7 +106,7 @@ export class GameScene extends Phaser.Scene {
 		this.pauseButton = this.add.tileSprite(32, 32, 32, 32, 'pauseButton');
 		this.pauseButton.setInteractive();
 		this.pauseButton.on('pointerdown', () => {
-			this.pauseGame(!this.pause);
+			this.pauseGame();
 		}, this);
 
 		// Controls
@@ -115,55 +115,41 @@ export class GameScene extends Phaser.Scene {
 	}
 
     public update(time: number): void {
-		if (!this.pause) {
-			this.playerService.enableDoubleJump();
+		this.playerService.enableDoubleJump();
+		this.pauseButton.setFrame(0);
 
-			if (!this.gameOver) {
-				if (this.playerService.getBounds().y > this.physics.world.bounds.bottom + this.playerService.getBounds().height) {
-					this.setGameOver(true);
-				}
-
-				if (this.space.isDown) {
-					this.playerService.jump();
-				}
-
-				this.playerService.animate();
-
-				this.platformService.update();
-
-				this.lavaService.updateLavaParticles();
-				this.scoreService.incrementScore();
-				this.roomService.updateTilePositions();
-			} else {
-				this.playerService.resetPosition();
-
-				this.platformService.addStartPlatform();
-				this.platformService.clearPlatforms();
-
-				this.scoreService.resetScore();
-
-				this.setGameOver(false);
+		if (!this.gameOver) {
+			if (this.playerService.getBounds().y > this.physics.world.bounds.bottom + this.playerService.getBounds().height) {
+				this.setGameOver(true);
 			}
+
+			if (this.space.isDown) {
+				this.playerService.jump();
+			}
+
+			this.playerService.animate();
+
+			this.platformService.update();
+
+			this.lavaService.updateLavaParticles();
+			this.scoreService.incrementScore();
+			this.roomService.updateTilePositions();
+		} else {
+			this.playerService.resetPosition();
+
+			this.platformService.addStartPlatform();
+			this.platformService.clearPlatforms();
+
+			this.scoreService.resetScore();
+
+			this.setGameOver(false);
 		}
 	}
 
-	public pauseGame(pause?: boolean) {
+	public pauseGame() {
 		this.scene.launch('PauseMenu');
-		this.scene.pause();
-
-		return;
-		if (pause == null)
-			pause = false;
-
-		if (pause) {
-			this.pauseButton.setFrame(1);
-		} else {
-			this.pauseButton.setFrame(0);
-		}
-
-		this.pause = pause;
-		this.platformService.pauseGame(pause);
-		this.playerService.pauseGame(pause);
+		this.pauseButton.setFrame(1);
+		this.scene.pause('Game');
 	}
 
 	private setFriction(player: Phaser.Physics.Arcade.Sprite, platform: any) {
