@@ -2,8 +2,8 @@ import * as Phaser from 'phaser';
 import { GameScene } from './scenes/game';
 import { PauseMenuScene } from './scenes/pause-menu';
 
-// const DEFAULT_HEIGHT = 1080;
-// const DEFAULT_WIDTH = (window.innerWidth / window.innerHeight) * DEFAULT_HEIGHT;
+const DEFAULT_HEIGHT = 720;
+const DEFAULT_WIDTH = (window.innerWidth / window.innerHeight) * DEFAULT_HEIGHT;
 
 const config: Phaser.Types.Core.GameConfig = {
     title: 'First Game',
@@ -12,8 +12,8 @@ const config: Phaser.Types.Core.GameConfig = {
         parent: 'game',
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: window.innerWidth,
-		height: window.innerHeight
+        width: DEFAULT_WIDTH,
+		height: DEFAULT_HEIGHT
     },
     physics: {
         default: 'arcade',
