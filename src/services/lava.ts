@@ -8,16 +8,16 @@ export class LavaService {
 	lavaParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
 	lavaParticlesPositonX: number;
 
-	constructor(private scene: Phaser.Scene) {
+	constructor(private scene: Phaser.Scene) {}
+
+	init() {
 		this.scene.anims.create({
 			key: 'lava',
 			frames: this.scene.anims.generateFrameNumbers('lava', {start: 0, end: 2}),
-			frameRate: 10,
+			frameRate: 6,
 			repeat: -1
 		});
-	}
 
-	init() {
 		this.livingRoomLava = this.scene.add.tileSprite(
 			this.scene.physics.world.bounds.centerX,
 			this.scene.physics.world.bounds.centerY - 4 - 32,
@@ -27,20 +27,20 @@ export class LavaService {
 			0
 		);
 
-		// this.livingRoomFurnitureOverlay = this.scene.physics.add.group();
+		this.basementFurnitureOverlay = this.scene.physics.add.group();
 
-		// let lavaNeeded = this.scene.physics.world.bounds.width / 32 + 1;
-		// for (let i = 0; i < lavaNeeded; i++) {
-		// 	let lava = this.scene.physics.add.sprite(
-		// 		i * 32,
-		// 		this.scene.physics.world.bounds.bottom - 10 - 32,
-		// 		'lava'
-		// 	);
+		let lavaNeeded = this.scene.physics.world.bounds.width / 32 + 1;
+		for (let i = 0; i < lavaNeeded; i++) {
+			let lava = this.scene.physics.add.sprite(
+				i * 32,
+				this.scene.physics.world.bounds.bottom - 24,
+				'lava'
+			);
 
-		// 	this.livingRoomFurnitureOverlay.add(lava);
-		// }
+			lava.depth = 3;
 
-		// this.livingRoomFurnitureOverlay.
+			this.basementFurnitureOverlay.add(lava);
+		}
 
 		this.basementLava = this.scene.add.tileSprite(
 			this.scene.physics.world.bounds.centerX,
@@ -53,7 +53,7 @@ export class LavaService {
 	}
 
 	animate() {
-		this.livingRoomFurnitureOverlay.playAnimation('lava');
+		this.basementFurnitureOverlay.playAnimation('lava');
 	}
 
 	addLavaParticles() {
@@ -69,13 +69,14 @@ export class LavaService {
 			gravityX: 10,
 			lifespan: 2000
 		});
+		this.lavaParticles.depth = 0;
 	}
 
 	updateLavaParticles() {
 		this.livingRoomLava.tilePositionX += 4;
 		this.basementLava.tilePositionX += 4;
 
-		this.lavaParticlesPositonX += 1;
+		this.lavaParticlesPositonX -= 1;
 		this.lavaParticles.setX(this.lavaParticlesPositonX);
 
 		if(this.lavaParticlesPositonX < this.scene.physics.world.bounds.left - 100)

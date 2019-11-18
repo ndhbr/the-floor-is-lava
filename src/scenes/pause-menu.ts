@@ -16,8 +16,10 @@ export class PauseMenuScene extends Phaser.Scene {
 
 	resumeButton: Phaser.GameObjects.Container;
 	menuButton: Phaser.GameObjects.Container;
+	soundButton: Phaser.GameObjects.Container;
 
 	countdown: NodeJS.Timeout;
+	soundActivated: boolean;
 
 	constructor() {
 		super(sceneConfig);
@@ -25,6 +27,8 @@ export class PauseMenuScene extends Phaser.Scene {
 
 	public init(): void {
 		this.buttonService = new ButtonService(this);
+
+		this.soundActivated = true;
 	}
 
 	public preload(): void {
@@ -34,6 +38,8 @@ export class PauseMenuScene extends Phaser.Scene {
 			{ frameWidth: 240, frameHeight: 60 });
 		this.load.spritesheet('button-pixel-red', 'assets/buttons-pixel-red.png',
 			{ frameWidth: 125, frameHeight: 27 });
+		this.load.spritesheet('button-pixel-red-sound', 'assets/buttons-pixel-red-sound.png',
+			{ frameWidth: 32, frameHeight: 32 });
 	}
 
 	public create(): void {
@@ -50,9 +56,11 @@ export class PauseMenuScene extends Phaser.Scene {
 			this.physics.world.bounds.centerX,
 			100,
 			'Pause', {
-				fontFamily: 'Roboto, Calibri, sans-serif'
+				fontFamily: 'VT323, Roboto, Calibri, sans-serif',
+				fontSize: '32px'
 			}
 		);
+		this.heading.setShadow(2, 3, 'rgba(0,0,0,0.5)', 1);
 		this.heading.setOrigin(0.5, 0.5);
 
 		this.buttonService.generateButton(
@@ -76,6 +84,7 @@ export class PauseMenuScene extends Phaser.Scene {
 							this.scene.resume('Game');
 
 							clearInterval(this.countdown);
+							this.countdown = null;
 						} else {
 							seconds--;
 						}
@@ -99,6 +108,25 @@ export class PauseMenuScene extends Phaser.Scene {
 				// not implemented yet
 			}
 		);
+
+		this.buttonService.generateButton(
+			this.physics.world.bounds.right - 50,
+			this.physics.world.bounds.bottom - 50,
+			this.soundButton,
+			'button-pixel-red-sound',
+			'',
+			(button: Phaser.GameObjects.Container) => {
+				let btn = <Phaser.GameObjects.Sprite> button.getAt(0);
+
+				if (this.soundActivated) {
+					btn.setFrame(2);
+					this.soundActivated = false;
+				} else {
+					btn.setFrame(0);
+					this.soundActivated = true;
+				}
+			}
+		)
 	}
 
 	public update(time: number): void {}

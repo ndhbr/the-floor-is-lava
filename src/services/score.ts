@@ -13,11 +13,11 @@ export class ScoreService {
 			128,
 			null,
 			{
-				fontFamily: '"Roboto Condensed", sans-serif',
-				fontSize: '30px'
+				fontFamily: 'VT323, Roboto, Calibri, sans-serif',
+				fontSize: '48px'
 			}
 		);
-
+		this.scoreText.setShadow(2, 3, 'rgba(0,0,0,0.6)', 1);
 		this.scoreText.setOrigin(0.5, 0.5);
 
 		this.setScore(value);
@@ -56,6 +56,6 @@ export class ScoreService {
 	}
 
 	private updateScoreText() {
-		this.scoreText.setText(this.score + ' m');
+		this.scoreText.setText(this.score + 'm');
 	}
 }

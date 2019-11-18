@@ -1,4 +1,5 @@
 import * as Phaser from 'phaser';
+import { PreloaderScene } from './scenes/preloader';
 import { GameScene } from './scenes/game';
 import { PauseMenuScene } from './scenes/pause-menu';
 
@@ -21,7 +22,7 @@ const config: Phaser.Types.Core.GameConfig = {
             debug: false
         }
     },
-	scene: [GameScene, PauseMenuScene],
+	scene: [PreloaderScene, GameScene, PauseMenuScene],
 	backgroundColor: '#2b2b2b',
 	render: {
 		pixelArt: true

@@ -20,6 +20,7 @@ export class RoomService {
 			32,
 			'concreteWithLava'
 		);
+		this.livingRoomFloor.depth = 3;
 
 		this.basementFloor = this.scene.add.tileSprite(
 			this.scene.physics.world.bounds.centerX,

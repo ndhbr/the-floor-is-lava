@@ -45,6 +45,7 @@ export class PlayerService {
 			this.startPosition.y,
 			'player'
 		);
+		this.player.depth = 2;
 
 		this.scene.anims.create({
 			key: 'run',
@@ -59,16 +60,14 @@ export class PlayerService {
 	}
 
 	jump() {
-		if (this.player.anims.isPlaying) {
-			if (this.player.body.touching.down) {
-				this.player.setVelocityY(-600);
-			} else if (this.doubleJumpAllowed) {
-				this.player.setVelocityY(-600);
-				this.doubleJumpAllowed = false;
-			}
-
-			this.playerJumps++;
+		if (this.player.body.touching.down) {
+			this.player.setVelocityY(-600);
+		} else if (this.doubleJumpAllowed) {
+			this.player.setVelocityY(-600);
+			this.doubleJumpAllowed = false;
 		}
+
+		this.playerJumps++;
 	}
 
 	resetPosition() {

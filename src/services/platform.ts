@@ -99,6 +99,7 @@ export class PlatformService {
 				32,
 				'startPlatform'
 			);
+			this.startPlatform.depth = 2;
 
 			this.scene.physics.add.existing(this.startPlatform);
 

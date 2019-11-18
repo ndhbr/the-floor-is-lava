@@ -52,7 +52,7 @@ export class GameScene extends Phaser.Scene {
 		this.load.spritesheet('pauseButton', 'assets/play-pause-buttons.png',
 			{ frameWidth: 32, frameHeight: 32 });
 
-		this.load.image('particle', 'assets/particle.png');
+		this.load.image('particle', 'assets/lava-particle.png');
 
 		this.load.image('platform', 'assets/new-platform.png');
 		this.load.image('concrete', 'assets/concrete.png');
@@ -68,6 +68,7 @@ export class GameScene extends Phaser.Scene {
 	}
 
     public create(): void {
+
 		// Room Design
 		this.roomService.drawBackgrounds();
 
@@ -81,7 +82,7 @@ export class GameScene extends Phaser.Scene {
 		// Lava
 		this.lavaService.init();
 		this.roomService.drawFloors();
-		// this.lavaService.animate();
+		this.lavaService.animate();
 
 		// Start Platform
 		this.platformService.addStartPlatform();
@@ -101,6 +102,7 @@ export class GameScene extends Phaser.Scene {
 			null,
 			this
 		);
+
 		this.lavaService.addLavaParticles();
 
 		this.pauseButton = this.add.tileSprite(32, 32, 32, 32, 'pauseButton');
