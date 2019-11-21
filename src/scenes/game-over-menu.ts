@@ -9,8 +9,10 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 
 export class GameOverMenuScene extends Phaser.Scene {
 
-	heading: Phaser.GameObjects.Text;
 	backdrop: Phaser.GameObjects.Rectangle;
+
+	heading: Phaser.GameObjects.Text;
+	score: Phaser.GameObjects.Text;
 
 	buttonService: ButtonService;
 
@@ -25,12 +27,9 @@ export class GameOverMenuScene extends Phaser.Scene {
 		this.buttonService = new ButtonService(this);
 	}
 
-	public preload(): void {
-		this.load.spritesheet('button-pixel-red', 'assets/buttons-pixel-red.png',
-			{ frameWidth: 125, frameHeight: 27 })
-	}
+	public preload(): void {}
 
-	public create(): void {
+	public create(data: {score: number}): void {
 		this.backdrop = this.add.rectangle(
 			this.physics.world.bounds.centerX,
 			this.physics.world.bounds.centerY,
@@ -43,29 +42,28 @@ export class GameOverMenuScene extends Phaser.Scene {
 		this.heading = this.add.text(
 			this.physics.world.bounds.centerX,
 			100,
-			'Game over!', {
+			'Game Over', {
 				fontFamily: 'VT323, Roboto, Calibri, sans-serif',
 				fontSize: '32px'
 			}
 		);
-		this.heading.setShadow(2, 3, 'rgba(0,0,0,0.5)', 1);
 		this.heading.setOrigin(0.5, 0.5);
+		this.heading.setShadow(2, 3, 'rgba(0,0,0,0.5)', 1);
 
-		this.buttonService.generateButton(
+		this.score = this.add.text(
 			this.physics.world.bounds.centerX,
-			200,
-			this.resumeButton,
-			'button-pixel-red',
-			'Play again',
-			(button: Phaser.GameObjects.Container) => {
-				this.scene.stop();
-				this.scene.start('Game');
+			164,
+			`${data.score}m`, {
+				fontFamily: 'VT323, Roboto, Calibri, sans-serif',
+				fontSize: '64px'
 			}
 		);
+		this.score.setOrigin(0.5, 0.5);
+		this.score.setShadow(2, 3, 'rgba(0,0,0,0.5)', 1);
 
 		this.buttonService.generateButton(
 			this.physics.world.bounds.centerX,
-			340,
+			270,
 			this.resumeButton,
 			'button-pixel-red',
 			'Continue (Video)',
@@ -77,12 +75,27 @@ export class GameOverMenuScene extends Phaser.Scene {
 
 		this.buttonService.generateButton(
 			this.physics.world.bounds.centerX,
-			270,
+			340,
+			this.resumeButton,
+			'button-pixel-red',
+			'Play again',
+			(button: Phaser.GameObjects.Container) => {
+				this.scene.stop();
+				this.scene.start('Game');
+			}
+		);
+
+
+		this.buttonService.generateButton(
+			this.physics.world.bounds.centerX,
+			410,
 			this.menuButton,
 			'button-pixel-red',
 			'Menu',
 			() => {
-				// not implemented yet
+				this.scene.stop();
+				this.scene.stop('Game');
+				this.scene.start('MainMenu');
 			}
 		);
 	}

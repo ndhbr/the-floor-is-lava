@@ -35,31 +35,7 @@ export class GameScene extends Phaser.Scene {
 		this.platformService = new PlatformService(this);
 	}
 
-    public preload(): void {
-		this.load.spritesheet('player', 'assets/player.png',
-			{ frameWidth: 64, frameHeight: 64 });
-
-		this.load.spritesheet('lava', 'assets/lava-animated.png',
-			{ frameWidth: 32, frameHeight: 32 });
-
-		this.load.spritesheet('pauseButton', 'assets/play-pause-buttons.png',
-			{ frameWidth: 32, frameHeight: 32 });
-
-		this.load.image('particle', 'assets/lava-particle.png');
-
-		this.load.image('platform', 'assets/new-platform.png');
-		this.load.image('concrete', 'assets/concrete.png');
-		this.load.image('concreteWithLava', 'assets/concrete-with-lava.png');
-		this.load.image('concreteWithRoof', 'assets/concrete-with-roof.png');
-		this.load.image('table', 'assets/table.png');
-		this.load.image('couch', 'assets/couch.png');
-		this.load.image('bed', 'assets/bed.png');
-		this.load.image('floor', 'assets/floor.png');
-		this.load.image('cobblestone', ['assets/cobblestone.png', 'assets/default_map.png']);
-		this.load.image('wood', 'assets/wood.png');
-		this.load.image('woodDark', 'assets/wood-dark.png');
-		this.load.image('startPlatform', 'assets/start-platform.png');
-	}
+    public preload(): void {}
 
     public create(): void {
 		// Activate lights
@@ -118,10 +94,11 @@ export class GameScene extends Phaser.Scene {
 		this.input.on('pointerdown', () => this.playerService.jump(), this);
 
 		// Events
-		this.events.on('resume', (params) => {
-			console.log(params);
+		this.events.on('resume', (sys: Phaser.Scenes.Systems,
+			data?: {action: string; }) => {
+			this.scoreService.setVisibility(true);
 
-			if (params.xxxxxxxdata.action == 'continue') {
+			if (data != null && data.action == 'continue') {
 				this.platformService.clearPlatforms();
 				this.platformService.addStartPlatform();
 				this.playerService.resetPosition();
@@ -146,7 +123,8 @@ export class GameScene extends Phaser.Scene {
 			this.roomService.updateTilePositions();
 		} else {
 			this.setGameOver(false);
-			this.scene.launch('GameOverMenu');
+			this.scoreService.setVisibility(false);
+			this.scene.launch('GameOverMenu', {score: this.scoreService.getScore()});
 			this.scene.pause();
 		}
 	}

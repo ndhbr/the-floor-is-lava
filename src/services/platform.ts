@@ -44,7 +44,7 @@ export class PlatformService {
 				this.platformGroup.killAndHide(platform);
 				this.platformGroup.remove(platform);
 			} else {
-				// platform.setVelocityX(this.platformSpeed);
+				platform.setVelocityX(this.platformSpeed);
 			}
 		}, this);
 
@@ -53,10 +53,10 @@ export class PlatformService {
 		}
 
 		this.checkStartPlatform();
-		// this.startPlatform.body.setVelocityX(this.platformSpeed);
+		this.startPlatform.body.setVelocityX(this.platformSpeed);
 
-		// if (this.platformSpeed > -450)
-			// this.platformSpeed -= 0.1;
+		if (this.platformSpeed > -450)
+			this.platformSpeed -= 0.1;
 	}
 
 	private addPlatform() {
@@ -69,7 +69,7 @@ export class PlatformService {
 			positionX += platform.displayWidth / 2;
 
 			platform.setX(positionX);
-			// platform.setVelocityX(this.platformSpeed);
+			platform.setVelocityX(this.platformSpeed);
 			platform.setActive(true);
 			platform.setVisible(true);
 

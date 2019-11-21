@@ -23,6 +23,10 @@ export class ScoreService {
 		this.setScore(value);
 	}
 
+	setVisibility(visible?: boolean) {
+		this.scoreText.setVisible(visible);
+	}
+
 	incrementScore(value?: number) {
 		if (!value)
 			value = 1;

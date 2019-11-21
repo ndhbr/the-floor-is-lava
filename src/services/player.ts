@@ -58,6 +58,8 @@ export class PlayerService {
 	}
 
 	resetPosition() {
+		this.player.setVelocity(0, 0);
+
 		this.player.setPosition(
 			this.startPosition.x,
 			this.startPosition.y
@@ -65,11 +67,16 @@ export class PlayerService {
 	}
 
 	jump() {
-		if (this.player.body.touching.down || (this.playerJumps > 0 && this.playerJumps < 2)) {
+		if (this.player.body.touching.down || (this.playerJumps > 0 && this.playerJumps < 3)) {
 			if (this.player.body.touching.down)
 				this.playerJumps = 0;
 
-			this.player.setVelocityY(-600);
+			if (this.playerJumps < 2) {
+				this.player.setVelocityY(-600);
+			} else {
+				this.player.setVelocityY(-1200);
+			}
+
 			this.playerJumps++;
 		}
 	}

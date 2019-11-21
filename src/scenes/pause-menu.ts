@@ -31,16 +31,7 @@ export class PauseMenuScene extends Phaser.Scene {
 		this.soundActivated = true;
 	}
 
-	public preload(): void {
-		this.load.spritesheet('button-green', 'assets/buttons-green.png',
-			{ frameWidth: 240, frameHeight: 60 });
-		this.load.spritesheet('button-red', 'assets/buttons-red.png',
-			{ frameWidth: 240, frameHeight: 60 });
-		this.load.spritesheet('button-pixel-red', 'assets/buttons-pixel-red.png',
-			{ frameWidth: 125, frameHeight: 27 });
-		this.load.spritesheet('button-pixel-red-sound', 'assets/buttons-pixel-red-sound.png',
-			{ frameWidth: 32, frameHeight: 32 });
-	}
+	public preload(): void {}
 
 	public create(): void {
 		this.backdrop = this.add.rectangle(
@@ -105,7 +96,9 @@ export class PauseMenuScene extends Phaser.Scene {
 			'button-pixel-red',
 			'Menu',
 			() => {
-				// not implemented yet
+				this.scene.stop();
+				this.scene.stop('Game');
+				this.scene.start('MainMenu');
 			}
 		);
 

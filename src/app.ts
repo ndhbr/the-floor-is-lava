@@ -3,6 +3,7 @@ import { PreloaderScene } from './scenes/preloader';
 import { GameScene } from './scenes/game';
 import { PauseMenuScene } from './scenes/pause-menu';
 import { GameOverMenuScene } from './scenes/game-over-menu';
+import { MainMenuScene } from './scenes/main-menu';
 
 const DEFAULT_HEIGHT = 720;
 const DEFAULT_WIDTH = (window.innerWidth / window.innerHeight) * DEFAULT_HEIGHT;
@@ -23,7 +24,7 @@ const config: Phaser.Types.Core.GameConfig = {
             debug: false
         }
     },
-	scene: [PreloaderScene, GameScene, GameOverMenuScene, PauseMenuScene],
+	scene: [PreloaderScene, MainMenuScene, GameScene, GameOverMenuScene, PauseMenuScene],
 	backgroundColor: '#2b2b2b',
 	render: {
 		pixelArt: true
