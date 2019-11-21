@@ -5,8 +5,10 @@ export class LavaService {
 	basementLava: Phaser.GameObjects.TileSprite;
 	basementFurnitureOverlay: Phaser.Physics.Arcade.Group;
 
-	lavaParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
-	lavaParticlesPositonX: number;
+	livingRoomLavaParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
+	livingRoomLavaParticlesPositionX: number;
+	basementLavaParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
+	basementLavaParticlesPositonX: number;
 
 	constructor(private scene: Phaser.Scene) {}
 
@@ -28,6 +30,7 @@ export class LavaService {
 		);
 
 		this.basementFurnitureOverlay = this.scene.physics.add.group();
+		this.livingRoomFurnitureOverlay = this.scene.physics.add.group();
 
 		let lavaNeeded = this.scene.physics.world.bounds.width / 32 + 1;
 		for (let i = 0; i < lavaNeeded; i++) {
@@ -40,6 +43,16 @@ export class LavaService {
 			lava.depth = 3;
 
 			this.basementFurnitureOverlay.add(lava);
+
+			lava = this.scene.physics.add.sprite(
+				i * 32,
+				this.scene.physics.world.bounds.centerY - 24,
+				'lava'
+			);
+
+			lava.depth = 3;
+
+			this.livingRoomFurnitureOverlay.add(lava);
 		}
 
 		this.basementLava = this.scene.add.tileSprite(
@@ -54,32 +67,55 @@ export class LavaService {
 
 	animate() {
 		this.basementFurnitureOverlay.playAnimation('lava');
+		this.livingRoomFurnitureOverlay.playAnimation('lava');
 	}
 
 	addLavaParticles() {
-		this.lavaParticles = this.scene.add.particles('particle');
-		this.lavaParticlesPositonX = this.scene.physics.world.bounds.width + 100;
+		this.basementLavaParticles = this.scene.add.particles('particle');
+		this.basementLavaParticlesPositonX = this.getRandomParticlesStartPosition();
+		this.createEmitter(this.basementLavaParticles, 0, this.scene.physics.world.bounds.bottom - 32 - 10);
 
-		this.lavaParticles.createEmitter({
-			x: 0,
-			y: this.scene.physics.world.bounds.bottom - 32 - 10,
-			speed: 50,
-			angle: { min: 180, max: 360 },
-			scale: { start: 1, end: 0.1 },
-			gravityX: 10,
-			lifespan: 2000
-		});
-		this.lavaParticles.depth = 0;
+		this.livingRoomLavaParticles = this.scene.add.particles('particle');
+		this.livingRoomLavaParticlesPositionX = this.getRandomParticlesStartPosition();
+		this.createEmitter(this.basementLavaParticles, 0, this.scene.physics.world.bounds.centerY - 32 - 10);
 	}
 
 	updateLavaParticles() {
 		this.livingRoomLava.tilePositionX += 4;
 		this.basementLava.tilePositionX += 4;
 
-		this.lavaParticlesPositonX -= 1;
-		this.lavaParticles.setX(this.lavaParticlesPositonX);
+		this.basementLavaParticlesPositonX -= Math.random();
+		this.basementLavaParticles.setX(this.basementLavaParticlesPositonX);
 
-		if(this.lavaParticlesPositonX < this.scene.physics.world.bounds.left - 100)
-			this.lavaParticlesPositonX = this.scene.physics.world.bounds.width + 100;
+		if(this.basementLavaParticlesPositonX < this.scene.physics.world.bounds.left - 100)
+			this.basementLavaParticlesPositonX = this.scene.physics.world.bounds.width + 100;
+
+		this.livingRoomLavaParticlesPositionX -= Math.random();
+		this.livingRoomLavaParticles.setX(this.livingRoomLavaParticlesPositionX);
+
+		if(this.livingRoomLavaParticlesPositionX < this.scene.physics.world.bounds.left - 100)
+			this.livingRoomLavaParticlesPositionX = this.scene.physics.world.bounds.width + 100;
+	}
+
+	private getRandomParticlesStartPosition() {
+		return Phaser.Math.Between(
+			this.scene.physics.world.bounds.width + 50,
+			this.scene.physics.world.bounds.width + 150
+		);
+	}
+
+	private createEmitter(particles: Phaser.GameObjects.Particles.ParticleEmitterManager,
+		x: number, y: number) {
+		particles.createEmitter({
+			x: x,
+			y: y,
+			speed: 50,
+			angle: { min: 180, max: 360 },
+			scale: { start: 1, end: 0.1 },
+			gravityX: 10,
+			lifespan: 2000
+		});
+
+		particles.depth = 0;
 	}
 }

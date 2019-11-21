@@ -20,7 +20,6 @@ export class GameScene extends Phaser.Scene {
 	platformService: PlatformService;
 
 	gameOver: boolean;
-	pause: boolean;
 	pauseButton: Phaser.GameObjects.TileSprite;
 	space: Phaser.Input.Keyboard.Key;
 
@@ -29,8 +28,6 @@ export class GameScene extends Phaser.Scene {
     }
 
     public init(data: any): void {
-		this.pause = false;
-
 		this.roomService = new RoomService(this);
 		this.scoreService = new ScoreService(this);
 		this.playerService = new PlayerService(this);
@@ -42,10 +39,6 @@ export class GameScene extends Phaser.Scene {
 		this.load.spritesheet('player', 'assets/player.png',
 			{ frameWidth: 64, frameHeight: 64 });
 
-		// this.load.spritesheet('lava',
-		// 	'assets/lava-45px.png',
-		// 	{ frameWidth: 45, frameHeight: 16 });
-		// this.load.image('lava', 'assets/lava.png');
 		this.load.spritesheet('lava', 'assets/lava-animated.png',
 			{ frameWidth: 32, frameHeight: 32 });
 
@@ -60,14 +53,24 @@ export class GameScene extends Phaser.Scene {
 		this.load.image('concreteWithRoof', 'assets/concrete-with-roof.png');
 		this.load.image('table', 'assets/table.png');
 		this.load.image('couch', 'assets/couch.png');
+		this.load.image('bed', 'assets/bed.png');
 		this.load.image('floor', 'assets/floor.png');
-		this.load.image('cobblestone', 'assets/cobblestone.png');
+		this.load.image('cobblestone', ['assets/cobblestone.png', 'assets/default_map.png']);
 		this.load.image('wood', 'assets/wood.png');
 		this.load.image('woodDark', 'assets/wood-dark.png');
 		this.load.image('startPlatform', 'assets/start-platform.png');
 	}
 
     public create(): void {
+		// Activate lights
+		// var light  = this.lights.addLight(500, 250, 200);
+		// this.input.on('pointermove', function (pointer) {
+		// 	light.x = pointer.x;
+		// 	light.y = pointer.y;
+		// });
+
+		// this.lights.enable().setAmbientColor(0x111111);
+		// console.log(this.lights.getMaxVisibleLights());
 
 		// Room Design
 		this.roomService.drawBackgrounds();
@@ -112,21 +115,26 @@ export class GameScene extends Phaser.Scene {
 		}, this);
 
 		// Controls
-		this.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE, true);
 		this.input.on('pointerdown', () => this.playerService.jump(), this);
+
+		// Events
+		this.events.on('resume', (params) => {
+			console.log(params);
+
+			if (params.xxxxxxxdata.action == 'continue') {
+				this.platformService.clearPlatforms();
+				this.platformService.addStartPlatform();
+				this.playerService.resetPosition();
+			}
+		});
 	}
 
     public update(time: number): void {
-		this.playerService.enableDoubleJump();
 		this.pauseButton.setFrame(0);
 
 		if (!this.gameOver) {
 			if (this.playerService.getBounds().y > this.physics.world.bounds.bottom + this.playerService.getBounds().height) {
 				this.setGameOver(true);
-			}
-
-			if (this.space.isDown) {
-				this.playerService.jump();
 			}
 
 			this.playerService.animate();
@@ -137,14 +145,9 @@ export class GameScene extends Phaser.Scene {
 			this.scoreService.incrementScore();
 			this.roomService.updateTilePositions();
 		} else {
-			this.playerService.resetPosition();
-
-			this.platformService.addStartPlatform();
-			this.platformService.clearPlatforms();
-
-			this.scoreService.resetScore();
-
 			this.setGameOver(false);
+			this.scene.launch('GameOverMenu');
+			this.scene.pause();
 		}
 	}
 

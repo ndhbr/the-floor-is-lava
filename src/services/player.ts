@@ -4,7 +4,6 @@ export class PlayerService {
 
 	player: Phaser.Physics.Arcade.Sprite;
 	playerJumps: number;
-	doubleJumpAllowed: boolean;
 
 	startPosition: { x: number; y: number; };
 
@@ -17,8 +16,6 @@ export class PlayerService {
 			x: 50,
 			y: this.scene.physics.world.bounds.centerY + 64
 		};
-
-		this.doubleJumpAllowed = true;
 	}
 
 	pauseGame(pause?: boolean) {
@@ -46,6 +43,7 @@ export class PlayerService {
 			'player'
 		);
 		this.player.depth = 2;
+		// this.player.setBounceY(1);
 
 		this.scene.anims.create({
 			key: 'run',
@@ -59,20 +57,21 @@ export class PlayerService {
 		this.player.setGravityY(GRAVITY_Y);
 	}
 
-	jump() {
-		if (this.player.body.touching.down) {
-			this.player.setVelocityY(-600);
-		} else if (this.doubleJumpAllowed) {
-			this.player.setVelocityY(-600);
-			this.doubleJumpAllowed = false;
-		}
-
-		this.playerJumps++;
+	resetPosition() {
+		this.player.setPosition(
+			this.startPosition.x,
+			this.startPosition.y
+		);
 	}
 
-	resetPosition() {
-		this.player.setVelocity(0, 0);
-		this.player.setPosition(this.startPosition.x, this.startPosition.y);
+	jump() {
+		if (this.player.body.touching.down || (this.playerJumps > 0 && this.playerJumps < 2)) {
+			if (this.player.body.touching.down)
+				this.playerJumps = 0;
+
+			this.player.setVelocityY(-600);
+			this.playerJumps++;
+		}
 	}
 
 	animate() {}
@@ -90,15 +89,6 @@ export class PlayerService {
 			value = 0;
 
 		this.playerJumps = value;
-	}
-
-	enableDoubleJump(): boolean {
-		if (this.player.body.touching.down) {
-			this.doubleJumpAllowed = true;
-			return true;
-		}
-
-		return false;
 	}
 
 	getPlayerJumps() {

@@ -29,6 +29,7 @@ export class RoomService {
 			32,
 			'concreteWithLava'
 		);
+		this.basementFloor.depth = 3;
 
 		this.roof = this.scene.add.tileSprite(
 			this.scene.physics.world.bounds.centerX,
@@ -47,6 +48,7 @@ export class RoomService {
 			this.scene.physics.world.bounds.height / 2,
 			'cobblestone'
 		);
+		// this.basement.setPipeline('Light2D');
 
 		this.livingRoom = this.scene.add.tileSprite(
 			0,

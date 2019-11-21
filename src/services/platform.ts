@@ -1,4 +1,4 @@
-const PLATFORM_SPEED = -350;
+const DEFAULT_SPEED = -350;
 
 export class PlatformService {
 
@@ -7,6 +7,9 @@ export class PlatformService {
 	private nextPlatformDistance: number;
 
 	private startPlatform: Phaser.GameObjects.TileSprite | any;
+	private textureCounter: number;
+
+	private platformSpeed: number;
 
 	constructor(private scene: Phaser.Scene) {
 		this.platformGroup = this.scene.add.group({
@@ -21,73 +24,77 @@ export class PlatformService {
 			}
 		});
 
-		// this.nextPlatformDistance = Phaser.Math.Between(64, 250);
-		this.nextPlatformDistance = 180;
-	}
-
-	pauseGame(pause?: boolean) {
-		if (pause == null)
-			pause = false;
-
-		this.platformGroup.getChildren().forEach((platform: Phaser.Physics.Arcade.Sprite) => {
-			if (pause) {
-				platform.setVelocityX(0);
-			} else {
-				platform.setVelocityX(PLATFORM_SPEED);
-			}
-		});
-
-		if (pause) {
-			this.startPlatform.body.setVelocityX(0);
-		} else {
-			this.startPlatform.body.setVelocityX(PLATFORM_SPEED);
-		}
+		// this.nextPlatformDistance = Phaser.Math.Between(50, 250);
+		this.textureCounter = 0;
+		this.platformSpeed = DEFAULT_SPEED;
 	}
 
 	update() {
+		this.nextPlatformDistance = Phaser.Math.Between(64, 500);
+
 		let minDistance = this.scene.physics.world.bounds.width;
+
 		this.platformGroup.getChildren().forEach((platform: Phaser.Physics.Arcade.Sprite) => {
 			let platformDistance = this.scene.physics.world.bounds.width - platform.x - platform.displayWidth / 2;
 
-			minDistance = Math.min(minDistance, platformDistance);
+			// minDistance = Math.min(minDistance, platformDistance);
+			minDistance = (platformDistance < minDistance) ? platformDistance : minDistance;
 
 			if (platform.x < -platform.displayWidth / 2) {
 				this.platformGroup.killAndHide(platform);
 				this.platformGroup.remove(platform);
+			} else {
+				// platform.setVelocityX(this.platformSpeed);
 			}
 		}, this);
 
 		if (minDistance > this.nextPlatformDistance) {
-			let nextPlatformWidth = Phaser.Math.Between(64, 250);
-			this.addPlatform(nextPlatformWidth, this.scene.physics.world.bounds.width + nextPlatformWidth / 2);
+			this.addPlatform();
 		}
 
 		this.checkStartPlatform();
+		// this.startPlatform.body.setVelocityX(this.platformSpeed);
+
+		// if (this.platformSpeed > -450)
+			// this.platformSpeed -= 0.1;
 	}
 
-	private addPlatform(platformWidth: number, positionX: number) {
+	private addPlatform() {
 		let platform: Phaser.Physics.Arcade.Sprite;
+		let positionX = this.scene.physics.world.bounds.width;
 
 		if (this.platformPool.getLength()) {
 			platform = this.platformPool.getFirst();
 
+			positionX += platform.displayWidth / 2;
+
 			platform.setX(positionX);
+			// platform.setVelocityX(this.platformSpeed);
 			platform.setActive(true);
 			platform.setVisible(true);
 
 			this.platformPool.remove(platform);
 		} else {
-			const textures = ['table', 'couch'];
-			const texture = textures[Phaser.Math.Between(0, 1)];
+			const textures = ['table', 'couch', 'bed'];
+			const random = 1;
 
-			platform = this.scene.physics.add.sprite(positionX, this.scene.physics.world.bounds.bottom - 16 - 32, texture);
+			this.textureCounter += random;
+
+			if (this.textureCounter > textures.length-1)
+				this.textureCounter = 0;
+
+			platform = this.scene.physics.add.sprite(
+				positionX,
+				this.scene.physics.world.bounds.bottom - 16 - 32,
+				textures[this.textureCounter]
+			);
+			positionX +=  platform.displayWidth / 2;
+			platform.setX(positionX);
 			platform.setImmovable(true);
-			platform.setVelocityX(PLATFORM_SPEED);
+			platform.setVelocityX(this.platformSpeed);
 
 			this.platformGroup.add(platform);
 		}
-
-		platform.displayWidth = platformWidth;
 	}
 
 	addStartPlatform(): void {
@@ -107,9 +114,10 @@ export class PlatformService {
 
 			body.setEnable();
 			body.setImmovable(true);
-			body.setVelocityX(PLATFORM_SPEED);
+			body.setVelocityX(this.platformSpeed);
 		} else {
 			this.startPlatform.setX(this.scene.physics.world.bounds.centerX);
+			this.startPlatform.body.setVelocityX(this.platformSpeed);
 			this.startPlatform.setActive(true);
 			this.startPlatform.setVisible(true);
 		}
