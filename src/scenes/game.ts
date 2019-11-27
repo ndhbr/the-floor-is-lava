@@ -4,6 +4,7 @@ import { ScoreService } from '../services/score';
 import { PlayerService } from '../services/player';
 import { LavaService } from '../services/lava';
 import { PlatformService } from '../services/platform';
+import { Room } from '../enums/rooms';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -19,9 +20,12 @@ export class GameScene extends Phaser.Scene {
 	lavaService: LavaService;
 	platformService: PlatformService;
 
+	currentRoom: string;
 	gameOver: boolean;
 	pauseButton: Phaser.GameObjects.TileSprite;
 	space: Phaser.Input.Keyboard.Key;
+
+	lastTextUpdate: number;
 
     constructor() {
         super(sceneConfig);
@@ -33,6 +37,8 @@ export class GameScene extends Phaser.Scene {
 		this.playerService = new PlayerService(this);
 		this.lavaService = new LavaService(this);
 		this.platformService = new PlatformService(this);
+
+		this.lastTextUpdate = 0;
 	}
 
     public preload(): void {}
@@ -57,9 +63,11 @@ export class GameScene extends Phaser.Scene {
 		// Player
 		this.playerService.setPlayerJumps(0);
 		this.playerService.addPlayer();
+		this.playerService.animate();
 
 		// Lava
-		this.lavaService.init();
+		this.lavaService.init(Room.BASEMENT);
+		this.lavaService.init(Room.LIVING_ROOM);
 		this.roomService.drawFloors();
 		this.lavaService.animate();
 
@@ -98,6 +106,9 @@ export class GameScene extends Phaser.Scene {
 			data?: {action: string; }) => {
 			this.scoreService.setVisibility(true);
 
+			this.pauseButton.setFrame(0);
+			this.pauseButton.setVisible(true);
+
 			if (data != null && data.action == 'continue') {
 				this.platformService.clearPlatforms();
 				this.platformService.addStartPlatform();
@@ -107,23 +118,39 @@ export class GameScene extends Phaser.Scene {
 	}
 
     public update(time: number): void {
-		this.pauseButton.setFrame(0);
-
 		if (!this.gameOver) {
-			if (this.playerService.getBounds().y > this.physics.world.bounds.bottom + this.playerService.getBounds().height) {
+			if ((this.playerService.getBounds().y > this.physics.world.bounds.bottom + this.playerService.getBounds().height)
+				|| (this.playerService.getBounds().x < -this.playerService.getBounds().width)) {
 				this.setGameOver(true);
 			}
 
-			this.playerService.animate();
+			if (this.scoreService.getScore() > 500 &&
+				this.playerService.getCurrentRoom() != Room.LIVING_ROOM) {
+
+				this.playerService.setRoom(Room.LIVING_ROOM);
+			}
+
 
 			this.platformService.update();
 
+
 			this.lavaService.updateLavaParticles();
-			this.scoreService.incrementScore();
 			this.roomService.updateTilePositions();
+
+			let a = performance.now();
+
+			if (time - this.lastTextUpdate > 10) {
+				this.scoreService.incrementScore();
+				this.lastTextUpdate = time;
+			}
+
+			console.log(performance.now() - a);
 		} else {
 			this.setGameOver(false);
+
 			this.scoreService.setVisibility(false);
+			this.pauseButton.setVisible(false);
+
 			this.scene.launch('GameOverMenu', {score: this.scoreService.getScore()});
 			this.scene.pause();
 		}

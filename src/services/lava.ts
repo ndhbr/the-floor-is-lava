@@ -1,3 +1,5 @@
+import { Room } from "../enums/rooms";
+
 export class LavaService {
 
 	livingRoomLava: Phaser.GameObjects.TileSprite;
@@ -10,64 +12,75 @@ export class LavaService {
 	basementLavaParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
 	basementLavaParticlesPositonX: number;
 
-	constructor(private scene: Phaser.Scene) {}
-
-	init() {
+	constructor(private scene: Phaser.Scene) {
 		this.scene.anims.create({
 			key: 'lava',
 			frames: this.scene.anims.generateFrameNumbers('lava', {start: 0, end: 2}),
 			frameRate: 6,
 			repeat: -1
 		});
+	}
 
-		this.livingRoomLava = this.scene.add.tileSprite(
-			this.scene.physics.world.bounds.centerX,
-			this.scene.physics.world.bounds.centerY - 4 - 32,
-			this.scene.physics.world.bounds.width,
-			16,
-			'lava',
-			0
-		);
-
-		this.basementFurnitureOverlay = this.scene.physics.add.group();
-		this.livingRoomFurnitureOverlay = this.scene.physics.add.group();
-
-		let lavaNeeded = this.scene.physics.world.bounds.width / 32 + 1;
-		for (let i = 0; i < lavaNeeded; i++) {
-			let lava = this.scene.physics.add.sprite(
-				i * 32,
-				this.scene.physics.world.bounds.bottom - 24,
-				'lava'
+	init(room: Room) {
+		if (room == Room.BASEMENT) {
+			this.basementLava = this.scene.add.tileSprite(
+				this.scene.physics.world.bounds.centerX,
+				this.scene.physics.world.bounds.bottom - 4 - 32,
+				this.scene.physics.world.bounds.width,
+				16,
+				'lava',
+				0
 			);
 
-			lava.depth = 3;
-
-			this.basementFurnitureOverlay.add(lava);
-
-			lava = this.scene.physics.add.sprite(
-				i * 32,
-				this.scene.physics.world.bounds.centerY - 24,
-				'lava'
+			this.basementFurnitureOverlay = this.scene.physics.add.group();
+		} else if (room == Room.LIVING_ROOM) {
+			this.livingRoomLava = this.scene.add.tileSprite(
+				this.scene.physics.world.bounds.centerX,
+				this.scene.physics.world.bounds.centerY - 4 - 32,
+				this.scene.physics.world.bounds.width,
+				16,
+				'lava',
+				0
 			);
 
-			lava.depth = 3;
-
-			this.livingRoomFurnitureOverlay.add(lava);
+			this.livingRoomFurnitureOverlay = this.scene.physics.add.group();
 		}
 
-		this.basementLava = this.scene.add.tileSprite(
-			this.scene.physics.world.bounds.centerX,
-			this.scene.physics.world.bounds.bottom - 4 - 32,
-			this.scene.physics.world.bounds.width,
-			16,
-			'lava',
-			0
-		);
+
+		let lavaNeeded = this.scene.physics.world.bounds.width / 32 + 1;
+		let lava: Phaser.Physics.Arcade.Sprite;
+
+		for (let i = 0; i < lavaNeeded; i++) {
+			if (room == Room.BASEMENT) {
+				lava = this.scene.physics.add.sprite(
+					i * 32,
+					this.scene.physics.world.bounds.bottom - 24,
+					'lava'
+				);
+
+				lava.depth = 3;
+
+				this.basementFurnitureOverlay.add(lava);
+			} else if (room == Room.LIVING_ROOM) {
+				lava = this.scene.physics.add.sprite(
+					i * 32,
+					this.scene.physics.world.bounds.centerY - 24,
+					'lava'
+				);
+
+				lava.depth = 3;
+
+				this.livingRoomFurnitureOverlay.add(lava);
+			}
+		}
 	}
 
 	animate() {
-		this.basementFurnitureOverlay.playAnimation('lava');
-		this.livingRoomFurnitureOverlay.playAnimation('lava');
+		if (this.basementFurnitureOverlay != null)
+			this.basementFurnitureOverlay.playAnimation('lava');
+
+		if (this.livingRoomFurnitureOverlay != null)
+			this.livingRoomFurnitureOverlay.playAnimation('lava');
 	}
 
 	addLavaParticles() {

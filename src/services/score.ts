@@ -1,23 +1,23 @@
+import { DefaultText } from "../classes/default-text";
+
 export class ScoreService {
 
 	private score: number;
-	private scoreText: Phaser.GameObjects.Text;
+	private scoreText: DefaultText;
 
 	constructor(private scene: Phaser.Scene) {
 		this.score = 0;
 	}
 
 	initScoreText(value?: number) {
-		this.scoreText = this.scene.add.text(
+		this.scoreText = new DefaultText(
+			this.scene,
 			this.scene.physics.world.bounds.centerX,
 			128,
 			null,
-			{
-				fontFamily: 'VT323, Roboto, Calibri, sans-serif',
-				fontSize: '48px'
-			}
+			48
 		);
-		this.scoreText.setShadow(2, 3, 'rgba(0,0,0,0.6)', 1);
+
 		this.scoreText.setOrigin(0.5, 0.5);
 
 		this.setScore(value);

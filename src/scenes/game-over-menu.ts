@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
 import { ButtonService } from '../services/button';
+import { DefaultText } from '../classes/default-text';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -11,8 +12,8 @@ export class GameOverMenuScene extends Phaser.Scene {
 
 	backdrop: Phaser.GameObjects.Rectangle;
 
-	heading: Phaser.GameObjects.Text;
-	score: Phaser.GameObjects.Text;
+	heading: DefaultText;
+	score: DefaultText;
 
 	buttonService: ButtonService;
 
@@ -39,33 +40,29 @@ export class GameOverMenuScene extends Phaser.Scene {
 			0.6
 		);
 
-		this.heading = this.add.text(
+		this.heading = new DefaultText(
+			this,
 			this.physics.world.bounds.centerX,
 			100,
-			'Game Over', {
-				fontFamily: 'VT323, Roboto, Calibri, sans-serif',
-				fontSize: '32px'
-			}
+			'Game Over',
+			32
 		);
 		this.heading.setOrigin(0.5, 0.5);
-		this.heading.setShadow(2, 3, 'rgba(0,0,0,0.5)', 1);
 
-		this.score = this.add.text(
+		this.score = new DefaultText(
+			this,
 			this.physics.world.bounds.centerX,
-			164,
-			`${data.score}m`, {
-				fontFamily: 'VT323, Roboto, Calibri, sans-serif',
-				fontSize: '64px'
-			}
+			174,
+			`${data.score}m`,
+			64
 		);
 		this.score.setOrigin(0.5, 0.5);
-		this.score.setShadow(2, 3, 'rgba(0,0,0,0.5)', 1);
 
 		this.buttonService.generateButton(
 			this.physics.world.bounds.centerX,
 			270,
 			this.resumeButton,
-			'button-pixel-red',
+			'button-pixel-orange',
 			'Continue (Video)',
 			(button: Phaser.GameObjects.Container) => {
 				this.scene.stop();
@@ -75,9 +72,9 @@ export class GameOverMenuScene extends Phaser.Scene {
 
 		this.buttonService.generateButton(
 			this.physics.world.bounds.centerX,
-			340,
+			360,
 			this.resumeButton,
-			'button-pixel-red',
+			'button-pixel-orange',
 			'Play again',
 			(button: Phaser.GameObjects.Container) => {
 				this.scene.stop();
@@ -88,9 +85,9 @@ export class GameOverMenuScene extends Phaser.Scene {
 
 		this.buttonService.generateButton(
 			this.physics.world.bounds.centerX,
-			410,
+			430,
 			this.menuButton,
-			'button-pixel-red',
+			'button-pixel-orange',
 			'Menu',
 			() => {
 				this.scene.stop();

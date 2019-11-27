@@ -44,7 +44,7 @@ export class PlatformService {
 				this.platformGroup.killAndHide(platform);
 				this.platformGroup.remove(platform);
 			} else {
-				platform.setVelocityX(this.platformSpeed);
+				// platform.setVelocityX(this.platformSpeed);
 			}
 		}, this);
 
@@ -53,10 +53,10 @@ export class PlatformService {
 		}
 
 		this.checkStartPlatform();
-		this.startPlatform.body.setVelocityX(this.platformSpeed);
+		// this.startPlatform.body.setVelocityX(this.platformSpeed);
 
-		if (this.platformSpeed > -450)
-			this.platformSpeed -= 0.1;
+		// if (this.platformSpeed > -450)
+			// this.platformSpeed -= 0.02;
 	}
 
 	private addPlatform() {
@@ -75,7 +75,33 @@ export class PlatformService {
 
 			this.platformPool.remove(platform);
 		} else {
-			const textures = ['table', 'couch', 'bed'];
+			const textures = [
+				{
+					key: 'table',
+					height: 32,
+					scale: 1
+				},
+				{
+					key: 'couch',
+					height: 32,
+					scale: 1
+				},
+				{
+					key: 'bed',
+					height: 32,
+					scale: 1
+				},
+				{
+					key: 'closet',
+					height: 64,
+					scale: 2
+				},
+				{
+					key: 'lamp',
+					height: 48,
+					scale: 1
+				}
+			];
 			const random = 1;
 
 			this.textureCounter += random;
@@ -85,11 +111,13 @@ export class PlatformService {
 
 			platform = this.scene.physics.add.sprite(
 				positionX,
-				this.scene.physics.world.bounds.bottom - 16 - 32,
-				textures[this.textureCounter]
+				this.scene.physics.world.bounds.bottom - 16 - textures[this.textureCounter].height,
+				textures[this.textureCounter].key
 			);
 			positionX +=  platform.displayWidth / 2;
 			platform.setX(positionX);
+			platform.setScale(textures[this.textureCounter].scale);
+			platform.setOrigin(0.5, 0.5);
 			platform.setImmovable(true);
 			platform.setVelocityX(this.platformSpeed);
 

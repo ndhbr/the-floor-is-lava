@@ -1,3 +1,5 @@
+import { Room } from "../enums/rooms";
+
 const GRAVITY_Y = 2000;
 
 export class PlayerService {
@@ -5,41 +7,35 @@ export class PlayerService {
 	player: Phaser.Physics.Arcade.Sprite;
 	playerJumps: number;
 
-	startPosition: { x: number; y: number; };
-
-	savedVelocity: number;
+	startPosition: {
+		livingRoom: {
+			x: number,
+			y: number
+		},
+		basement: {
+			x: number,
+			y: number
+		}
+	};
+	currentRoom: Room;
 
 	constructor(private scene: Phaser.Scene) {
-		this.savedVelocity = 0;
-
 		this.startPosition = {
-			x: 50,
-			y: this.scene.physics.world.bounds.centerY + 64
+			livingRoom: {
+				x: 50,
+				y: 0
+			},
+			basement: {
+				x: 50,
+				y: this.scene.physics.world.bounds.centerY + 64
+			}
 		};
-	}
-
-	pauseGame(pause?: boolean) {
-		if (pause == null)
-			pause = false;
-
-		if (pause) {
-			this.savedVelocity = this.player.body.velocity.y;
-
-			this.player.anims.pause();
-			this.player.setGravityY(0);
-			this.player.setVelocityY(0);
-		} else {
-			this.player.anims.resume();
-			this.player.setGravityY(GRAVITY_Y);
-			this.player.setVelocityY(this.savedVelocity);
-			this.savedVelocity = 0;
-		}
 	}
 
 	addPlayer() {
 		this.player = this.scene.physics.add.sprite(
-			this.startPosition.x,
-			this.startPosition.y,
+			this.startPosition.livingRoom.x,
+			this.startPosition.livingRoom.y,
 			'player'
 		);
 		this.player.depth = 2;
@@ -60,21 +56,28 @@ export class PlayerService {
 	resetPosition() {
 		this.player.setVelocity(0, 0);
 
-		this.player.setPosition(
-			this.startPosition.x,
-			this.startPosition.y
-		);
+		if (this.currentRoom == Room.BASEMENT) {
+			this.player.setPosition(
+				this.startPosition.basement.x,
+				this.startPosition.basement.y
+			);
+		} else if (this.currentRoom == Room.LIVING_ROOM) {
+			this.player.setPosition(
+				this.startPosition.livingRoom.x,
+				this.startPosition.livingRoom.y
+			);
+		}
 	}
 
 	jump() {
-		if (this.player.body.touching.down || (this.playerJumps > 0 && this.playerJumps < 3)) {
+		if (this.player.body.touching.down || (this.playerJumps > 0 && this.playerJumps < 2)) {
 			if (this.player.body.touching.down)
 				this.playerJumps = 0;
 
 			if (this.playerJumps < 2) {
 				this.player.setVelocityY(-600);
 			} else {
-				this.player.setVelocityY(-1200);
+				// this.player.setVelocityY(-1200);
 			}
 
 			this.playerJumps++;
@@ -87,8 +90,17 @@ export class PlayerService {
 		return this.player;
 	}
 
+	getCurrentRoom(): Room {
+		return this.currentRoom;
+	}
+
 	getBounds() {
 		return this.player.getBounds();
+	}
+
+	setRoom(room: Room) {
+		this.currentRoom = room;
+		this.resetPosition();
 	}
 
 	setPlayerJumps(value?: number) {

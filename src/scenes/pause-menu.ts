@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
 import { ButtonService } from '../services/button';
+import { DefaultText } from '../classes/default-text';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -9,7 +10,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 
 export class PauseMenuScene extends Phaser.Scene {
 
-	heading: Phaser.GameObjects.Text;
+	heading: DefaultText;
 	backdrop: Phaser.GameObjects.Rectangle;
 
 	buttonService: ButtonService;
@@ -43,22 +44,21 @@ export class PauseMenuScene extends Phaser.Scene {
 			0.6
 		);
 
-		this.heading = this.add.text(
+		this.heading = new DefaultText(
+			this,
 			this.physics.world.bounds.centerX,
 			100,
-			'Pause', {
-				fontFamily: 'VT323, Roboto, Calibri, sans-serif',
-				fontSize: '32px'
-			}
+			'Pause',
+			32
 		);
-		this.heading.setShadow(2, 3, 'rgba(0,0,0,0.5)', 1);
+
 		this.heading.setOrigin(0.5, 0.5);
 
 		this.buttonService.generateButton(
 			this.physics.world.bounds.centerX,
 			200,
 			this.resumeButton,
-			'button-pixel-red',
+			'button-pixel-orange',
 			'Resume',
 			(button: Phaser.GameObjects.Container) => {
 				let textObject = <Phaser.GameObjects.Text> button.getAt(1);
@@ -93,7 +93,7 @@ export class PauseMenuScene extends Phaser.Scene {
 			this.physics.world.bounds.centerX,
 			270,
 			this.menuButton,
-			'button-pixel-red',
+			'button-pixel-orange',
 			'Menu',
 			() => {
 				this.scene.stop();
