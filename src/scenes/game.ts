@@ -18,9 +18,9 @@ export class GameScene extends Phaser.Scene {
 	scoreService: ScoreService;
 	playerService: PlayerService;
 	lavaService: LavaService;
-	platformService: PlatformService;
+	livingRoomPlatformService: PlatformService;
+	basementPlatformService: PlatformService;
 
-	currentRoom: string;
 	gameOver: boolean;
 	pauseButton: Phaser.GameObjects.TileSprite;
 	space: Phaser.Input.Keyboard.Key;
@@ -32,13 +32,14 @@ export class GameScene extends Phaser.Scene {
     }
 
     public init(data: any): void {
+		this.lastTextUpdate = 0;
+
 		this.roomService = new RoomService(this);
 		this.scoreService = new ScoreService(this);
 		this.playerService = new PlayerService(this);
 		this.lavaService = new LavaService(this);
-		this.platformService = new PlatformService(this);
-
-		this.lastTextUpdate = 0;
+		this.livingRoomPlatformService = new PlatformService(this, Room.LIVING_ROOM);
+		this.basementPlatformService = new PlatformService(this, Room.BASEMENT);
 	}
 
     public preload(): void {}
@@ -50,8 +51,8 @@ export class GameScene extends Phaser.Scene {
 		// 	light.x = pointer.x;
 		// 	light.y = pointer.y;
 		// });
+		this.lights.enable().setAmbientColor(0xaaaaaa);
 
-		// this.lights.enable().setAmbientColor(0x111111);
 		// console.log(this.lights.getMaxVisibleLights());
 
 		// Room Design
@@ -69,26 +70,18 @@ export class GameScene extends Phaser.Scene {
 		this.lavaService.init(Room.BASEMENT);
 		this.lavaService.init(Room.LIVING_ROOM);
 		this.roomService.drawFloors();
+		this.roomService.drawCeilingLamps();
 		this.lavaService.animate();
 
 		// Start Platform
-		this.platformService.addStartPlatform();
+		if (this.playerService.getCurrentRoom() == Room.BASEMENT)
+			this.basementPlatformService.addStartPlatform();
+		else if (this.playerService.getCurrentRoom() == Room.LIVING_ROOM)
+			this.livingRoomPlatformService.addStartPlatform();
 
 		// Collider
-		this.physics.add.collider(
-			this.playerService.getPlayer(),
-			this.platformService.getPlatformGroup(),
-			this.setFriction,
-			null,
-			this
-		);
-		this.physics.add.collider(
-			this.playerService.getPlayer(),
-			this.platformService.getStartPlatform(),
-			this.setFriction,
-			null,
-			this
-		);
+		this.basementPlatformService.addCollider(this.playerService.getPlayer());
+		this.livingRoomPlatformService.addCollider(this.playerService.getPlayer());
 
 		this.lavaService.addLavaParticles();
 
@@ -110,41 +103,46 @@ export class GameScene extends Phaser.Scene {
 			this.pauseButton.setVisible(true);
 
 			if (data != null && data.action == 'continue') {
-				this.platformService.clearPlatforms();
-				this.platformService.addStartPlatform();
 				this.playerService.resetPosition();
+
+				if (this.playerService.getCurrentRoom() == Room.LIVING_ROOM) {
+					this.livingRoomPlatformService.clearPlatforms();
+					this.livingRoomPlatformService.addStartPlatform();
+				} else if (this.playerService.getCurrentRoom() == Room.BASEMENT) {
+					this.basementPlatformService.clearPlatforms();
+					this.basementPlatformService.addStartPlatform();
+				}
 			}
 		});
 	}
 
     public update(time: number): void {
+		// let a = performance.now();
+
 		if (!this.gameOver) {
 			if ((this.playerService.getBounds().y > this.physics.world.bounds.bottom + this.playerService.getBounds().height)
 				|| (this.playerService.getBounds().x < -this.playerService.getBounds().width)) {
 				this.setGameOver(true);
 			}
 
-			if (this.scoreService.getScore() > 500 &&
-				this.playerService.getCurrentRoom() != Room.LIVING_ROOM) {
+			// if (this.scoreService.getScore() > 500 &&
+			// 	this.playerService.getCurrentRoom() != Room.LIVING_ROOM) {
 
-				this.playerService.setRoom(Room.LIVING_ROOM);
-			}
+			// 	this.playerService.setRoom(Room.LIVING_ROOM);
+			// }
 
 
-			this.platformService.update();
-
+			this.basementPlatformService.update();
+			this.livingRoomPlatformService.update();
 
 			this.lavaService.updateLavaParticles();
 			this.roomService.updateTilePositions();
 
-			let a = performance.now();
 
 			if (time - this.lastTextUpdate > 10) {
 				this.scoreService.incrementScore();
 				this.lastTextUpdate = time;
 			}
-
-			console.log(performance.now() - a);
 		} else {
 			this.setGameOver(false);
 
@@ -154,16 +152,14 @@ export class GameScene extends Phaser.Scene {
 			this.scene.launch('GameOverMenu', {score: this.scoreService.getScore()});
 			this.scene.pause();
 		}
+
+		// console.log(performance.now() - a);
 	}
 
 	public pauseGame() {
 		this.scene.launch('PauseMenu');
 		this.pauseButton.setFrame(1);
 		this.scene.pause('Game');
-	}
-
-	private setFriction(player: Phaser.Physics.Arcade.Sprite, platform: any) {
-		player.body.x -= platform.body.x - platform.body.prev.x;
 	}
 
 	private setGameOver(gameOver: boolean) {

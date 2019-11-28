@@ -30,14 +30,25 @@ export class PlayerService {
 				y: this.scene.physics.world.bounds.centerY + 64
 			}
 		};
+
+		this.currentRoom = Room.BASEMENT;
 	}
 
 	addPlayer() {
-		this.player = this.scene.physics.add.sprite(
-			this.startPosition.livingRoom.x,
-			this.startPosition.livingRoom.y,
-			'player'
-		);
+		if (this.currentRoom == Room.LIVING_ROOM) {
+			this.player = this.scene.physics.add.sprite(
+				this.startPosition.livingRoom.x,
+				this.startPosition.livingRoom.y,
+				'player'
+			);
+		} else if (this.currentRoom == Room.BASEMENT) {
+			this.player = this.scene.physics.add.sprite(
+				this.startPosition.basement.x,
+				this.startPosition.basement.y,
+				'player'
+			);
+		}
+
 		this.player.depth = 2;
 		// this.player.setBounceY(1);
 
@@ -99,6 +110,8 @@ export class PlayerService {
 	}
 
 	setRoom(room: Room) {
+		console.log('Set room');
+
 		this.currentRoom = room;
 		this.resetPosition();
 	}

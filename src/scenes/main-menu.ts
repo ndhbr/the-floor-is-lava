@@ -34,12 +34,14 @@ export class MainMenuScene extends Phaser.Scene {
 	public preload(): void {}
 
 	public create(data: any): void {
-		this.roomService.drawBackgrounds();
+		this.lights.enable().setAmbientColor(0xaaaaaa);
 
 		this.lavaService.init(Room.BASEMENT);
 		this.lavaService.init(Room.LIVING_ROOM);
 		this.lavaService.animate();
 
+		this.roomService.drawBackgrounds();
+		this.roomService.drawCeilingLamps();
 		this.roomService.drawFloors();
 
 		let backdrop = this.add.rectangle(
@@ -84,5 +86,7 @@ export class MainMenuScene extends Phaser.Scene {
 		);
 	}
 
-	public update(time: number): void {}
+	public update(time: number) {
+		this.roomService.updateTilePositions();
+	}
 }

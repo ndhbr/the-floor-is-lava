@@ -106,7 +106,7 @@ export class PauseMenuScene extends Phaser.Scene {
 			this.physics.world.bounds.right - 50,
 			this.physics.world.bounds.bottom - 50,
 			this.soundButton,
-			'button-pixel-red-sound',
+			'button-pixel-orange-sound',
 			'',
 			(button: Phaser.GameObjects.Container) => {
 				let btn = <Phaser.GameObjects.Sprite> button.getAt(0);
