@@ -1,8 +1,21 @@
+import { Room } from "../enums/rooms";
+
 export class RoomService {
 
 	lampPositionsX: {
 		start: number,
 		end: number
+	};
+
+	floorPositions: {
+		basement: {
+			x: number,
+			y: number
+		},
+		livingRoom: {
+			x: number,
+			y: number
+		}
 	};
 
 	roof: Phaser.GameObjects.TileSprite;
@@ -21,32 +34,61 @@ export class RoomService {
 
 	constructor(private scene: Phaser.Scene) {
 		this.lampPositionsX = {
-			start: this.scene.physics.world.bounds.width + 200,
-			end: -200
+			start: this.scene.physics.world.bounds.width + 300,
+			end: -300
+		};
+
+		this.floorPositions = {
+			livingRoom: {
+				x: this.scene.physics.world.bounds.centerX,
+				y: (this.scene.physics.world.bounds.height / 2) - 16,
+			},
+			basement: {
+				x: this.scene.physics.world.bounds.centerX,
+				y: this.scene.physics.world.bounds.bottom - 16
+			}
 		};
 	}
 
 	preload() {}
 
+	addCollider(object: Phaser.GameObjects.GameObject |
+		Phaser.GameObjects.GameObject[] | Phaser.GameObjects.Group |
+		Phaser.GameObjects.Group[], gameOverCallback: () => void): void {
+
+		this.scene.physics.add.collider(
+			object,
+			this.livingRoomFloor,
+			(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) => {
+				let body = <Phaser.Physics.Arcade.Body>object2.body;
+
+				if (body.touching.up)
+					gameOverCallback();
+			}
+		);
+
+		this.scene.physics.add.collider(
+			object,
+			this.basementFloor,
+			(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) => {
+				gameOverCallback();
+			}
+		);
+
+		this.scene.physics.add.collider(
+			object,
+			this.roof
+		);
+	}
+
 	drawFloors() {
-		this.livingRoomFloor = this.scene.add.tileSprite(
-			this.scene.physics.world.bounds.centerX,
-			this.scene.physics.world.bounds.bottom - 16,
-			this.scene.physics.world.bounds.width,
-			32,
-			'concreteWithLava'
-		);
-		this.livingRoomFloor.depth = 3;
+		this.drawFloor(Room.BASEMENT);
+		this.drawFloor(Room.LIVING_ROOM);
 
-		this.basementFloor = this.scene.add.tileSprite(
-			this.scene.physics.world.bounds.centerX,
-			(this.scene.physics.world.bounds.height / 2) - 16,
-			this.scene.physics.world.bounds.width,
-			32,
-			'concreteWithLava'
-		);
-		this.basementFloor.depth = 3;
+		this.drawRoof();
+	}
 
+	private drawRoof() {
 		this.roof = this.scene.add.tileSprite(
 			this.scene.physics.world.bounds.centerX,
 			32,
@@ -54,6 +96,47 @@ export class RoomService {
 			64,
 			'concreteWithRoof'
 		);
+
+		this.scene.physics.add.existing(this.roof);
+
+		let body = <Phaser.Physics.Arcade.Body>this.roof.body;
+
+		body.setEnable();
+		body.setImmovable(true);
+	}
+
+	private drawFloor(room: Room) {
+		let x: number, y: number;
+
+		if (room == Room.BASEMENT) {
+			x = this.floorPositions.basement.x;
+			y = this.floorPositions.basement.y;
+		} else {
+			x = this.floorPositions.livingRoom.x;
+			y = this.floorPositions.livingRoom.y;
+		}
+
+		let floor = this.scene.add.tileSprite(
+			x,
+			y,
+			this.scene.physics.world.bounds.width,
+			32,
+			'concreteWithLava'
+		);
+
+		floor.setDepth(3);
+
+		this.scene.physics.add.existing(floor);
+
+		let body = <Phaser.Physics.Arcade.Body>floor.body;
+		body.setEnable();
+		body.setImmovable(true);
+
+		if (room == Room.BASEMENT) {
+			this.basementFloor = floor;
+		} else {
+			this.livingRoomFloor = floor;
+		}
 	}
 
 	drawCeilingLamps() {

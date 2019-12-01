@@ -14,6 +14,8 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 
 export class GameScene extends Phaser.Scene {
 
+	performanceTest: Array<number> = [];
+
 	roomService: RoomService;
 	scoreService: ScoreService;
 	playerService: PlayerService;
@@ -74,14 +76,18 @@ export class GameScene extends Phaser.Scene {
 		this.lavaService.animate();
 
 		// Start Platform
-		if (this.playerService.getCurrentRoom() == Room.BASEMENT)
-			this.basementPlatformService.addStartPlatform();
-		else if (this.playerService.getCurrentRoom() == Room.LIVING_ROOM)
-			this.livingRoomPlatformService.addStartPlatform();
+		// if (this.playerService.getCurrentRoom() == Room.BASEMENT)
+		this.basementPlatformService.addStartPlatform();
+		// else if (this.playerService.getCurrentRoom() == Room.LIVING_ROOM)
+		this.livingRoomPlatformService.addStartPlatform();
 
 		// Collider
 		this.basementPlatformService.addCollider(this.playerService.getPlayer());
 		this.livingRoomPlatformService.addCollider(this.playerService.getPlayer());
+		this.roomService.addCollider(
+			this.playerService.getPlayer(),
+			this.activateGameOver.bind(this)
+		);
 
 		this.lavaService.addLavaParticles();
 
@@ -103,8 +109,6 @@ export class GameScene extends Phaser.Scene {
 			this.pauseButton.setVisible(true);
 
 			if (data != null && data.action == 'continue') {
-				this.playerService.resetPosition();
-
 				if (this.playerService.getCurrentRoom() == Room.LIVING_ROOM) {
 					this.livingRoomPlatformService.clearPlatforms();
 					this.livingRoomPlatformService.addStartPlatform();
@@ -112,25 +116,31 @@ export class GameScene extends Phaser.Scene {
 					this.basementPlatformService.clearPlatforms();
 					this.basementPlatformService.addStartPlatform();
 				}
+
+				this.playerService.resetPosition();
 			}
 		});
 	}
 
     public update(time: number): void {
-		// let a = performance.now();
+		let a = performance.now();
 
 		if (!this.gameOver) {
-			if ((this.playerService.getBounds().y > this.physics.world.bounds.bottom + this.playerService.getBounds().height)
-				|| (this.playerService.getBounds().x < -this.playerService.getBounds().width)) {
-				this.setGameOver(true);
+			if (this.playerService.getBounds().x < -this.playerService.getBounds().width) {
+				this.activateGameOver();
 			}
 
-			// if (this.scoreService.getScore() > 500 &&
-			// 	this.playerService.getCurrentRoom() != Room.LIVING_ROOM) {
+			if (this.scoreService.getScore() % 500 == 0 && this.scoreService.getScore() > 0) {
+				let newRoom: Room = this.playerService.toggleRoom();
 
-			// 	this.playerService.setRoom(Room.LIVING_ROOM);
-			// }
-
+				if (newRoom == Room.BASEMENT) {
+					this.basementPlatformService.clearPlatforms();
+					this.basementPlatformService.addStartPlatform();
+				} else {
+					this.livingRoomPlatformService.clearPlatforms();
+					this.livingRoomPlatformService.addStartPlatform();
+				}
+			}
 
 			this.basementPlatformService.update();
 			this.livingRoomPlatformService.update();
@@ -153,7 +163,7 @@ export class GameScene extends Phaser.Scene {
 			this.scene.pause();
 		}
 
-		// console.log(performance.now() - a);
+		this.performanceTest.push(performance.now() - a);
 	}
 
 	public pauseGame() {
@@ -164,5 +174,19 @@ export class GameScene extends Phaser.Scene {
 
 	private setGameOver(gameOver: boolean) {
 		this.gameOver = gameOver;
+	}
+
+	private activateGameOver(): void {
+		this.setGameOver(true);
+
+		let avg: number = 0;
+		for (let i = 0; i < this.performanceTest.length; i++) {
+			avg += this.performanceTest[i];
+		}
+
+		avg /= this.performanceTest.length;
+
+		console.log(`Average Time spent to update game screen (ms): ${avg}`);
+		this.performanceTest = [];
 	}
 }

@@ -42,10 +42,10 @@ export class ButtonService {
 			buttonBg.setFrame(1);
 		}, this);
 
-		buttonBg.on('pointerout', () => {
+		buttonBg.on('pointerup', () => {
 			buttonText.y = textPositionY;
 			buttonBg.setFrame(0);
 			callback(container);
-		});
+		}, this);
 	}
 }

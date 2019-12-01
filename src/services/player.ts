@@ -31,7 +31,7 @@ export class PlayerService {
 			}
 		};
 
-		this.currentRoom = Room.BASEMENT;
+		this.currentRoom = Room.LIVING_ROOM;
 	}
 
 	addPlayer() {
@@ -109,9 +109,17 @@ export class PlayerService {
 		return this.player.getBounds();
 	}
 
-	setRoom(room: Room) {
-		console.log('Set room');
+	toggleRoom(): Room {
+		if (this.currentRoom == Room.LIVING_ROOM) {
+			this.setRoom(Room.BASEMENT);
+			return Room.BASEMENT;
+		} else {
+			this.setRoom(Room.LIVING_ROOM);
+			return Room.LIVING_ROOM;
+		}
+	}
 
+	setRoom(room: Room) {
 		this.currentRoom = room;
 		this.resetPosition();
 	}

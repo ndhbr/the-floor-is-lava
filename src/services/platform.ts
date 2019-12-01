@@ -164,6 +164,11 @@ export class PlatformService {
 						key: 'wineShelf',
 						height: 64,
 						scale: 2
+					},
+					{
+						key: 'barrels',
+						height: 32,
+						scale: 1
 					}
 				]
 			}
@@ -211,7 +216,10 @@ export class PlatformService {
 			body.setVelocityX(this.platformSpeed);
 		} else {
 			this.startPlatform.setX(this.scene.physics.world.bounds.centerX);
-			this.startPlatform.body.setVelocityX(this.platformSpeed);
+			// this.startPlatform.body.setVelocityX(this.platformSpeed);
+			this.startPlatform.body.setEnable();
+			this.startPlatform.body.setImmovable(true);
+
 			this.startPlatform.setActive(true);
 			this.startPlatform.setVisible(true);
 		}
