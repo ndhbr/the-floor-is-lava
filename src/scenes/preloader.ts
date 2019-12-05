@@ -31,11 +31,15 @@ export class PreloaderScene extends Phaser.Scene {
 		this.load.spritesheet('button-pixel-red-sound', 'assets/buttons-pixel-red-sound.png',
 			{ frameWidth: 32, frameHeight: 32 });
 
-			this.load.spritesheet('button-pixel-orange-sound', 'assets/buttons-pixel-orange-sound.png',
+		this.load.spritesheet('button-pixel-orange-sound', 'assets/buttons-pixel-orange-sound.png',
 			{ frameWidth: 32, frameHeight: 32 });
+
+		this.load.spritesheet('portal', 'assets/portal.png',
+			{ frameWidth: 64, frameHeight: 16 });
 
 		this.load.image('heading', 'assets/heading.png');
 		this.load.image('particle', 'assets/lava-particle.png');
+		this.load.image('portalParticle', 'assets/portal-particle.png');
 		this.load.image('platform', 'assets/new-platform.png');
 		this.load.image('concrete', 'assets/concrete.png');
 		this.load.image('concreteWithLava', 'assets/concrete-with-lava.png');
@@ -44,6 +48,7 @@ export class PreloaderScene extends Phaser.Scene {
 		this.load.image('couch', 'assets/couch.png');
 		this.load.image('bed', 'assets/bed.png');
 		this.load.image('lamp', 'assets/lamp.png');
+		this.load.image('cactus', 'assets/cactus.png');
 		this.load.image('ceilingLamp', 'assets/ceiling-lamp.png');
 		this.load.image('closet', 'assets/closet.png');
 		this.load.image('floor', 'assets/floor.png');
@@ -59,6 +64,20 @@ export class PreloaderScene extends Phaser.Scene {
 	}
 
 	public create(): void {
+		this.anims.create({
+			key: 'run',
+			frames: this.anims.generateFrameNumbers('player', {start: 0, end: 7}),
+			frameRate: 10,
+			repeat: -1
+		});
+
+		this.anims.create({
+			key: 'portal',
+			frames: this.anims.generateFrameNumbers('portal', {start: 0, end: 1}),
+			frameRate: 10,
+			repeat: -1
+		});
+
 		this.scene.start('MainMenu');
 	}
 }

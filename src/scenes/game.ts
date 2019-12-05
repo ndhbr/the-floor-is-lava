@@ -14,6 +14,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 
 export class GameScene extends Phaser.Scene {
 
+	enteredPortal: Phaser.Events.EventEmitter;
 	performanceTest: Array<number> = [];
 
 	roomService: RoomService;
@@ -30,7 +31,7 @@ export class GameScene extends Phaser.Scene {
 	lastTextUpdate: number;
 
     constructor() {
-        super(sceneConfig);
+		super(sceneConfig);
     }
 
     public init(data: any): void {
@@ -42,6 +43,12 @@ export class GameScene extends Phaser.Scene {
 		this.lavaService = new LavaService(this);
 		this.livingRoomPlatformService = new PlatformService(this, Room.LIVING_ROOM);
 		this.basementPlatformService = new PlatformService(this, Room.BASEMENT);
+
+		if(this.enteredPortal == null) {
+			this.enteredPortal = this.events.addListener('onEnteredPortal', () => {
+				this.toggleRoom();
+			});
+		}
 	}
 
     public preload(): void {}
@@ -66,7 +73,6 @@ export class GameScene extends Phaser.Scene {
 		// Player
 		this.playerService.setPlayerJumps(0);
 		this.playerService.addPlayer();
-		this.playerService.animate();
 
 		// Lava
 		this.lavaService.init(Room.BASEMENT);
@@ -76,10 +82,11 @@ export class GameScene extends Phaser.Scene {
 		this.lavaService.animate();
 
 		// Start Platform
-		// if (this.playerService.getCurrentRoom() == Room.BASEMENT)
 		this.basementPlatformService.addStartPlatform();
-		// else if (this.playerService.getCurrentRoom() == Room.LIVING_ROOM)
 		this.livingRoomPlatformService.addStartPlatform();
+
+		this.basementPlatformService.addPlayer(this.playerService.getPlayer());
+		this.livingRoomPlatformService.addPlayer(this.playerService.getPlayer());
 
 		// Collider
 		this.basementPlatformService.addCollider(this.playerService.getPlayer());
@@ -130,18 +137,6 @@ export class GameScene extends Phaser.Scene {
 				this.activateGameOver();
 			}
 
-			if (this.scoreService.getScore() % 500 == 0 && this.scoreService.getScore() > 0) {
-				let newRoom: Room = this.playerService.toggleRoom();
-
-				if (newRoom == Room.BASEMENT) {
-					this.basementPlatformService.clearPlatforms();
-					this.basementPlatformService.addStartPlatform();
-				} else {
-					this.livingRoomPlatformService.clearPlatforms();
-					this.livingRoomPlatformService.addStartPlatform();
-				}
-			}
-
 			this.basementPlatformService.update();
 			this.livingRoomPlatformService.update();
 
@@ -174,6 +169,18 @@ export class GameScene extends Phaser.Scene {
 
 	private setGameOver(gameOver: boolean) {
 		this.gameOver = gameOver;
+	}
+
+	private toggleRoom(): void {
+		let newRoom: Room = this.playerService.toggleRoom();
+
+		if (newRoom == Room.BASEMENT) {
+			this.basementPlatformService.clearPlatforms();
+			this.basementPlatformService.addStartPlatform();
+		} else {
+			this.livingRoomPlatformService.clearPlatforms();
+			this.livingRoomPlatformService.addStartPlatform();
+		}
 	}
 
 	private activateGameOver(): void {

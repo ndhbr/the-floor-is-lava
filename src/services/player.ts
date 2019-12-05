@@ -50,14 +50,6 @@ export class PlayerService {
 		}
 
 		this.player.depth = 2;
-		// this.player.setBounceY(1);
-
-		this.scene.anims.create({
-			key: 'run',
-			frames: this.scene.anims.generateFrameNumbers('player', {start: 0, end: 7}),
-			frameRate: 10,
-			repeat: -1
-		});
 
 		this.scene.anims.play('run', this.player);
 
@@ -87,15 +79,11 @@ export class PlayerService {
 
 			if (this.playerJumps < 2) {
 				this.player.setVelocityY(-600);
-			} else {
-				// this.player.setVelocityY(-1200);
 			}
 
 			this.playerJumps++;
 		}
 	}
-
-	animate() {}
 
 	getPlayer(): Phaser.Physics.Arcade.Sprite {
 		return this.player;

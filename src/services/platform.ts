@@ -4,6 +4,8 @@ const DEFAULT_SPEED = -350;
 
 export class PlatformService {
 
+	private player: Phaser.Physics.Arcade.Sprite;
+
 	private room: Room;
 	private positions: {
 		x: number,
@@ -15,8 +17,10 @@ export class PlatformService {
 	private nextPlatformDistance: number;
 
 	private startPlatform: Phaser.GameObjects.TileSprite | any;
-	private textureCounter: number;
 
+	private portalPlatform: Phaser.Physics.Arcade.Sprite;
+
+	private textureCounter: number;
 	private platformSpeed: number;
 
 	constructor(private scene: Phaser.Scene, room: Room) {
@@ -46,10 +50,13 @@ export class PlatformService {
 			}
 		});
 
-		// this.nextPlatformDistance = Phaser.Math.Between(50, 250);
 		this.textureCounter = 0;
 		this.platformSpeed = DEFAULT_SPEED;
 		this.startPlatform = null;
+	}
+
+	addPlayer(player: Phaser.Physics.Arcade.Sprite) {
+		this.player = player;
 	}
 
 	addCollider(object: Phaser.GameObjects.GameObject |
@@ -80,26 +87,33 @@ export class PlatformService {
 		this.platformGroup.getChildren().forEach((platform: Phaser.Physics.Arcade.Sprite) => {
 			let platformDistance = this.scene.physics.world.bounds.width - platform.x - platform.displayWidth / 2;
 
-			// minDistance = Math.min(minDistance, platformDistance);
 			minDistance = (platformDistance < minDistance) ? platformDistance : minDistance;
 
 			if (platform.x < -platform.displayWidth / 2) {
 				this.platformGroup.killAndHide(platform);
 				this.platformGroup.remove(platform);
-			} else {
-				// platform.setVelocityX(this.platformSpeed);
 			}
 		}, this);
 
-		if (minDistance > this.nextPlatformDistance) {
-			this.addPlatform();
+		if (this.portalPlatform != null && this.portalPlatform.x > 0) {
+			let distancePortalPlatform = this.scene.physics.world.bounds.width -
+			this.portalPlatform.x - this.portalPlatform.displayWidth / 2;
+
+			if (distancePortalPlatform < minDistance)
+				minDistance = distancePortalPlatform;
 		}
 
-		this.checkStartPlatform();
-		// this.startPlatform.body.setVelocityX(this.platformSpeed);
+		if (minDistance > this.nextPlatformDistance) {
+			const random = Math.random();
 
-		// if (this.platformSpeed > -450)
-			// this.platformSpeed -= 0.02;
+			if (random > 0.95)
+				this.addPortal();
+			else
+				this.addPlatform();
+		}
+
+		this.checkPlatform(this.startPlatform);
+		this.checkPlatform(this.portalPlatform);
 	}
 
 	private addPlatform() {
@@ -143,9 +157,9 @@ export class PlatformService {
 						scale: 2
 					},
 					{
-						key: 'lamp',
+						key: 'cactus',
 						height: 48,
-						scale: 1
+						scale: 1.5
 					}
 				];
 			} else if (this.room == Room.BASEMENT) {
@@ -156,9 +170,9 @@ export class PlatformService {
 						scale: 1
 					},
 					{
-						key: 'lamp',
+						key: 'cactus',
 						height: 48,
-						scale: 1
+						scale: 1.5
 					},
 					{
 						key: 'wineShelf',
@@ -225,11 +239,39 @@ export class PlatformService {
 		}
 	}
 
-	checkStartPlatform(): boolean {
-		if (this.startPlatform != null) {
-			if (this.startPlatform.x < - this.startPlatform.width / 2) {
-				this.startPlatform.setActive(false);
-				this.startPlatform.setVisible(false);
+	addPortal(): void {
+		if (this.portalPlatform == null) {
+			this.portalPlatform = this.scene.physics.add.sprite(
+				this.scene.physics.world.bounds.width,
+				this.positions.y - 16 - 32,
+				'portal'
+			);
+
+			this.portalPlatform.x += this.portalPlatform.displayWidth / 2;
+			this.portalPlatform.setOrigin(0.5, 0.5);
+			this.portalPlatform.setImmovable(true);
+			this.portalPlatform.setVelocityX(this.platformSpeed);
+
+			let collider = this.scene.physics.add.overlap(this.player, this.portalPlatform, () => {
+				collider.active = false;
+				this.scene.events.emit('onEnteredPortal');
+				collider.active = true;
+			});
+
+			this.scene.anims.play('portal', this.portalPlatform);
+		} else if (this.portalPlatform.active == false) {
+			this.portalPlatform.setX(this.scene.physics.world.bounds.width);
+
+			this.portalPlatform.setActive(true);
+			this.portalPlatform.setVisible(true);
+		}
+	}
+
+	checkPlatform(platform: any): boolean {
+		if (platform != null) {
+			if (platform.x < - platform.displayWidth / 2) {
+				platform.setActive(false);
+				platform.setVisible(false);
 
 				return false;
 			}

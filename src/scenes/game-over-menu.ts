@@ -78,6 +78,7 @@ export class GameOverMenuScene extends Phaser.Scene {
 			'Play again',
 			(button: Phaser.GameObjects.Container) => {
 				this.scene.stop();
+				this.scene.stop('Game');
 				this.scene.start('Game');
 			}
 		);

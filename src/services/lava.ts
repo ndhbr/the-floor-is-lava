@@ -33,6 +33,7 @@ export class LavaService {
 			);
 
 			this.basementFurnitureOverlay = this.scene.physics.add.group();
+			this.basementFurnitureOverlay.setDepth(3, 1);
 		} else if (room == Room.LIVING_ROOM) {
 			this.livingRoomLava = this.scene.add.tileSprite(
 				this.scene.physics.world.bounds.centerX,
@@ -44,6 +45,7 @@ export class LavaService {
 			);
 
 			this.livingRoomFurnitureOverlay = this.scene.physics.add.group();
+			this.livingRoomFurnitureOverlay.setDepth(3, 1);
 		}
 
 
