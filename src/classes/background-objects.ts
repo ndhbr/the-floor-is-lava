@@ -2,30 +2,41 @@ import { Room } from "../enums/rooms";
 
 export class BackgroundObjects extends Phaser.GameObjects.TileSprite {
 
-	constructor(scene: Phaser.Scene, room: Room, frameKey?: string | number) {
+	speed: number;
+
+	constructor(scene: Phaser.Scene, room: Room, textureKey: string, speed?: number) {
 		let x: number,
 			y: number,
 			width: number,
-			height: number,
-			textureKey: string;
+			height: number;
 
-		super(scene, x, y, width, height, textureKey, frameKey);
+		super(scene, x, y, width, height, textureKey);
 
-		x = 0;
+ 		x = this.scene.physics.world.bounds.centerX;
 		width = this.scene.physics.world.bounds.width;
 		height = 64;
 
 		if (room == Room.BASEMENT) {
-			textureKey = '';
-			y = this.scene.physics.world.bounds.bottom;
-		} else {
-			textureKey = '';
-            y = this.scene.physics.world.bounds.centerY;
+ 			y = this.scene.physics.world.bounds.bottom - 80;
+ 		} else {
+            y = this.scene.physics.world.bounds.centerY - 64;
 		}
 
-		this.setOrigin(0, 0);
 		this.setPosition(x, y);
-		this.setTexture(textureKey);
 		this.setSize(width, height);
+		this.setScale(1.5);
+		this.setTint(0xbbbbbb);
+
+		if (!speed) {
+			this.speed = 1;
+		} else {
+			this.speed = speed;
+		}
+
+		this.scene.add.existing(this);
+	}
+
+	incrementTilePosition() {
+		this.tilePositionX += this.speed;
 	}
 }

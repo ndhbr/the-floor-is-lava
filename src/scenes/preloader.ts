@@ -59,6 +59,8 @@ export class PreloaderScene extends Phaser.Scene {
 		this.load.image('box', 'assets/box.png');
 		this.load.image('barrels', 'assets/barrels.png');
 		this.load.image('wineShelf', 'assets/wine-shelf.png');
+		this.load.image('backgroundBasement0', 'assets/background-basement-0.png');
+		this.load.image('backgroundBasement1', 'assets/background-basement-1.png');
 
 		this.load.bitmapFont('basis33', 'fonts/basis33_0.png', 'fonts/basis33.xml');
 	}

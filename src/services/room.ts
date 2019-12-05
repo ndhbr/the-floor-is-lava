@@ -1,4 +1,5 @@
 import { Room } from "../enums/rooms";
+import { BackgroundObjects } from "../classes/background-objects";
 
 export class RoomService {
 
@@ -31,6 +32,9 @@ export class RoomService {
 
 	livingRoomFloor: Phaser.GameObjects.TileSprite;
 	basementFloor: Phaser.GameObjects.TileSprite;
+
+	basementBackgroundObjectsLayer0: BackgroundObjects;
+	basementBackgroundObjectsLayer1: BackgroundObjects;
 
 	constructor(private scene: Phaser.Scene) {
 		this.lampPositionsX = {
@@ -186,6 +190,11 @@ export class RoomService {
 
 		this.basement.setOrigin(0, 0);
 		this.livingRoom.setOrigin(0, 0);
+
+		this.basementBackgroundObjectsLayer0 = new BackgroundObjects(this.scene,
+			Room.BASEMENT, 'backgroundBasement0');
+		this.basementBackgroundObjectsLayer1 = new BackgroundObjects(this.scene,
+			Room.BASEMENT, 'backgroundBasement1', 2);
 	}
 
 	updateTilePositions() {
@@ -210,5 +219,8 @@ export class RoomService {
 			this.livingRoomLamp.x = this.lampPositionsX.start;
 			this.livingRoomLampLight.x = this.lampPositionsX.start;
 		}
+
+		this.basementBackgroundObjectsLayer0.incrementTilePosition();
+		this.basementBackgroundObjectsLayer1.incrementTilePosition();
 	}
 }
