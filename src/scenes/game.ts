@@ -143,6 +143,7 @@ export class GameScene extends Phaser.Scene {
 			this.lavaService.updateLavaParticles();
 			this.roomService.updateTilePositions();
 
+			this.playerService.update();
 
 			if (time - this.lastTextUpdate > 10) {
 				this.scoreService.incrementScore();
@@ -150,6 +151,8 @@ export class GameScene extends Phaser.Scene {
 			}
 		} else {
 			this.setGameOver(false);
+
+			this.playerService.die();
 
 			this.scoreService.setVisibility(false);
 			this.pauseButton.setVisible(false);

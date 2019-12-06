@@ -23,7 +23,7 @@ export class PlayerService {
 		this.startPosition = {
 			livingRoom: {
 				x: 50,
-				y: 0
+				y: 90
 			},
 			basement: {
 				x: 50,
@@ -32,6 +32,24 @@ export class PlayerService {
 		};
 
 		this.currentRoom = Room.LIVING_ROOM;
+	}
+
+	update() {
+		if (this.player.body.touching.up) {
+			this.player.anims.play('dizzy');
+			this.player.anims.stopAfterDelay(3000);
+		} else if (!this.player.body.touching.down) {
+			this.player.anims.stop();
+
+			if (this.player.body.deltaY() < 0) {
+				this.player.setFrame(5);
+			} else {
+				this.player.setFrame(6);
+			}
+		} else {
+			if(!this.player.anims.isPlaying && !this.player.body.touching.up)
+				this.player.anims.play('run');
+		}
 	}
 
 	addPlayer() {
@@ -83,6 +101,11 @@ export class PlayerService {
 
 			this.playerJumps++;
 		}
+	}
+
+	die() {
+		this.player.anims.stop();
+		this.player.anims.play('die');
 	}
 
 	getPlayer(): Phaser.Physics.Arcade.Sprite {

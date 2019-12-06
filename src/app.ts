@@ -31,12 +31,14 @@ const config: Phaser.Types.Core.GameConfig = {
 	}
 };
 
-export class FirstGame extends Phaser.Game {
+export class TheFloorIsLava extends Phaser.Game {
     constructor(config: Phaser.Types.Core.GameConfig) {
 		super(config);
 	}
 }
 
 window.onload = () => {
-	let game: FirstGame = new FirstGame(config);
+	// FBInstant.initializeAsync().then(function() {
+		let game: TheFloorIsLava = new TheFloorIsLava(config);
+	// });
 };

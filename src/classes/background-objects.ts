@@ -19,7 +19,7 @@ export class BackgroundObjects extends Phaser.GameObjects.TileSprite {
 		if (room == Room.BASEMENT) {
  			y = this.scene.physics.world.bounds.bottom - 80;
  		} else {
-            y = this.scene.physics.world.bounds.centerY - 64;
+            y = this.scene.physics.world.bounds.centerY - 80;
 		}
 
 		this.setPosition(x, y);

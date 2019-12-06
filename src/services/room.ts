@@ -36,6 +36,9 @@ export class RoomService {
 	basementBackgroundObjectsLayer0: BackgroundObjects;
 	basementBackgroundObjectsLayer1: BackgroundObjects;
 
+	livingRoomBackgroundObjectsLayer0: BackgroundObjects;
+	livingRoomBackgroundObjectsLayer1: BackgroundObjects;
+
 	constructor(private scene: Phaser.Scene) {
 		this.lampPositionsX = {
 			start: this.scene.physics.world.bounds.width + 300,
@@ -155,12 +158,14 @@ export class RoomService {
 			this.scene.physics.world.bounds.centerY + 64,
 			300
 		);
+		this.basementLamp.setDepth(4);
 
 		this.livingRoomLamp = this.scene.physics.add.sprite(
 			this.lampPositionsX.start,
 			96,
 			'ceilingLamp'
 		);
+		this.livingRoomLamp.setDepth(4);
 
 		this.livingRoomLampLight = this.scene.lights.addLight(
 			this.lampPositionsX.start,
@@ -195,6 +200,11 @@ export class RoomService {
 			Room.BASEMENT, 'backgroundBasement0');
 		this.basementBackgroundObjectsLayer1 = new BackgroundObjects(this.scene,
 			Room.BASEMENT, 'backgroundBasement1', 2);
+
+		this.livingRoomBackgroundObjectsLayer0 = new BackgroundObjects(this.scene,
+			Room.LIVING_ROOM, 'backgroundLivingRoom0');
+		this.livingRoomBackgroundObjectsLayer1 = new BackgroundObjects(this.scene,
+			Room.LIVING_ROOM, 'backgroundLivingRoom1', 2);
 	}
 
 	updateTilePositions() {
@@ -222,5 +232,7 @@ export class RoomService {
 
 		this.basementBackgroundObjectsLayer0.incrementTilePosition();
 		this.basementBackgroundObjectsLayer1.incrementTilePosition();
+		this.livingRoomBackgroundObjectsLayer0.incrementTilePosition();
+		this.livingRoomBackgroundObjectsLayer1.incrementTilePosition();
 	}
 }

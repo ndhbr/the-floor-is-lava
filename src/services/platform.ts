@@ -160,6 +160,11 @@ export class PlatformService {
 						key: 'cactus',
 						height: 48,
 						scale: 1.5
+					},
+					{
+						key: 'stove',
+						height: 32,
+						scale: 2
 					}
 				];
 			} else if (this.room == Room.BASEMENT) {
