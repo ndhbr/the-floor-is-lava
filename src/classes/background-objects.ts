@@ -17,15 +17,16 @@ export class BackgroundObjects extends Phaser.GameObjects.TileSprite {
 		height = 64;
 
 		if (room == Room.BASEMENT) {
- 			y = this.scene.physics.world.bounds.bottom - 80;
+			 y = this.scene.physics.world.bounds.bottom - 80;
+			this.setTint(0xbbbbbb);		 
  		} else {
-            y = this.scene.physics.world.bounds.centerY - 80;
+			y = this.scene.physics.world.bounds.centerY - 80;
+			this.setTint(0xaaaaaa);
 		}
 
 		this.setPosition(x, y);
 		this.setSize(width, height);
 		this.setScale(1.5);
-		this.setTint(0xbbbbbb);
 
 		if (!speed) {
 			this.speed = 1;
