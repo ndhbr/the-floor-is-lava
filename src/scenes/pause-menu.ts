@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { ButtonService } from '../services/button';
 import { DefaultText } from '../classes/default-text';
+import { SoundService } from '../services/sound';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -14,13 +15,12 @@ export class PauseMenuScene extends Phaser.Scene {
 	backdrop: Phaser.GameObjects.Rectangle;
 
 	buttonService: ButtonService;
+	soundService: SoundService;
 
 	resumeButton: Phaser.GameObjects.Container;
 	menuButton: Phaser.GameObjects.Container;
-	soundButton: Phaser.GameObjects.Container;
 
 	countdown: NodeJS.Timeout;
-	soundActivated: boolean;
 
 	constructor() {
 		super(sceneConfig);
@@ -28,8 +28,7 @@ export class PauseMenuScene extends Phaser.Scene {
 
 	public init(): void {
 		this.buttonService = new ButtonService(this);
-
-		this.soundActivated = true;
+		this.soundService = new SoundService(this);
 	}
 
 	public preload(): void {}
@@ -102,24 +101,7 @@ export class PauseMenuScene extends Phaser.Scene {
 			}
 		);
 
-		this.buttonService.generateButton(
-			this.physics.world.bounds.right - 50,
-			this.physics.world.bounds.bottom - 50,
-			this.soundButton,
-			'button-pixel-orange-sound',
-			'',
-			(button: Phaser.GameObjects.Container) => {
-				let btn = <Phaser.GameObjects.Sprite> button.getAt(0);
-
-				if (this.soundActivated) {
-					btn.setFrame(2);
-					this.soundActivated = false;
-				} else {
-					btn.setFrame(0);
-					this.soundActivated = true;
-				}
-			}
-		)
+		this.soundService.addSoundButton();
 	}
 
 	public update(time: number): void {}

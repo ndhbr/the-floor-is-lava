@@ -1,6 +1,6 @@
 import { Room } from "../enums/rooms";
 
-const DEFAULT_SPEED = -350;
+const DEFAULT_SPEED = -250;
 
 export class PlatformService {
 
@@ -79,7 +79,7 @@ export class PlatformService {
 		);
 	}
 
-	update() {
+	update(score: number) {
 		this.nextPlatformDistance = Phaser.Math.Between(64, 500);
 
 		let minDistance = this.scene.physics.world.bounds.width;
@@ -95,7 +95,7 @@ export class PlatformService {
 			}
 		}, this);
 
-		if (this.portalPlatform != null && this.portalPlatform.x > 0) {
+		if (this.portalPlatform != null && this.portalPlatform.visible) {
 			let distancePortalPlatform = this.scene.physics.world.bounds.width -
 			this.portalPlatform.x - this.portalPlatform.displayWidth / 2;
 
@@ -114,6 +114,7 @@ export class PlatformService {
 
 		this.checkPlatform(this.startPlatform);
 		this.checkPlatform(this.portalPlatform);
+		this.incrementSpeed(score);
 	}
 
 	private addPlatform() {
@@ -204,6 +205,8 @@ export class PlatformService {
 			platform.setImmovable(true);
 			platform.setVelocityX(this.platformSpeed);
 
+			this.fadeIn(platform);
+
 			this.platformGroup.add(platform);
 
 			const random = Phaser.Math.Between(1, 3);
@@ -233,6 +236,7 @@ export class PlatformService {
 			body.setEnable();
 			body.setImmovable(true);
 			body.setVelocityX(this.platformSpeed);
+			this.fadeIn(this.startPlatform);
 		} else {
 			this.startPlatform.setX(this.scene.physics.world.bounds.centerX);
 			// this.startPlatform.body.setVelocityX(this.platformSpeed);
@@ -241,6 +245,7 @@ export class PlatformService {
 
 			this.startPlatform.setActive(true);
 			this.startPlatform.setVisible(true);
+			this.fadeIn(this.startPlatform);
 		}
 	}
 
@@ -264,11 +269,13 @@ export class PlatformService {
 			});
 
 			this.scene.anims.play('portal', this.portalPlatform);
+			this.fadeIn(this.portalPlatform);
 		} else if (this.portalPlatform.active == false) {
 			this.portalPlatform.setX(this.scene.physics.world.bounds.width);
 
 			this.portalPlatform.setActive(true);
 			this.portalPlatform.setVisible(true);
+			this.fadeIn(this.portalPlatform);
 		}
 	}
 
@@ -306,5 +313,41 @@ export class PlatformService {
 
 	private setFriction(player: Phaser.Physics.Arcade.Sprite, platform: any) {
 		player.body.x -= platform.body.x - platform.body.prev.x;
+	}
+
+	private incrementSpeed(score: number) {
+		// let a = performance.now();
+		if ((score % 100) == 0 && score > 0 && this.platformSpeed > -350) {
+			this.platformSpeed -= 10;
+
+			// console.log(this.platformSpeed);
+
+			this.platformGroup.children.each((platform: Phaser.Physics.Arcade.Sprite) => {
+				platform.setVelocityX(this.platformSpeed);
+			});
+
+			this.startPlatform.body.setVelocityX(this.platformSpeed);
+
+			if (this.portalPlatform)
+				this.portalPlatform.setVelocityX(this.platformSpeed);
+		}
+
+		// console.log('Incremented Speed in: ' + (performance.now() - a));
+	}
+
+	private fadeIn(target: any) {
+		// let a = performance.now();
+
+		target.alpha = 0;
+
+		this.scene.tweens.add({
+			targets: target,
+			alphaTopLeft: { value: 1, duration: 250 },
+			alphaTopRight: { value: 1, duration: 250, delay: 100 },
+			alphaBottomLeft: { value: 1, duration: 250 },
+			alphaBottomRight: { value: 1, duration: 250, delay: 100 }
+		});
+
+		// console.log('Faded in in: ' + (performance.now() - a));
 	}
 }

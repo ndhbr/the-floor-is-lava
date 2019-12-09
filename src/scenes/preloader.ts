@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
 import * as WebFont from 'webfontloader';
+import { SoundService } from '../services/sound';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -7,6 +8,8 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 };
 
 export class PreloaderScene extends Phaser.Scene {
+
+	soundService: SoundService;
 
 	constructor() {
 		super(sceneConfig);
@@ -19,9 +22,6 @@ export class PreloaderScene extends Phaser.Scene {
 		// this.load.spritesheet('player', 'assets/player.png',
 		// { frameWidth: 64, frameHeight: 64 });
 		this.load.spritesheet('player', 'assets/player-lion.png',
-			{ frameWidth: 48, frameHeight: 64 });
-
-		this.load.spritesheet('player-jump', 'assets/player-jump.png',
 			{ frameWidth: 48, frameHeight: 64 });
 
 		this.load.spritesheet('lava', 'assets/lava-animated.png',
@@ -40,7 +40,7 @@ export class PreloaderScene extends Phaser.Scene {
 			// { frameWidth: 32, frameHeight: 32 });
 
 		this.load.spritesheet('button-pixel-orange-sound', 'assets/buttons-pixel-orange-sound.png',
-			{ frameWidth: 32, frameHeight: 32 });
+			{ frameWidth: 24, frameHeight: 24 });
 
 		this.load.spritesheet('portal', 'assets/portal.png',
 			{ frameWidth: 64, frameHeight: 16 });
@@ -77,6 +77,8 @@ export class PreloaderScene extends Phaser.Scene {
 	}
 
 	public create(): void {
+		this.soundService = new SoundService(this);
+
 		this.anims.create({
 			key: 'run',
 			frames: this.anims.generateFrameNumbers('player', {start: 0, end: 4}),

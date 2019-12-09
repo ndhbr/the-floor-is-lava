@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { ButtonService } from '../services/button';
 import { DefaultText } from '../classes/default-text';
+import { SoundService } from '../services/sound';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -16,6 +17,7 @@ export class GameOverMenuScene extends Phaser.Scene {
 	score: DefaultText;
 
 	buttonService: ButtonService;
+	soundService: SoundService;
 
 	resumeButton: Phaser.GameObjects.Container;
 	menuButton: Phaser.GameObjects.Container;
@@ -26,6 +28,7 @@ export class GameOverMenuScene extends Phaser.Scene {
 
 	public init(): void {
 		this.buttonService = new ButtonService(this);
+		this.soundService = new SoundService(this);
 	}
 
 	public preload(): void {}
@@ -83,7 +86,6 @@ export class GameOverMenuScene extends Phaser.Scene {
 			}
 		);
 
-
 		this.buttonService.generateButton(
 			this.physics.world.bounds.centerX,
 			430,
@@ -96,6 +98,8 @@ export class GameOverMenuScene extends Phaser.Scene {
 				this.scene.start('MainMenu');
 			}
 		);
+
+		this.soundService.addSoundButton();
 	}
 
 	public update(time: number): void {}

@@ -127,6 +127,10 @@ export class GameScene extends Phaser.Scene {
 				this.playerService.resetPosition();
 			}
 		});
+
+		this.events.on(Phaser.Core.Events.PAUSE, () => {
+			console.log('test');
+		});
 	}
 
     public update(time: number): void {
@@ -137,8 +141,8 @@ export class GameScene extends Phaser.Scene {
 				this.activateGameOver();
 			}
 
-			this.basementPlatformService.update();
-			this.livingRoomPlatformService.update();
+			this.basementPlatformService.update(this.scoreService.getScore());
+			this.livingRoomPlatformService.update(this.scoreService.getScore());
 
 			this.lavaService.updateLavaParticles();
 			this.roomService.updateTilePositions();

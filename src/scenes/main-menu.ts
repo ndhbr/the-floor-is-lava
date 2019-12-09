@@ -4,6 +4,7 @@ import { DefaultText } from '../classes/default-text';
 import { LavaService } from '../services/lava';
 import { Room } from '../enums/rooms';
 import { RoomService } from '../services/room';
+import { SoundService } from '../services/sound';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -20,6 +21,7 @@ export class MainMenuScene extends Phaser.Scene {
 	buttonService: ButtonService;
 	lavaService: LavaService;
 	roomService: RoomService;
+	soundService: SoundService;
 
 	constructor() {
 		super(sceneConfig);
@@ -29,6 +31,7 @@ export class MainMenuScene extends Phaser.Scene {
 		this.buttonService = new ButtonService(this);
 		this.lavaService = new LavaService(this);
 		this.roomService = new RoomService(this);
+		this.soundService = new SoundService(this);
 	}
 
 	public preload(): void {}
@@ -84,6 +87,8 @@ export class MainMenuScene extends Phaser.Scene {
 				// TODO: Leaderboard
 			}
 		);
+
+		this.soundService.addSoundButton();
 	}
 
 	public update(time: number) {
