@@ -17,6 +17,7 @@ export class MainMenuScene extends Phaser.Scene {
 
 	heading: Phaser.GameObjects.Sprite;
 	highscore: DefaultText;
+	beatScore: DefaultText;
 	playButton: Phaser.GameObjects.Container;
 	leaderboardButton: Phaser.GameObjects.Container;
 
@@ -69,6 +70,7 @@ export class MainMenuScene extends Phaser.Scene {
 		Animations.weirdFadeIn(this, this.heading);
 
 		this.addHighscoreText();
+		this.addBeatScoreText();
 
 		this.buttonService.generateButton(
 			this.physics.world.bounds.centerX,
@@ -103,7 +105,7 @@ export class MainMenuScene extends Phaser.Scene {
 	private async addHighscoreText() {
 		const leaderboard = await FBInstant.getLeaderboardAsync('global-score');
 		const playerEntry = await leaderboard.getPlayerEntryAsync();
-		
+
 		this.highscore = new DefaultText(
 			this,
 			this.physics.world.bounds.centerX,
@@ -114,6 +116,32 @@ export class MainMenuScene extends Phaser.Scene {
 		this.highscore.setOrigin(0.5, 0.5);
 
 		Animations.weirdFadeIn(this, this.highscore);
+	}
+
+	private async addBeatScoreText() {
+		if (FBInstant.context.getID() != null) {
+			try {
+				const leaderboard = await FBInstant.getLeaderboardAsync(`friends.${FBInstant.context.getID()}`);
+				const entries = await leaderboard.getEntriesAsync(1, 0);
+
+				if (entries.length > 0) {
+					let entry = entries.pop();
+
+					this.beatScore = new DefaultText(
+						this,
+						this.physics.world.bounds.centerX,
+						270,
+						`Beat ${entry.getPlayer().getName()} with ${(entry.getScore()) ? entry.getScore() : '0'}`,
+						32
+					);
+					this.beatScore.setOrigin(0.5, 0.5);
+
+					Animations.weirdFadeIn(this, this.beatScore);
+				}
+			} catch(error) {
+				console.error(error);
+			}
+		}
 	}
 
 	private async showLeaderboard() {

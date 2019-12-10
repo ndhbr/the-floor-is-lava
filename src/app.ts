@@ -39,10 +39,9 @@ export class TheFloorIsLava extends Phaser.Game {
 	}
 }
 
-window.onload = () => {
-	FBInstant.initializeAsync().then(function() {
-		FBInstant.startGameAsync(); // do i need this?
+window.onload = async () => {
+	await FBInstant.initializeAsync()
+	await FBInstant.startGameAsync();
 
-		let game: TheFloorIsLava = new TheFloorIsLava(config);
-	});
+	let game: TheFloorIsLava = new TheFloorIsLava(config);
 };

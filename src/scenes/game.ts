@@ -31,6 +31,7 @@ export class GameScene extends Phaser.Scene {
 	lastTextUpdate: number;
 
 	globalLeaderboard: any;
+	contextLeaderboard: any;
 
     constructor() {
 		super(sceneConfig);
@@ -141,7 +142,7 @@ export class GameScene extends Phaser.Scene {
 		document.addEventListener('visibilitychange', () => {
 			if (this.scene.isActive('Game') && document.visibilityState === 'hidden') {
 				this.pauseGame();
-			}			
+			}
 		});
 	}
 
@@ -221,16 +222,25 @@ export class GameScene extends Phaser.Scene {
 	private async initializeLeaderboard() {
 		this.globalLeaderboard = await FBInstant.getLeaderboardAsync('global-score');
 
-		console.log(this.globalLeaderboard);
+		if (FBInstant.context.getID() != null) {
+			this.contextLeaderboard = await FBInstant.getLeaderboardAsync(`friends.${FBInstant.context.getID()}`);
+		}
 	}
 
 	private async setScore(score: number) {
 		if (this.globalLeaderboard != null) {
-			console.log('Set score');
-			
-			let answer = await this.globalLeaderboard.setScoreAsync(score);
-			console.log(answer.getScore());
-			
+			let result;
+
+			result = await this.globalLeaderboard.setScoreAsync(score);
+
+			if (this.contextLeaderboard != null) {
+				result = await this.contextLeaderboard.setScoreAsync(score);
+
+				await FBInstant.updateAsync({
+					action: 'LEADERBOARD',
+					name: `friends.${FBInstant.context.getID()}`
+				});
+			}
 		}
 	}
 }
