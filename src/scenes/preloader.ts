@@ -16,8 +16,8 @@ export class PreloaderScene extends Phaser.Scene {
 	}
 
 	public preload(): void {
-		// this.facebook.once('startgame', this.startGame, this);
-		// this.facebook.showLoadProgress(this);
+		this.facebook.once('startgame', this.startGame, this);
+		this.facebook.showLoadProgress(this);
 
 		// this.load.spritesheet('player', 'assets/player.png',
 		// { frameWidth: 64, frameHeight: 64 });
@@ -40,6 +40,9 @@ export class PreloaderScene extends Phaser.Scene {
 			// { frameWidth: 32, frameHeight: 32 });
 
 		this.load.spritesheet('button-pixel-orange-sound', 'assets/buttons-pixel-orange-sound.png',
+			{ frameWidth: 24, frameHeight: 24 });
+
+		this.load.spritesheet('close', 'assets/close.png',
 			{ frameWidth: 24, frameHeight: 24 });
 
 		this.load.spritesheet('portal', 'assets/portal.png',
@@ -107,7 +110,7 @@ export class PreloaderScene extends Phaser.Scene {
 			repeat: 0
 		});
 
-		this.startGame();
+		// this.startGame();
 	}
 
 	public startGame(): void {

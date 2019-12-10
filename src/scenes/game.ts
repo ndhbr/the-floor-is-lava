@@ -30,6 +30,8 @@ export class GameScene extends Phaser.Scene {
 
 	lastTextUpdate: number;
 
+	globalLeaderboard: any;
+
     constructor() {
 		super(sceneConfig);
     }
@@ -48,6 +50,10 @@ export class GameScene extends Phaser.Scene {
 			this.enteredPortal = this.events.addListener('onEnteredPortal', () => {
 				this.toggleRoom();
 			});
+		}
+
+		if (this.globalLeaderboard == null) {
+			this.initializeLeaderboard();
 		}
 	}
 
@@ -128,8 +134,14 @@ export class GameScene extends Phaser.Scene {
 			}
 		});
 
-		this.events.on(Phaser.Core.Events.PAUSE, () => {
-			console.log('test');
+		this.events.on(Phaser.Core.Events.HIDDEN, () => {
+			console.log('Test');
+		});
+
+		document.addEventListener('visibilitychange', () => {
+			if (this.scene.isActive('Game') && document.visibilityState === 'hidden') {
+				this.pauseGame();
+			}			
 		});
 	}
 
@@ -155,6 +167,8 @@ export class GameScene extends Phaser.Scene {
 			}
 		} else {
 			this.setGameOver(false);
+
+			this.setScore(this.scoreService.getScore());
 
 			this.playerService.die();
 
@@ -202,5 +216,21 @@ export class GameScene extends Phaser.Scene {
 
 		console.log(`Average Time spent to update game screen (ms): ${avg}`);
 		this.performanceTest = [];
+	}
+
+	private async initializeLeaderboard() {
+		this.globalLeaderboard = await FBInstant.getLeaderboardAsync('global-score');
+
+		console.log(this.globalLeaderboard);
+	}
+
+	private async setScore(score: number) {
+		if (this.globalLeaderboard != null) {
+			console.log('Set score');
+			
+			let answer = await this.globalLeaderboard.setScoreAsync(score);
+			console.log(answer.getScore());
+			
+		}
 	}
 }

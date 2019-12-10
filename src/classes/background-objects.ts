@@ -21,7 +21,7 @@ export class BackgroundObjects extends Phaser.GameObjects.TileSprite {
 			this.setTint(0xbbbbbb);		 
  		} else {
 			y = this.scene.physics.world.bounds.centerY - 80;
-			this.setTint(0xaaaaaa);
+			this.setTint(0x777777);
 		}
 
 		this.setPosition(x, y);

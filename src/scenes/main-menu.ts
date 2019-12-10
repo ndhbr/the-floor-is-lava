@@ -5,6 +5,7 @@ import { LavaService } from '../services/lava';
 import { Room } from '../enums/rooms';
 import { RoomService } from '../services/room';
 import { SoundService } from '../services/sound';
+import { Animations } from '../services/animations';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -15,6 +16,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 export class MainMenuScene extends Phaser.Scene {
 
 	heading: Phaser.GameObjects.Sprite;
+	highscore: DefaultText;
 	playButton: Phaser.GameObjects.Container;
 	leaderboardButton: Phaser.GameObjects.Container;
 
@@ -27,7 +29,7 @@ export class MainMenuScene extends Phaser.Scene {
 		super(sceneConfig);
 	}
 
-	public init(): void {
+	public init(data: any): void {
 		this.buttonService = new ButtonService(this);
 		this.lavaService = new LavaService(this);
 		this.roomService = new RoomService(this);
@@ -64,6 +66,9 @@ export class MainMenuScene extends Phaser.Scene {
 		);
 		this.heading.setOrigin(0.5, 0.5);
 		this.heading.setDepth(4);
+		Animations.weirdFadeIn(this, this.heading);
+
+		this.addHighscoreText();
 
 		this.buttonService.generateButton(
 			this.physics.world.bounds.centerX,
@@ -84,7 +89,7 @@ export class MainMenuScene extends Phaser.Scene {
 			'button-pixel-orange',
 			'Leaderboard',
 			(button: Phaser.GameObjects.Container) => {
-				// TODO: Leaderboard
+				this.showLeaderboard();
 			}
 		);
 
@@ -93,5 +98,25 @@ export class MainMenuScene extends Phaser.Scene {
 
 	public update(time: number) {
 		this.roomService.updateTilePositions();
+	}
+
+	private async addHighscoreText() {
+		const leaderboard = await FBInstant.getLeaderboardAsync('global-score');
+		const playerEntry = await leaderboard.getPlayerEntryAsync();
+		
+		this.highscore = new DefaultText(
+			this,
+			this.physics.world.bounds.centerX,
+			220,
+			`Highscore: ${playerEntry.getScore()}`,
+			32
+		);
+		this.highscore.setOrigin(0.5, 0.5);
+
+		Animations.weirdFadeIn(this, this.highscore);
+	}
+
+	private async showLeaderboard() {
+		this.scene.launch('Leaderboard');
 	}
 }

@@ -2,6 +2,7 @@ import * as Phaser from 'phaser';
 import { ButtonService } from '../services/button';
 import { DefaultText } from '../classes/default-text';
 import { SoundService } from '../services/sound';
+import { Animations } from '../services/animations';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -50,7 +51,6 @@ export class PauseMenuScene extends Phaser.Scene {
 			'Pause',
 			32
 		);
-
 		this.heading.setOrigin(0.5, 0.5);
 
 		this.buttonService.generateButton(

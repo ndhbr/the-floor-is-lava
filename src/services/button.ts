@@ -1,4 +1,5 @@
 import { DefaultText } from "../classes/default-text";
+import { Animations } from "./animations";
 
 export class ButtonService {
 
@@ -47,5 +48,7 @@ export class ButtonService {
 			buttonBg.setFrame(0);
 			callback(container);
 		}, this);
+
+		Animations.fadeIn(this.scene, container, 100);
 	}
 }
