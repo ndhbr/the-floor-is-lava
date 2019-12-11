@@ -19,8 +19,6 @@ export class PreloaderScene extends Phaser.Scene {
 		this.facebook.once('startgame', this.startGame, this);
 		this.facebook.showLoadProgress(this);
 
-		// this.load.spritesheet('player', 'assets/player.png',
-		// { frameWidth: 64, frameHeight: 64 });
 		this.load.spritesheet('player', 'assets/player-lion.png',
 			{ frameWidth: 48, frameHeight: 64 });
 
@@ -30,14 +28,8 @@ export class PreloaderScene extends Phaser.Scene {
 		this.load.spritesheet('pauseButton', 'assets/play-pause-buttons.png',
 			{ frameWidth: 32, frameHeight: 32 });
 
-		// this.load.spritesheet('button-pixel-red', 'assets/buttons-pixel-red.png',
-			// { frameWidth: 125, frameHeight: 27 });
-
 		this.load.spritesheet('button-pixel-orange', 'assets/buttons-pixel-orange.png',
 			{ frameWidth: 125, frameHeight: 27 });
-
-		// this.load.spritesheet('button-pixel-red-sound', 'assets/buttons-pixel-red-sound.png',
-			// { frameWidth: 32, frameHeight: 32 });
 
 		this.load.spritesheet('button-pixel-orange-sound', 'assets/buttons-pixel-orange-sound.png',
 			{ frameWidth: 24, frameHeight: 24 });
@@ -50,15 +42,12 @@ export class PreloaderScene extends Phaser.Scene {
 
 		this.load.image('heading', 'assets/heading.png');
 		this.load.image('particle', 'assets/lava-particle.png');
-		// this.load.image('portalParticle', 'assets/portal-particle.png');
-		// this.load.image('platform', 'assets/new-platform.png');
 		this.load.image('concrete', 'assets/concrete.png');
 		this.load.image('concreteWithLava', 'assets/concrete-with-lava.png');
 		this.load.image('concreteWithRoof', 'assets/concrete-with-roof.png');
 		this.load.image('table', 'assets/table.png');
 		this.load.image('couch', 'assets/couch.png');
 		this.load.image('bed', 'assets/bed.png');
-		// this.load.image('lamp', 'assets/lamp.png');
 		this.load.image('cactus', 'assets/cactus.png');
 		this.load.image('ceilingLamp', 'assets/ceiling-lamp.png');
 		this.load.image('closet', 'assets/closet.png');
@@ -71,6 +60,7 @@ export class PreloaderScene extends Phaser.Scene {
 		this.load.image('stove', 'assets/stove.png');
 		this.load.image('barrels', 'assets/barrels.png');
 		this.load.image('wineShelf', 'assets/wine-shelf.png');
+		this.load.image('leaderboardBadge', 'assets/leaderboard-badge.png');
 		this.load.image('backgroundBasement0', 'assets/background-basement-0.png');
 		this.load.image('backgroundBasement1', 'assets/background-basement-1.png');
 		this.load.image('backgroundLivingRoom0', 'assets/background-livingroom-0.png');

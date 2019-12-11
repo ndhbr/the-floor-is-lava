@@ -241,6 +241,10 @@ export class GameScene extends Phaser.Scene {
 					name: `friends.${FBInstant.context.getID()}`
 				});
 			}
+
+			return result;
 		}
+
+		return null;
 	}
 }

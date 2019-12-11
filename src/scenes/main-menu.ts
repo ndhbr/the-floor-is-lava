@@ -110,7 +110,7 @@ export class MainMenuScene extends Phaser.Scene {
 			this,
 			this.physics.world.bounds.centerX,
 			220,
-			`Highscore: ${playerEntry.getScore()}`,
+			`Highscore: ${playerEntry.getScore()}m`,
 			32
 		);
 		this.highscore.setOrigin(0.5, 0.5);
@@ -125,18 +125,21 @@ export class MainMenuScene extends Phaser.Scene {
 				const entries = await leaderboard.getEntriesAsync(1, 0);
 
 				if (entries.length > 0) {
-					let entry = entries.pop();
+					let entry = entries.shift();
 
-					this.beatScore = new DefaultText(
-						this,
-						this.physics.world.bounds.centerX,
-						270,
-						`Beat ${entry.getPlayer().getName()} with ${(entry.getScore()) ? entry.getScore() : '0'}`,
-						32
-					);
-					this.beatScore.setOrigin(0.5, 0.5);
+					if (entry.getPlayer().getID() != FBInstant.player.getID()) {
+						this.beatScore = new DefaultText(
+							this,
+							this.physics.world.bounds.centerX,
+							270,
+							`Beat ${entry.getPlayer().getName()}`
+							+ `with: ${(entry.getScore()) ? `${entry.getScore()} m` : '0'}`,
+							32
+						);
+						this.beatScore.setOrigin(0.5, 0.5);
 
-					Animations.weirdFadeIn(this, this.beatScore);
+						Animations.weirdFadeIn(this, this.beatScore);
+					}
 				}
 			} catch(error) {
 				console.error(error);
