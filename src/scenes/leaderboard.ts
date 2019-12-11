@@ -3,6 +3,11 @@ import { ButtonService } from '../services/button';
 import { DefaultText } from '../classes/default-text';
 import { Animations } from '../services/animations';
 
+enum Leaderboard {
+	FRIENDS,
+	WORLD
+}
+
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
     visible: false,
@@ -11,7 +16,10 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 
 export class LeaderboardScene extends Phaser.Scene {
 
-    buttonService: ButtonService;
+	currentLeaderboard: Leaderboard;
+	leaderboardEntriesGroup: Phaser.GameObjects.Group;
+	
+	buttonService: ButtonService;
 
     constructor() {
         super(sceneConfig);
@@ -24,48 +32,115 @@ export class LeaderboardScene extends Phaser.Scene {
 		() => {
 			console.log('Loaded image');
 		});
+
+		this.currentLeaderboard = Leaderboard.WORLD;
+		this.leaderboardEntriesGroup = new Phaser.GameObjects.Group(this);
 	}
 
     public preload(): void {}
 
     public create(data: any): void {
         this.addBackdrop();
-        this.addCloseButton();
-        this.loadLeaderboard('world');
+		this.addCloseButton();
+		this.addHeading();
+		this.loadLeaderboard(this.currentLeaderboard);
+		this.addLeaderboardSwitch();
     }
 
     public update(time: number): void {}
 
-    private async loadLeaderboard(scope: string) {
-        const leaderboard = await FBInstant.getLeaderboardAsync('global-score');
-        let entries;
+	private addHeading() {
+		const heading = new DefaultText(
+			this,
+			this.physics.world.bounds.centerX,
+			50,
+			'Leaderboard',
+			32
+		);
 
-        if (scope === 'friends') {
-            entries = await leaderboard.getConnectedPlayerEntriesAsync(10, 0);
-        } else {
-            entries = await leaderboard.getEntriesAsync(10, 0);
-        }
+		heading.setOrigin(0.5, 0.5);
+	}
 
-        let i: number, currentY: number = 120;
+    private async loadLeaderboard(scope: Leaderboard) {
+		const leaderboard = await FBInstant.getLeaderboardAsync('global-score');
+		let entries: FBInstant.LeaderboardEntry[];
+		let i: number, currentY: number = 120;
+
+		this.leaderboardEntriesGroup.clear(true, true);
+		this.currentLeaderboard = scope;
+
+		if (scope === Leaderboard.FRIENDS) {
+			entries = await leaderboard.getConnectedPlayerEntriesAsync(8, 0);
+		} else {
+			entries = await leaderboard.getEntriesAsync(8, 0);
+		}
 
 		for (i = 0; i < entries.length; i++)
 		{
-            // let entryText = new DefaultText(
-            //     this,
-            //     26,
-            //     currentY,
-            //     `${entries[i].getRank()}. ${entries[i].getPlayer().getName()}: ${entries[i].getScore()}`,
-            //     24
-            // );
-
-            // Animations.weirdFadeIn(this, entryText);
-			this.addLeaderboardBadge(this.physics.world.bounds.centerX, currentY, entries[i]);
-
-            currentY += 20;
+			this.leaderboardEntriesGroup.add(this.addLeaderboardBadge(this.physics.world.bounds.centerX, currentY, entries[i]));
+			currentY += 64;
 		}
 	}
 
-	private addLeaderboardBadge(x: number, y: number, leaderboardEntry: FBInstant.LeaderboardEntry) {
+	private addLeaderboardSwitch() {
+		const colors = {
+			active: 0xf2b000,
+			default: 0xffffff
+		};
+
+		const container: Phaser.GameObjects.Container = this.add.container(
+			this.physics.world.bounds.centerX,
+			this.physics.world.bounds.bottom - 64
+		);
+
+		const world = new DefaultText(
+			this,
+			-105,
+			0, 
+			'World',
+			32	
+		).setInteractive();
+
+		const friends = new DefaultText(
+			this,
+			10,
+			0,
+			'Friends',
+			32
+		).setInteractive();
+
+		container.setDepth(4);
+
+		if (this.currentLeaderboard === Leaderboard.WORLD) {
+			world.setTint(colors.active);
+		} else if (this.currentLeaderboard === Leaderboard.FRIENDS) {
+			friends.setTint(colors.active);
+		}
+
+		world.on('pointerdown', () => {
+			if (this.currentLeaderboard !== Leaderboard.WORLD) {
+				this.currentLeaderboard = Leaderboard.WORLD;
+				world.setTint(colors.active);
+				friends.setTint(colors.default);
+				this.loadLeaderboard(this.currentLeaderboard);				
+			}
+		}, this);
+
+		friends.on('pointerdown', () => {
+			if (this.currentLeaderboard !== Leaderboard.FRIENDS) {
+				this.currentLeaderboard = Leaderboard.FRIENDS;
+				world.setTint(colors.default);
+				friends.setTint(colors.active);
+				this.loadLeaderboard(this.currentLeaderboard);
+			}
+		}, this);
+
+		container.add(world);
+		container.add(friends);
+	}
+
+	private addLeaderboardBadge(x: number, y: number,
+		leaderboardEntry: FBInstant.LeaderboardEntry): Phaser.GameObjects.Container {
 		let container: Phaser.GameObjects.Container = this.add.container(
 			x,
 			y
@@ -74,24 +149,22 @@ export class LeaderboardScene extends Phaser.Scene {
 
 		const profilePictureKey: string = `profilePicture${leaderboardEntry.getPlayer().getID()}`
 
-		this.load.on(`filecomplete-image`,
+		this.load.on(`filecomplete-image-${profilePictureKey}`,
 		() => {
-			console.log('Loaded image');
-
 			const profilePicture = this.add.sprite(
-				container.getBounds().width,
-				container.getBounds().centerY,
+				badge.displayWidth/2 - 30,
+				-badge.displayHeight/2 + 28,
 				profilePictureKey
 			);
+
+			profilePicture.setScale(0.175);
+			profilePicture.setDepth(10);
 
 			container.add(profilePicture);
 		}, this);
 
-		console.log(leaderboardEntry.getPlayer().getPhoto());
-		console.log(FBInstant.player.getPhoto());
-
-		// this.load.image(profilePictureKey, leaderboardEntry.getPlayer().getPhoto());
-		this.load.image(profilePictureKey, 'https://platform-lookaside.fbsbx.com/platform/instantgames/profile_pic.jpg?igpid=2675436335850683&height=256&width=256&ext=1578645386&hash=AeQUOe4RB3x8i2qS');
+		this.load.image(profilePictureKey, leaderboardEntry.getPlayer().getPhoto());
+		this.load.start();
 
 		const badge = this.add.sprite(
 			0,
@@ -103,12 +176,9 @@ export class LeaderboardScene extends Phaser.Scene {
 		let name = new DefaultText(
 			this,
 			-badge.displayWidth/2 + 34,
-			-badge.displayHeight/2 - 28,
-			leaderboardEntry.getPlayer().getName().substr(0, 12),
+			-badge.displayHeight/2 + 4,
+			(leaderboardEntry.getPlayer().getName()).substr(0, 11),
 			32
-		);
-		name.setMaxWidth(
-			10
 		);
 
 		const score = new DefaultText(
@@ -133,6 +203,8 @@ export class LeaderboardScene extends Phaser.Scene {
 		container.add(ranking);
 
 		Animations.weirdFadeIn(this, container);
+
+		return container;
 	}
 
     private addCloseButton(): Phaser.GameObjects.Container {
@@ -160,8 +232,10 @@ export class LeaderboardScene extends Phaser.Scene {
             this.physics.world.bounds.height,
             0x000000,
             0.6
-        );
-        backdrop.depth = 4;
+        ).setInteractive();
+		backdrop.depth = 3;
+		
+		backdrop.on('pointerdown', () => {}, this);
 
         return backdrop;
     }

@@ -40,6 +40,7 @@ export class PreloaderScene extends Phaser.Scene {
 		this.load.spritesheet('portal', 'assets/portal.png',
 			{ frameWidth: 64, frameHeight: 16 });
 
+		this.load.image('profilePictureMask', 'assets/profile-picture-mask.png');
 		this.load.image('heading', 'assets/heading.png');
 		this.load.image('particle', 'assets/lava-particle.png');
 		this.load.image('concrete', 'assets/concrete.png');
