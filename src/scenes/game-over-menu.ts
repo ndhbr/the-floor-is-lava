@@ -2,6 +2,9 @@ import * as Phaser from 'phaser';
 import { ButtonService } from '../services/button';
 import { DefaultText } from '../classes/default-text';
 import { SoundService } from '../services/sound';
+import { TranslateService } from '../services/translate';
+import { AdService } from '../services/ad';
+import { DialogService } from '../services/dialog';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -18,9 +21,14 @@ export class GameOverMenuScene extends Phaser.Scene {
 
 	buttonService: ButtonService;
 	soundService: SoundService;
+	translateService: TranslateService;
+	dialogService: DialogService;
 
 	resumeButton: Phaser.GameObjects.Container;
 	menuButton: Phaser.GameObjects.Container;
+
+	videoAd: FBInstant.AdInstance;
+	interstitialAd: FBInstant.AdInstance;
 
 	constructor() {
 		super(sceneConfig);
@@ -29,11 +37,15 @@ export class GameOverMenuScene extends Phaser.Scene {
 	public init(): void {
 		this.buttonService = new ButtonService(this);
 		this.soundService = new SoundService(this);
+		this.translateService = new TranslateService(this);
+		this.dialogService = new DialogService(this);
 	}
 
 	public preload(): void {}
 
 	public create(data: {score: number}): void {
+		this.loadAds();
+
 		this.backdrop = this.add.rectangle(
 			this.physics.world.bounds.centerX,
 			this.physics.world.bounds.centerY,
@@ -66,8 +78,9 @@ export class GameOverMenuScene extends Phaser.Scene {
 			270,
 			this.resumeButton,
 			'button-pixel-orange',
-			'Continue (Video)',
-			(button: Phaser.GameObjects.Container) => {
+			this.translateService.localise('GAME_OVER_MENU', 'CONTINUE'),
+			async (button: Phaser.GameObjects.Container) => {
+				await AdService.showRewardedVideo(this.videoAd);
 				this.scene.stop();
 				this.scene.resume('Game', {action: 'continue'});
 			}
@@ -78,24 +91,39 @@ export class GameOverMenuScene extends Phaser.Scene {
 			360,
 			this.resumeButton,
 			'button-pixel-orange',
-			'Play again',
-			(button: Phaser.GameObjects.Container) => {
+			this.translateService.localise('GAME_OVER_MENU', 'PLAY_AGAIN'),
+			async (button: Phaser.GameObjects.Container) => {
+				// await AdService.showInterstitial(this.interstitialAd);
+
 				this.scene.stop();
 				this.scene.stop('Game');
 				this.scene.start('Game');
 			}
 		);
 
+		let menuDialog: Phaser.GameObjects.Container;
 		this.buttonService.generateButton(
 			this.physics.world.bounds.centerX,
 			430,
 			this.menuButton,
 			'button-pixel-orange',
-			'Menu',
-			() => {
-				this.scene.stop();
-				this.scene.stop('Game');
-				this.scene.start('MainMenu');
+			this.translateService.localise('GAME_OVER_MENU', 'MENU'),
+			async () => {
+				if (menuDialog == null) {
+					menuDialog = await this.dialogService.add(
+						'Are you sure?',
+						'Your current score will be lost.',
+						'Yes',
+						'Cancel'
+					);
+				} else {
+					this.dialogService.restoreDialog(menuDialog);
+				}
+
+
+				// this.scene.stop();
+				// this.scene.stop('Game');
+				// this.scene.start('MainMenu');
 			}
 		);
 
@@ -103,4 +131,9 @@ export class GameOverMenuScene extends Phaser.Scene {
 	}
 
 	public update(time: number): void {}
+
+	private async loadAds() {
+		this.videoAd = await AdService.loadRewardedVideo();
+		this.interstitialAd = await AdService.loadInterstitial();
+	}
 }

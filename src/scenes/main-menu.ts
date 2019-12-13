@@ -6,6 +6,7 @@ import { Room } from '../enums/rooms';
 import { RoomService } from '../services/room';
 import { SoundService } from '../services/sound';
 import { Animations } from '../services/animations';
+import { TranslateService } from '../services/translate';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -15,6 +16,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 
 export class MainMenuScene extends Phaser.Scene {
 
+	ready: boolean;
 	heading: Phaser.GameObjects.Sprite;
 	highscore: DefaultText;
 	beatScore: DefaultText;
@@ -25,6 +27,7 @@ export class MainMenuScene extends Phaser.Scene {
 	lavaService: LavaService;
 	roomService: RoomService;
 	soundService: SoundService;
+	translateService: TranslateService;
 
 	constructor() {
 		super(sceneConfig);
@@ -35,6 +38,7 @@ export class MainMenuScene extends Phaser.Scene {
 		this.lavaService = new LavaService(this);
 		this.roomService = new RoomService(this);
 		this.soundService = new SoundService(this);
+		this.translateService = new TranslateService(this);
 	}
 
 	public preload(): void {}
@@ -77,7 +81,7 @@ export class MainMenuScene extends Phaser.Scene {
 			this.physics.world.bounds.bottom - 200,
 			this.playButton,
 			'button-pixel-orange',
-			'Play',
+			this.translateService.localise('MAIN_MENU', 'PLAY'),
 			(button: Phaser.GameObjects.Container) => {
 				this.scene.stop();
 				this.scene.start('Game');
@@ -89,7 +93,7 @@ export class MainMenuScene extends Phaser.Scene {
 			this.physics.world.bounds.bottom - 130,
 			this.leaderboardButton,
 			'button-pixel-orange',
-			'Leaderboard',
+			this.translateService.localise('MAIN_MENU', 'LEADERBOARD'),
 			(button: Phaser.GameObjects.Container) => {
 				this.showLeaderboard();
 			}
@@ -110,7 +114,8 @@ export class MainMenuScene extends Phaser.Scene {
 			this,
 			this.physics.world.bounds.centerX,
 			220,
-			`Highscore: ${playerEntry.getScore()}m`,
+			`${this.translateService.localise('MAIN_MENU', 'HIGHSCORE')}:`+
+			` ${playerEntry.getScore()}m`,
 			32
 		);
 		this.highscore.setOrigin(0.5, 0.5);

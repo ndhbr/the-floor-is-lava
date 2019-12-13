@@ -1,0 +1,22 @@
+{
+	"MAIN_MENU": {
+		"PLAY": "Jetzt spielen",
+		"LEADERBOARD": "Rangliste",
+		"HIGHSCORE": "Highscore"
+	},
+	"GAME_OVER_MENU": {
+		"CONTINUE": "Weiter (Video)",
+		"PLAY_AGAIN": "Neu starten",
+		"MENU": "Menü"
+	},
+	"LEADERBOARD": {
+		"HEADING": "Rangliste",
+		"WORLD": "Welt",
+		"FRIENDS": "Freunde"
+	},
+	"PAUSE_MENU": {
+		"HEADING": "Pause",
+		"RESUME": "Fortsetzen",
+		"MENU": "Hauptmenü"
+	}
+}

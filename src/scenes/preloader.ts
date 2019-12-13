@@ -21,26 +21,20 @@ export class PreloaderScene extends Phaser.Scene {
 
 		this.load.spritesheet('player', 'assets/player-lion.png',
 			{ frameWidth: 48, frameHeight: 64 });
-
 		this.load.spritesheet('lava', 'assets/lava-animated.png',
 			{ frameWidth: 32, frameHeight: 32 });
-
 		this.load.spritesheet('pauseButton', 'assets/play-pause-buttons.png',
 			{ frameWidth: 32, frameHeight: 32 });
-
 		this.load.spritesheet('button-pixel-orange', 'assets/buttons-pixel-orange.png',
 			{ frameWidth: 125, frameHeight: 27 });
-
 		this.load.spritesheet('button-pixel-orange-sound', 'assets/buttons-pixel-orange-sound.png',
 			{ frameWidth: 24, frameHeight: 24 });
-
 		this.load.spritesheet('close', 'assets/close.png',
 			{ frameWidth: 24, frameHeight: 24 });
-
 		this.load.spritesheet('portal', 'assets/portal.png',
 			{ frameWidth: 64, frameHeight: 16 });
 
-		this.load.image('profilePictureMask', 'assets/profile-picture-mask.png');
+		this.load.image('closeWithoutBox', 'assets/close-without-box.png');
 		this.load.image('heading', 'assets/heading.png');
 		this.load.image('particle', 'assets/lava-particle.png');
 		this.load.image('concrete', 'assets/concrete.png');
@@ -68,6 +62,8 @@ export class PreloaderScene extends Phaser.Scene {
 		this.load.image('backgroundLivingRoom1', 'assets/background-livingroom-1.png');
 
 		this.load.bitmapFont('basis33', 'fonts/basis33_0.png', 'fonts/basis33.xml');
+
+		this.preloadActiveLanguageFile();
 	}
 
 	public create(): void {
@@ -106,5 +102,23 @@ export class PreloaderScene extends Phaser.Scene {
 
 	public startGame(): void {
 		this.scene.start('MainMenu');
+	}
+
+	private preloadActiveLanguageFile() {
+		let language = FBInstant.getLocale();
+		language = language.substr(0, 2).toLowerCase();
+
+		switch(language) {
+			case 'de':
+			case 'en':
+			case 'fr':
+			case 'es':
+				break;
+			default:
+				language = 'en';
+				break;
+		}
+
+		this.load.json('language-file', `assets/lang/${language}.json`);
 	}
 }

@@ -1,0 +1,22 @@
+{
+	"MAIN_MENU": {
+		"PLAY": "Play",
+		"LEADERBOARD": "Leaderboard",
+		"HIGHSCORE": "High score"
+	},
+	"GAME_OVER_MENU": {
+		"CONTINUE": "Continue (Video)",
+		"PLAY_AGAIN": "Play again",
+		"MENU": "Menu"
+	},
+	"LEADERBOARD": {
+		"HEADING": "Leaderboard",
+		"WORLD": "World",
+		"FRIENDS": "Friends"
+	},
+	"PAUSE_MENU": {
+		"HEADING": "Pause",
+		"RESUME": "Continue",
+		"MENU": "Back to menu"
+	}
+}

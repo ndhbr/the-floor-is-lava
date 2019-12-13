@@ -2,6 +2,7 @@ import * as Phaser from 'phaser';
 import { ButtonService } from '../services/button';
 import { DefaultText } from '../classes/default-text';
 import { Animations } from '../services/animations';
+import { TranslateService } from '../services/translate';
 
 enum Leaderboard {
 	FRIENDS,
@@ -18,13 +19,15 @@ export class LeaderboardScene extends Phaser.Scene {
 
 	currentLeaderboard: Leaderboard;
 	leaderboardEntriesGroup: Phaser.GameObjects.Group;
-	
+
 	buttonService: ButtonService;
+	translateService: TranslateService;
 
     constructor() {
         super(sceneConfig);
 
-        this.buttonService = new ButtonService(this);
+		this.buttonService = new ButtonService(this);
+		this.translateService = new TranslateService(this);
     }
 
     public init(data: any): void {
@@ -54,7 +57,7 @@ export class LeaderboardScene extends Phaser.Scene {
 			this,
 			this.physics.world.bounds.centerX,
 			50,
-			'Leaderboard',
+			this.translateService.localise('LEADERBOARD', 'HEADING'),
 			32
 		);
 
@@ -96,16 +99,16 @@ export class LeaderboardScene extends Phaser.Scene {
 		const world = new DefaultText(
 			this,
 			-105,
-			0, 
-			'World',
-			32	
+			0,
+			this.translateService.localise('LEADERBOARD', 'WORLD'),
+			32
 		).setInteractive();
 
 		const friends = new DefaultText(
 			this,
 			10,
 			0,
-			'Friends',
+			this.translateService.localise('LEADERBOARD', 'FRIENDS'),
 			32
 		).setInteractive();
 
@@ -122,7 +125,7 @@ export class LeaderboardScene extends Phaser.Scene {
 				this.currentLeaderboard = Leaderboard.WORLD;
 				world.setTint(colors.active);
 				friends.setTint(colors.default);
-				this.loadLeaderboard(this.currentLeaderboard);				
+				this.loadLeaderboard(this.currentLeaderboard);
 			}
 		}, this);
 
@@ -146,25 +149,6 @@ export class LeaderboardScene extends Phaser.Scene {
 			y
 		);
 		container.setDepth(4);
-
-		const profilePictureKey: string = `profilePicture${leaderboardEntry.getPlayer().getID()}`
-
-		this.load.on(`filecomplete-image-${profilePictureKey}`,
-		() => {
-			const profilePicture = this.add.sprite(
-				badge.displayWidth/2 - 30,
-				-badge.displayHeight/2 + 28,
-				profilePictureKey
-			);
-
-			profilePicture.setScale(0.175);
-			profilePicture.setDepth(10);
-
-			container.add(profilePicture);
-		}, this);
-
-		this.load.image(profilePictureKey, leaderboardEntry.getPlayer().getPhoto());
-		this.load.start();
 
 		const badge = this.add.sprite(
 			0,
@@ -202,9 +186,45 @@ export class LeaderboardScene extends Phaser.Scene {
 		container.add(score);
 		container.add(ranking);
 
+		const profilePictureKey: string = `profilePicture${leaderboardEntry.getPlayer().getID()}`
+
+		if (!this.textures.exists(profilePictureKey)) {
+			this.load.on(`filecomplete-image-${profilePictureKey}`,
+			() => {
+				const profilePicture = this.addProfilePictureToContainer(profilePictureKey,
+					badge, container);
+
+				Animations.weirdFadeIn(this, profilePicture);
+			}, this);
+
+			this.load.image(profilePictureKey, leaderboardEntry.getPlayer().getPhoto());
+			this.load.start();
+		} else {
+			this.addProfilePictureToContainer(profilePictureKey,
+				badge, container);
+		}
+
 		Animations.weirdFadeIn(this, container);
 
 		return container;
+	}
+
+	private addProfilePictureToContainer(profilePictureKey: string,
+		badge: Phaser.GameObjects.Sprite, container: Phaser.GameObjects.Container)
+		: Phaser.GameObjects.Sprite {
+
+		const profilePicture = this.add.sprite(
+			badge.displayWidth/2 - 30,
+			-badge.displayHeight/2 + 28,
+			profilePictureKey
+		);
+
+		profilePicture.setScale(0.175);
+		profilePicture.setDepth(4);
+
+		container.add(profilePicture);
+
+		return profilePicture;
 	}
 
     private addCloseButton(): Phaser.GameObjects.Container {
@@ -234,7 +254,7 @@ export class LeaderboardScene extends Phaser.Scene {
             0.6
         ).setInteractive();
 		backdrop.depth = 3;
-		
+
 		backdrop.on('pointerdown', () => {}, this);
 
         return backdrop;

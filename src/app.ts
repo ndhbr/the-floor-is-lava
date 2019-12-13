@@ -44,4 +44,9 @@ window.onload = async () => {
 	await FBInstant.startGameAsync();
 
 	let game: TheFloorIsLava = new TheFloorIsLava(config);
+
+	// window.addEventListener('resize', () => {
+	// 	game.scale.resize(window.innerWidth, window.innerHeight);
+	// 	game.scale.refresh();
+	// });
 };

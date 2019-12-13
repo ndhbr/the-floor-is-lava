@@ -62,14 +62,7 @@ export class GameScene extends Phaser.Scene {
 
     public create(): void {
 		// Activate lights
-		// var light  = this.lights.addLight(500, 250, 200);
-		// this.input.on('pointermove', function (pointer) {
-		// 	light.x = pointer.x;
-		// 	light.y = pointer.y;
-		// });
 		this.lights.enable().setAmbientColor(0xaaaaaa);
-
-		// console.log(this.lights.getMaxVisibleLights());
 
 		// Room Design
 		this.roomService.drawBackgrounds();
@@ -106,13 +99,14 @@ export class GameScene extends Phaser.Scene {
 		this.lavaService.addLavaParticles();
 
 		this.pauseButton = this.add.tileSprite(32, 32, 32, 32, 'pauseButton');
+		this.pauseButton.setDepth(4);
 		this.pauseButton.setInteractive();
 		this.pauseButton.on('pointerdown', () => {
 			this.pauseGame();
 		}, this);
 
 		// Controls
-		this.input.on('pointerdown', () => this.playerService.jump(), this);
+		this.initJumpControl();
 
 		// Events
 		this.events.on('resume', (sys: Phaser.Scenes.Systems,
@@ -217,6 +211,28 @@ export class GameScene extends Phaser.Scene {
 
 		console.log(`Average Time spent to update game screen (ms): ${avg}`);
 		this.performanceTest = [];
+	}
+
+	private initJumpControl() {
+		const clickableArea = this.add.rectangle(
+			this.physics.world.bounds.centerX,
+			this.physics.world.bounds.centerY,
+			this.physics.world.bounds.width,
+			this.physics.world.bounds.height,
+			0x000000,
+			0
+		);
+
+		clickableArea.setInteractive();
+		clickableArea.setDepth(3);
+
+		clickableArea.on('pointerdown', () => {
+			this.playerService.jump();
+		}, this);
+
+		this.input.keyboard.on('keydown-SPACE', () => {
+			this.playerService.jump();
+		}, this);
 	}
 
 	private async initializeLeaderboard() {

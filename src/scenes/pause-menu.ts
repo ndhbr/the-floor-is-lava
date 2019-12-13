@@ -3,6 +3,7 @@ import { ButtonService } from '../services/button';
 import { DefaultText } from '../classes/default-text';
 import { SoundService } from '../services/sound';
 import { Animations } from '../services/animations';
+import { TranslateService } from '../services/translate';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -17,6 +18,7 @@ export class PauseMenuScene extends Phaser.Scene {
 
 	buttonService: ButtonService;
 	soundService: SoundService;
+	translateService: TranslateService;
 
 	resumeButton: Phaser.GameObjects.Container;
 	menuButton: Phaser.GameObjects.Container;
@@ -30,6 +32,7 @@ export class PauseMenuScene extends Phaser.Scene {
 	public init(): void {
 		this.buttonService = new ButtonService(this);
 		this.soundService = new SoundService(this);
+		this.translateService = new TranslateService(this);
 	}
 
 	public preload(): void {}
@@ -48,7 +51,7 @@ export class PauseMenuScene extends Phaser.Scene {
 			this,
 			this.physics.world.bounds.centerX,
 			100,
-			'Pause',
+			this.translateService.localise('PAUSE_MENU', 'HEADING'),
 			32
 		);
 		this.heading.setOrigin(0.5, 0.5);
@@ -58,7 +61,7 @@ export class PauseMenuScene extends Phaser.Scene {
 			200,
 			this.resumeButton,
 			'button-pixel-orange',
-			'Resume',
+			this.translateService.localise('PAUSE_MENU', 'RESUME'),
 			(button: Phaser.GameObjects.Container) => {
 				let textObject = <Phaser.GameObjects.Text> button.getAt(1);
 
@@ -93,7 +96,7 @@ export class PauseMenuScene extends Phaser.Scene {
 			270,
 			this.menuButton,
 			'button-pixel-orange',
-			'Menu',
+			this.translateService.localise('PAUSE_MENU', 'MENU'),
 			() => {
 				this.scene.stop();
 				this.scene.stop('Game');
