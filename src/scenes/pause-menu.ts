@@ -4,6 +4,7 @@ import { DefaultText } from '../classes/default-text';
 import { SoundService } from '../services/sound';
 import { Animations } from '../services/animations';
 import { TranslateService } from '../services/translate';
+import { DialogService } from '../services/dialog';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -19,6 +20,7 @@ export class PauseMenuScene extends Phaser.Scene {
 	buttonService: ButtonService;
 	soundService: SoundService;
 	translateService: TranslateService;
+	dialogService: DialogService;
 
 	resumeButton: Phaser.GameObjects.Container;
 	menuButton: Phaser.GameObjects.Container;
@@ -33,6 +35,7 @@ export class PauseMenuScene extends Phaser.Scene {
 		this.buttonService = new ButtonService(this);
 		this.soundService = new SoundService(this);
 		this.translateService = new TranslateService(this);
+		this.dialogService = new DialogService(this);
 	}
 
 	public preload(): void {}
@@ -91,16 +94,29 @@ export class PauseMenuScene extends Phaser.Scene {
 			}
 		);
 
+		let menuDialog: Phaser.GameObjects.Container;
 		this.buttonService.generateButton(
 			this.physics.world.bounds.centerX,
 			270,
 			this.menuButton,
 			'button-pixel-orange',
 			this.translateService.localise('PAUSE_MENU', 'MENU'),
-			() => {
-				this.scene.stop();
-				this.scene.stop('Game');
-				this.scene.start('MainMenu');
+			async () => {
+				if (menuDialog == null) {
+					menuDialog = await this.dialogService.add(
+						this.translateService.localise('DIALOG', 'ARE_YOU_SURE'),
+						this.translateService.localise('DIALOG', 'SCORE_WILL_BE_LOST'),
+						this.translateService.localise('DIALOG', 'YES'),
+						() => {
+							this.scene.stop();
+							this.scene.stop('Game');
+							this.scene.start('MainMenu');
+						},
+						this.translateService.localise('DIALOG', 'CANCEL'),
+					);
+				} else {
+					this.dialogService.restoreDialog(menuDialog);
+				}
 			}
 		);
 

@@ -1,4 +1,5 @@
 import { Room } from "../enums/rooms";
+import { TheFloorIsLava } from "../app";
 
 const DEFAULT_SPEED = -250;
 
@@ -307,8 +308,12 @@ export class PlatformService {
 		return this.platformPool;
 	}
 
-	getStartPlatform(): Phaser.GameObjects.Group {
+	getStartPlatform(): Phaser.GameObjects.TileSprite {
 		return this.startPlatform;
+	}
+
+	startPlatformActive(): boolean {
+		return this.startPlatform.active;
 	}
 
 	private setFriction(player: Phaser.Physics.Arcade.Sprite, platform: any) {

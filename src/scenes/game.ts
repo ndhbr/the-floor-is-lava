@@ -156,7 +156,8 @@ export class GameScene extends Phaser.Scene {
 
 			this.playerService.update();
 
-			if (time - this.lastTextUpdate > 10) {
+			if ((time - this.lastTextUpdate > 10) &&
+				(!this.basementPlatformService.startPlatformActive())) {
 				this.scoreService.incrementScore();
 				this.lastTextUpdate = time;
 			}

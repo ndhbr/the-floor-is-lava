@@ -18,5 +18,11 @@
 		"HEADING": "Pause",
 		"RESUME": "Fortsetzen",
 		"MENU": "Hauptmenü"
+	},
+	"DIALOG": {
+		"CANCEL": "Abbrechen",
+		"YES": "Ja",
+		"ARE_YOU_SURE": "Bist du sicher?",
+		"SCORE_WILL_BE_LOST": "Du verlierst deinen aktuellen Spielstand."
 	}
 }

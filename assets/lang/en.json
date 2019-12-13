@@ -18,5 +18,11 @@
 		"HEADING": "Pause",
 		"RESUME": "Continue",
 		"MENU": "Back to menu"
+	},
+	"DIALOG": {
+		"CANCEL": "Cancel",
+		"YES": "Yes",
+		"ARE_YOU_SURE": "Are you sure?",
+		"SCORE_WILL_BE_LOST": "Your current score will be lost."
 	}
 }
