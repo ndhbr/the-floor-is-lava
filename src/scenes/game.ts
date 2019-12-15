@@ -14,8 +14,6 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 
 export class GameScene extends Phaser.Scene {
 
-	playerSprite: Phaser.GameObjects.Sprite;
-
 	enteredPortal: Phaser.Events.EventEmitter;
 	performanceTest: Array<number> = [];
 
@@ -58,15 +56,11 @@ export class GameScene extends Phaser.Scene {
 		if (this.globalLeaderboard == null) {
 			this.initializeLeaderboard();
 		}
-
-		if (data.player != null) {
-			this.playerSprite = data.player;
-		}
 	}
 
     public preload(): void {}
 
-    public create(): void {
+    public create(data: any): void {
 		// Activate lights
 		this.lights.enable().setAmbientColor(0xaaaaaa);
 
@@ -78,7 +72,7 @@ export class GameScene extends Phaser.Scene {
 
 		// Player
 		this.playerService.setPlayerJumps(0);
-		this.playerService.addPlayer(this.playerSprite);
+		this.playerService.addPlayer(data.playerKey);
 
 		// Lava
 		this.lavaService.init(Room.BASEMENT);
@@ -135,15 +129,14 @@ export class GameScene extends Phaser.Scene {
 			}
 		});
 
-		this.events.on(Phaser.Core.Events.HIDDEN, () => {
-			console.log('Test');
-		});
-
 		document.addEventListener('visibilitychange', () => {
 			if (this.scene.isActive('Game') && document.visibilityState === 'hidden') {
 				this.pauseGame();
 			}
 		});
+
+		// Countdown
+		this.countdown();
 	}
 
     public update(time: number): void {
@@ -182,6 +175,11 @@ export class GameScene extends Phaser.Scene {
 		}
 
 		this.performanceTest.push(performance.now() - a);
+	}
+
+	public countdown() {
+		this.scene.launch('Countdown');
+		this.scene.pause('Game');
 	}
 
 	public pauseGame() {

@@ -1,5 +1,3 @@
-import { DefaultText } from "./default-text";
-
 enum Direction {
 	LEFT,
 	RIGHT
@@ -14,9 +12,10 @@ enum PlayerNames {
 
 export class PlayerSwitch extends Phaser.GameObjects.Container {
 
-	players: Array<Phaser.GameObjects.Sprite>;
+	players: Array<Phaser.Physics.Arcade.Sprite>;
 	activePlayer: PlayerNames;
-	previewPlayer: Phaser.GameObjects.Sprite;
+
+	particles: Phaser.GameObjects.Particles.ParticleEmitterManager;
 
 	constructor(scene: Phaser.Scene) {
 		super(
@@ -25,12 +24,17 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 			scene.physics.world.bounds.centerY
 		);
 
-		this.addPlayer();
 		scene.add.existing(this);
+		this.addParticles();
+		this.addPlayer();
 	}
 
-	public getSelectedSprite(): Phaser.GameObjects.Sprite {
+	public getSelectedSprite(): Phaser.Physics.Arcade.Sprite {
 		return this.players[this.activePlayer];
+	}
+
+	public getSelectedSpriteKey(): string {
+		return this.players[this.activePlayer].texture.key;
 	}
 
 	private addPlayer() {
@@ -38,27 +42,21 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 
 		this.players = [];
 
-		// player.setDepth(4);
-		// player.anims.play('standing');
+		const left = this.addControl(Direction.LEFT);
+		const right = this.addControl(Direction.RIGHT);
 
-		const left = this.addControl(Direction.LEFT, () => {
-			console.log('Left player');
-		});
-
-		const right = this.addControl(Direction.RIGHT, () => {
-			console.log('Right player');
-		});
-
-		new DefaultText(this.scene, 100, 100, 'Servus', 32).setInteractive().on('pointerdown', () => {
+		left.on('pointerdown', () => {
 			this.drawPlayer(Direction.LEFT);
+		});
+
+		right.on('pointerdown', () => {
+			this.drawPlayer(Direction.RIGHT)
 		});
 
 		this.drawPlayer();
 
-		// left.setDepth(4);
 		this.add(left);
 		this.add(right);
-		this.setInteractive();
 	}
 
 	private drawPlayer(direction?: Direction) {
@@ -85,7 +83,7 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 		}
 
 		if (this.players[this.activePlayer] == null) {
-			this.players[this.activePlayer] = this.scene.add.sprite(
+			this.players[this.activePlayer] = this.scene.physics.add.sprite(
 				0,
 				0,
 				`player${PlayerNames[this.activePlayer]}`,
@@ -98,45 +96,43 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 			this.players[this.activePlayer].setVisible(true);
 		}
 
-		// this.players[this.activePlayer].play('standing');
+		this.players[this.activePlayer].anims.play(`standing-player${PlayerNames[this.activePlayer]}`);
 	}
 
-	private addControl(type: Direction, callback: () => void)
-	: Phaser.GameObjects.Triangle {
-		let control: Phaser.GameObjects.Triangle;
-		const color: number = 0xffffff;
+	private addControl(type: Direction): Phaser.GameObjects.Sprite {
+		let control: Phaser.GameObjects.Sprite;
 
 		if (type === Direction.LEFT) {
-			control = this.scene.add.triangle(
-				-32,
+			control = this.scene.add.sprite(
+				-96,
 				0,
-				-32,
-				-10,
-				-32,
-				10,
-				-48,
-				0,
-				color
+				'triangle'
 			);
+			control.flipX = true;
 		} else {
-			control = this.scene.add.triangle(
-				32,
+			control = this.scene.add.sprite(
+				96,
 				0,
-				32,
-				10,
-				32,
-				-10,
-				48,
-				0,
-				color
+				'triangle'
 			);
 		}
 
 		control.setInteractive();
-		control.on('pointerdown', () => {
-			console.log('test');
-		});
 
 		return control;
+	}
+
+	private addParticles() {
+		this.particles = this.scene.add.particles('particle');
+		this.particles.createEmitter({
+			x: 0,
+			y: 0,
+			gravityY: -10,
+			speed: 30,
+			scale: { start: 1, end: 0.1 },
+			lifespan: 3000
+		});
+
+		this.add(this.particles);
 	}
 }

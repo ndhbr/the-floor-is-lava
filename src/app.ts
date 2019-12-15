@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
 import { PreloaderScene } from './scenes/preloader';
+import { CountdownScene } from './scenes/countdown';
 import { GameScene } from './scenes/game';
 import { PauseMenuScene } from './scenes/pause-menu';
 import { GameOverMenuScene } from './scenes/game-over-menu';
@@ -26,7 +27,7 @@ const config: Phaser.Types.Core.GameConfig = {
             debug: false
         }
     },
-	scene: [PreloaderScene, MainMenuScene, GameScene, GameOverMenuScene, PauseMenuScene, LeaderboardScene],
+	scene: [PreloaderScene, MainMenuScene, CountdownScene, GameScene, GameOverMenuScene, PauseMenuScene, LeaderboardScene],
 	backgroundColor: '#2b2b2b',
 	render: {
 		pixelArt: true

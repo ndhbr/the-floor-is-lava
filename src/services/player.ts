@@ -36,10 +36,10 @@ export class PlayerService {
 
 	update() {
 		if (this.player.body.touching.up) {
-			this.player.anims.play('dizzy');
+			this.player.anims.play(`dizzy-${this.player.texture.key}`);
 			this.player.anims.stopAfterDelay(200);
 		} else if (!this.player.body.touching.down) {
-			if (this.player.anims.currentAnim.key != 'dizzy') {
+			if (this.player.anims.currentAnim.key != `dizzy-${this.player.texture.key}`) {
 				this.player.anims.stop();
 
 				if (this.player.body.deltaY() < 0) {
@@ -50,29 +50,27 @@ export class PlayerService {
 			}
 		} else {
 			if(!this.player.anims.isPlaying && !this.player.body.touching.up)
-				this.player.anims.play('run');
+				this.player.anims.play(`run-${this.player.texture.key}`);
 		}
 	}
 
-	addPlayer(player: Phaser.GameObjects.Sprite) {
+	addPlayer(key: string) {
 		if (this.currentRoom == Room.LIVING_ROOM) {
 			this.player = this.scene.physics.add.sprite(
 				this.startPosition.livingRoom.x,
 				this.startPosition.livingRoom.y,
-				'player'
+				key
 			);
 		} else if (this.currentRoom == Room.BASEMENT) {
 			this.player = this.scene.physics.add.sprite(
 				this.startPosition.basement.x,
 				this.startPosition.basement.y,
-				'player'
+				key
 			);
 		}
 
 		this.player.depth = 2;
-
-		this.scene.anims.play('run', this.player);
-
+		this.scene.anims.play(`run-${key}`, this.player);
 		this.player.setGravityY(GRAVITY_Y);
 	}
 
@@ -107,7 +105,7 @@ export class PlayerService {
 
 	die() {
 		this.player.anims.stop();
-		this.player.anims.play('die');
+		this.player.anims.play(`die-${this.player.texture.key}`);
 	}
 
 	getPlayer(): Phaser.Physics.Arcade.Sprite {

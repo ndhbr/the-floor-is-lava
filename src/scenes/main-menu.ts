@@ -87,7 +87,7 @@ export class MainMenuScene extends Phaser.Scene {
 			this.translateService.localise('MAIN_MENU', 'PLAY'),
 			(button: Phaser.GameObjects.Container) => {
 				this.scene.stop();
-				this.scene.start('Game');
+				this.scene.start('Game', {playerKey: this.playerSwitch.getSelectedSpriteKey()});
 			}
 		);
 

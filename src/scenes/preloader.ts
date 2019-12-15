@@ -1,5 +1,4 @@
 import * as Phaser from 'phaser';
-import * as WebFont from 'webfontloader';
 import { SoundService } from '../services/sound';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
@@ -38,6 +37,7 @@ export class PreloaderScene extends Phaser.Scene {
 		this.load.spritesheet('portal', 'assets/portal.png',
 			{ frameWidth: 64, frameHeight: 16 });
 
+		this.load.image('triangle', 'assets/triangle.png');
 		this.load.image('closeWithoutBox', 'assets/close-without-box.png');
 		this.load.image('heading', 'assets/heading.png');
 		this.load.image('particle', 'assets/lava-particle.png');
@@ -74,41 +74,14 @@ export class PreloaderScene extends Phaser.Scene {
 		this.soundService = new SoundService(this);
 
 		this.anims.create({
-			key: 'run',
-			frames: this.anims.generateFrameNumbers('player', {start: 0, end: 4}),
-			frameRate: 12,
-			repeat: -1
-		});
-
-		this.anims.create({
 			key: 'portal',
 			frames: this.anims.generateFrameNumbers('portal', {start: 0, end: 1}),
 			frameRate: 10,
 			repeat: -1
 		});
 
-		this.anims.create({
-			key: 'dizzy',
-			frames: this.anims.generateFrameNames('player', {start: 7, end: 8}),
-			frameRate: 10,
-			repeat: -1
-		});
-
-		this.anims.create({
-			key: 'die',
-			frames: this.anims.generateFrameNumbers('player', {start: 9, end: 10}),
-			frameRate: 2,
-			repeat: 0
-		});
-
-		this.anims.create({
-			key: 'standing',
-			frames: this.anims.generateFrameNumbers('player', {start: 11, end: 12}),
-			frameRate: 4,
-			repeat: -1
-		});
-
-		// this.startGame();
+		this.addPlayerAnimations('playerLion');
+		this.addPlayerAnimations('playerCrocodile');
 	}
 
 	public startGame(): void {
@@ -131,5 +104,36 @@ export class PreloaderScene extends Phaser.Scene {
 		}
 
 		this.load.json('language-file', `assets/lang/${language}.json`);
+	}
+
+	private addPlayerAnimations(key: string)
+	{
+		this.anims.create({
+			key: `run-${key}`,
+			frames: this.anims.generateFrameNumbers(key, {start: 0, end: 4}),
+			frameRate: 12,
+			repeat: -1
+		});
+
+		this.anims.create({
+			key: `dizzy-${key}`,
+			frames: this.anims.generateFrameNumbers(key, {start: 7, end: 8}),
+			frameRate: 10,
+			repeat: -1
+		});
+
+		this.anims.create({
+			key: `die-${key}`,
+			frames: this.anims.generateFrameNumbers(key, {start: 9, end: 10}),
+			frameRate: 2,
+			repeat: 0
+		});
+
+		this.anims.create({
+			key: `standing-${key}`,
+			frames: this.anims.generateFrameNumbers(key, {start: 11, end: 12}),
+			frameRate: 4,
+			repeat: -1
+		});
 	}
 }
