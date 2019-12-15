@@ -19,7 +19,9 @@ export class PreloaderScene extends Phaser.Scene {
 		this.facebook.once('startgame', this.startGame, this);
 		this.facebook.showLoadProgress(this);
 
-		this.load.spritesheet('player', 'assets/player-lion.png',
+		this.load.spritesheet('playerCrocodile', 'assets/player-crocodile.png',
+			{ frameWidth: 48, frameHeight: 64 });
+		this.load.spritesheet('playerLion', 'assets/player-lion.png',
 			{ frameWidth: 48, frameHeight: 64 });
 		this.load.spritesheet('lava', 'assets/lava-animated.png',
 			{ frameWidth: 32, frameHeight: 32 });
@@ -97,6 +99,13 @@ export class PreloaderScene extends Phaser.Scene {
 			frames: this.anims.generateFrameNumbers('player', {start: 9, end: 10}),
 			frameRate: 2,
 			repeat: 0
+		});
+
+		this.anims.create({
+			key: 'standing',
+			frames: this.anims.generateFrameNumbers('player', {start: 11, end: 12}),
+			frameRate: 4,
+			repeat: -1
 		});
 
 		// this.startGame();

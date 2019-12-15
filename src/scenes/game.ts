@@ -14,6 +14,8 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 
 export class GameScene extends Phaser.Scene {
 
+	playerSprite: Phaser.GameObjects.Sprite;
+
 	enteredPortal: Phaser.Events.EventEmitter;
 	performanceTest: Array<number> = [];
 
@@ -56,6 +58,10 @@ export class GameScene extends Phaser.Scene {
 		if (this.globalLeaderboard == null) {
 			this.initializeLeaderboard();
 		}
+
+		if (data.player != null) {
+			this.playerSprite = data.player;
+		}
 	}
 
     public preload(): void {}
@@ -72,7 +78,7 @@ export class GameScene extends Phaser.Scene {
 
 		// Player
 		this.playerService.setPlayerJumps(0);
-		this.playerService.addPlayer();
+		this.playerService.addPlayer(this.playerSprite);
 
 		// Lava
 		this.lavaService.init(Room.BASEMENT);

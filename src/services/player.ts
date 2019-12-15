@@ -42,7 +42,7 @@ export class PlayerService {
 			if (this.player.anims.currentAnim.key != 'dizzy') {
 				this.player.anims.stop();
 
-				if (this.player.body.deltaY() < 0) {					
+				if (this.player.body.deltaY() < 0) {
 					this.player.setFrame(5);
 				} else {
 					this.player.setFrame(6);
@@ -54,7 +54,7 @@ export class PlayerService {
 		}
 	}
 
-	addPlayer() {
+	addPlayer(player: Phaser.GameObjects.Sprite) {
 		if (this.currentRoom == Room.LIVING_ROOM) {
 			this.player = this.scene.physics.add.sprite(
 				this.startPosition.livingRoom.x,

@@ -7,6 +7,7 @@ import { RoomService } from '../services/room';
 import { SoundService } from '../services/sound';
 import { Animations } from '../services/animations';
 import { TranslateService } from '../services/translate';
+import { PlayerSwitch } from '../classes/player-switch';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -22,6 +23,8 @@ export class MainMenuScene extends Phaser.Scene {
 	beatScore: DefaultText;
 	playButton: Phaser.GameObjects.Container;
 	leaderboardButton: Phaser.GameObjects.Container;
+
+	playerSwitch: PlayerSwitch;
 
 	buttonService: ButtonService;
 	lavaService: LavaService;
@@ -99,6 +102,7 @@ export class MainMenuScene extends Phaser.Scene {
 			}
 		);
 
+		this.playerSwitch = new PlayerSwitch(this);
 		this.soundService.addSoundButton();
 	}
 
