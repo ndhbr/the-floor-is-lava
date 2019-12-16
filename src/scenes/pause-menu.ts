@@ -66,6 +66,9 @@ export class PauseMenuScene extends Phaser.Scene {
 			'button-pixel-orange',
 			this.translateService.localise('PAUSE_MENU', 'RESUME'),
 			(button: Phaser.GameObjects.Container) => {
+				this.scene.start('Countdown');
+				return;
+
 				let textObject = <Phaser.GameObjects.Text> button.getAt(1);
 
 				if (this.countdown == null) {

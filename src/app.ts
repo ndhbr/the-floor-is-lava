@@ -27,7 +27,7 @@ const config: Phaser.Types.Core.GameConfig = {
             debug: false
         }
     },
-	scene: [PreloaderScene, MainMenuScene, CountdownScene, GameScene, GameOverMenuScene, PauseMenuScene, LeaderboardScene],
+	scene: [PreloaderScene, MainMenuScene, GameScene, CountdownScene, GameOverMenuScene, PauseMenuScene, LeaderboardScene],
 	backgroundColor: '#2b2b2b',
 	render: {
 		pixelArt: true

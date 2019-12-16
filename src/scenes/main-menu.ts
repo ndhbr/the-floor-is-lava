@@ -19,6 +19,7 @@ export class MainMenuScene extends Phaser.Scene {
 
 	ready: boolean;
 	heading: Phaser.GameObjects.Sprite;
+
 	highscore: DefaultText;
 	beatScore: DefaultText;
 	playButton: Phaser.GameObjects.Container;
@@ -123,6 +124,8 @@ export class MainMenuScene extends Phaser.Scene {
 			32
 		);
 		this.highscore.setOrigin(0.5, 0.5);
+
+		this.playerSwitch.addHighscore(playerEntry.getScore());
 
 		Animations.weirdFadeIn(this, this.highscore);
 	}

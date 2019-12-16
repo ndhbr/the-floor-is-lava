@@ -13,6 +13,8 @@ export class PlatformService {
 		y: number
 	};
 
+	private textures;
+
 	private platformGroup: Phaser.GameObjects.Group;
 	private platformPool: Phaser.GameObjects.Group;
 	private nextPlatformDistance: number;
@@ -54,6 +56,7 @@ export class PlatformService {
 		this.textureCounter = 0;
 		this.platformSpeed = DEFAULT_SPEED;
 		this.startPlatform = null;
+		this.initTextures();
 	}
 
 	addPlayer(player: Phaser.Physics.Arcade.Sprite) {
@@ -118,95 +121,85 @@ export class PlatformService {
 		this.incrementSpeed(score);
 	}
 
+	private initTextures() {
+		if (this.room === Room.LIVING_ROOM) {
+			this.textures = [
+				{
+					key: 'table',
+					height: 32,
+					scale: 1
+				},
+				{
+					key: 'couch',
+					height: 32,
+					scale: 1
+				},
+				{
+					key: 'bed',
+					height: 32,
+					scale: 1
+				},
+				{
+					key: 'closet',
+					height: 64,
+					scale: 2
+				},
+				{
+					key: 'cactus',
+					height: 48,
+					scale: 1.5
+				},
+				{
+					key: 'stove',
+					height: 32,
+					scale: 2
+				}
+			];
+		} else {
+			this.textures = [
+				{
+					key: 'box',
+					height: 32,
+					scale: 1
+				},
+				{
+					key: 'cactus',
+					height: 48,
+					scale: 1.5
+				},
+				{
+					key: 'wineShelf',
+					height: 64,
+					scale: 2
+				},
+				{
+					key: 'barrels',
+					height: 32,
+					scale: 1
+				}
+			];
+		}
+	}
+
 	private addPlatform() {
 		let platform: Phaser.Physics.Arcade.Sprite;
 		let positionX = this.scene.physics.world.bounds.width;
 
-		if (false && this.platformPool.getLength()) {
+		if (this.platformPool.getLength() == this.textures.length) {
+			console.log('Restoring platform...');
+
 			platform = this.platformPool.getFirst();
-
-			positionX += platform.displayWidth / 2;
-
-			platform.setX(positionX);
-			platform.setVelocityX(this.platformSpeed);
-			platform.setActive(true);
-			platform.setVisible(true);
 
 			this.platformPool.remove(platform);
 		} else {
-			let textures;
-
-			if (this.room == Room.LIVING_ROOM) {
-				textures = [
-					{
-						key: 'table',
-						height: 32,
-						scale: 1
-					},
-					{
-						key: 'couch',
-						height: 32,
-						scale: 1
-					},
-					{
-						key: 'bed',
-						height: 32,
-						scale: 1
-					},
-					{
-						key: 'closet',
-						height: 64,
-						scale: 2
-					},
-					{
-						key: 'cactus',
-						height: 48,
-						scale: 1.5
-					},
-					{
-						key: 'stove',
-						height: 32,
-						scale: 2
-					}
-				];
-			} else if (this.room == Room.BASEMENT) {
-				textures = [
-					{
-						key: 'box',
-						height: 32,
-						scale: 1
-					},
-					{
-						key: 'cactus',
-						height: 48,
-						scale: 1.5
-					},
-					{
-						key: 'wineShelf',
-						height: 64,
-						scale: 2
-					},
-					{
-						key: 'barrels',
-						height: 32,
-						scale: 1
-					}
-				]
-			}
-
 			platform = this.scene.physics.add.sprite(
 				positionX,
-				this.positions.y - 16 - textures[this.textureCounter].height,
-				textures[this.textureCounter].key
+				this.positions.y - 16 - this.textures[this.textureCounter].height,
+				this.textures[this.textureCounter].key
 			);
-			positionX +=  platform.displayWidth / 2;
-			platform.setX(positionX);
-			platform.setScale(textures[this.textureCounter].scale);
+			platform.setScale(this.textures[this.textureCounter].scale);
 			platform.setOrigin(0.5, 0.5);
 			platform.setImmovable(true);
-			platform.setVelocityX(this.platformSpeed);
-
-			this.fadeIn(platform);
 
 			this.platformGroup.add(platform);
 
@@ -214,9 +207,18 @@ export class PlatformService {
 
 			this.textureCounter += random;
 
-			if (this.textureCounter > textures.length-1)
+			if (this.textureCounter > this.textures.length-1)
 				this.textureCounter = 0;
 		}
+
+		positionX += platform.displayWidth / 2;
+
+		platform.setX(positionX);
+		platform.setVelocityX(this.platformSpeed);
+		platform.setActive(true);
+		platform.setVisible(true);
+
+		this.fadeIn(platform);
 	}
 
 	addStartPlatform(): void {

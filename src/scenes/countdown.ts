@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
 import { DefaultText } from '../classes/default-text';
+import { Animations } from '../services/animations';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -26,31 +27,36 @@ export class CountdownScene extends Phaser.Scene {
 			0x000000,
 			0.6
 		);
-        backdrop.setDepth(10);
 
-        let seconds = 3;
         let countdown = new DefaultText(
             this,
             this.physics.world.bounds.centerX,
             this.physics.world.bounds.centerY,
             3 + '',
-            64
-        );
+            128
+		);
+		countdown.setOrigin(0.5, 0.5);
 
-        let timer = setInterval(() => {
-            if (seconds == 0) {
-                this.scene.stop();
-                this.scene.resume('Game');
+		let seconds = 3;
+		this.tweens.add({
+			targets: countdown,
+			scale: 0,
+			ease: 'Linear',
+			duration: 1000,
+			yoyo: false,
+			repeat: 3,
+			onRepeat: () => {
+				countdown.scaleX = 0;
 
-                clearInterval(timer);
-                timer = null;
-            } else {
-                console.log(seconds);
-                
-                seconds--;
-                countdown.setText(seconds + '');
-            }
-        }, 1000);
+				seconds--;
+				countdown.setText(seconds + '');
+
+				if (seconds == 0) {
+					this.scene.stop();
+					this.scene.resume('Game');
+				}
+			}
+		});
     }
 
     public update(time: number): void {}

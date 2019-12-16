@@ -1,3 +1,5 @@
+import { DefaultText } from "./default-text";
+
 enum Direction {
 	LEFT,
 	RIGHT
@@ -11,6 +13,9 @@ enum PlayerNames {
 }
 
 export class PlayerSwitch extends Phaser.GameObjects.Container {
+
+	highscore: number;
+	highscoreText: DefaultText;
 
 	players: Array<Phaser.Physics.Arcade.Sprite>;
 	activePlayer: PlayerNames;
@@ -34,7 +39,14 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 	}
 
 	public getSelectedSpriteKey(): string {
+		if (this.players[this.activePlayer].isTinted)
+			return this.players[1].texture.key;
+
 		return this.players[this.activePlayer].texture.key;
+	}
+
+	public addHighscore(score: number) {
+		this.highscore = score;
 	}
 
 	private addPlayer() {
@@ -59,9 +71,39 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 		this.add(right);
 	}
 
+	private lockPlayer(playerName: PlayerNames): number {
+		const color = 0x666666;
+
+		if (this.highscore == null) {
+			let i: number;
+
+			for (i = 2; i < this.players.length + 1; i++) {
+				console.log('Tinting' + i);
+
+				if (this.players[i] != null)
+					this.players[i].setTint(color);
+			}
+
+			return -1;
+		} else {
+			if (this.highscore < 2000) {
+				this.players[PlayerNames.Crocodile].setTint(color);
+
+				if (playerName == PlayerNames.Crocodile)
+					return 2000;
+
+				return -1;
+			} else {
+				this.players[PlayerNames.Crocodile].clearTint();
+
+				return -1;
+			}
+		}
+	}
+
 	private drawPlayer(direction?: Direction) {
 		if (this.activePlayer == null) {
-			this.activePlayer = PlayerNames.Crocodile;
+			this.activePlayer = PlayerNames.Lion;
 		}
 
 		if (direction != null) {
@@ -96,6 +138,14 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 			this.players[this.activePlayer].setVisible(true);
 		}
 
+		const highscoreNeeded = this.lockPlayer(this.activePlayer);
+
+		if (this.players[this.activePlayer].isTinted) {
+			this.addHighscoreText(highscoreNeeded);
+		} else {
+			this.removeHighscoreText();
+		}
+
 		this.players[this.activePlayer].anims.play(`standing-player${PlayerNames[this.activePlayer]}`);
 	}
 
@@ -118,6 +168,12 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 		}
 
 		control.setInteractive();
+		control.input.hitArea.setTo(
+			-50,
+			-50,
+			100,
+			100
+		);
 
 		return control;
 	}
@@ -134,5 +190,39 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 		});
 
 		this.add(this.particles);
+	}
+
+	private removeHighscoreText() {
+		if (this.highscoreText != null) {
+			this.highscoreText.setActive(false);
+			this.highscoreText.setVisible(false);
+		}
+	}
+
+	private addHighscoreText(scoreNeeded: number) {
+		let text = `Du brauchst mehr Punkte!`;
+
+		if(scoreNeeded != -1) {
+			text = `Schaffe ${scoreNeeded}m, um diesen Spieler freizuschalten!`;
+		}
+
+		if (this.highscoreText == null) {
+			this.highscoreText = new DefaultText(
+				this.scene,
+				0,
+				80,
+				text,
+				24,
+				1
+			);
+
+			this.highscoreText.setMaxWidth(this.scene.physics.world.bounds.width - 50);
+			this.highscoreText.setOrigin(0.5, 0.5);
+			this.add(this.highscoreText);
+		} else {
+			this.highscoreText.setText(text);
+			this.highscoreText.setActive(true);
+			this.highscoreText.setVisible(true);
+		}
 	}
 }
