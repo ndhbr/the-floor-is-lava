@@ -122,6 +122,8 @@ export class LeaderboardScene extends Phaser.Scene {
 
 		world.on('pointerdown', () => {
 			if (this.currentLeaderboard !== Leaderboard.WORLD) {
+				this.sound.play('menuSelect');
+
 				this.currentLeaderboard = Leaderboard.WORLD;
 				world.setTint(colors.active);
 				friends.setTint(colors.default);
@@ -131,6 +133,8 @@ export class LeaderboardScene extends Phaser.Scene {
 
 		friends.on('pointerdown', () => {
 			if (this.currentLeaderboard !== Leaderboard.FRIENDS) {
+				this.sound.play('menuSelect');
+
 				this.currentLeaderboard = Leaderboard.FRIENDS;
 				world.setTint(colors.default);
 				friends.setTint(colors.active);

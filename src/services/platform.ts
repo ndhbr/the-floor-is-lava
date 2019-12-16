@@ -146,7 +146,7 @@ export class PlatformService {
 				},
 				{
 					key: 'cactus',
-					height: 48,
+					height: 64,
 					scale: 1.5
 				},
 				{
@@ -164,7 +164,7 @@ export class PlatformService {
 				},
 				{
 					key: 'cactus',
-					height: 48,
+					height: 64,
 					scale: 1.5
 				},
 				{
@@ -184,10 +184,10 @@ export class PlatformService {
 	private addPlatform() {
 		let platform: Phaser.Physics.Arcade.Sprite;
 		let positionX = this.scene.physics.world.bounds.width;
+		// console.log('Platforms: ' + this.platformGroup.getLength());
+		// console.log('Platformpool: ' + this.platformPool.getLength());
 
-		if (this.platformPool.getLength() == this.textures.length) {
-			console.log('Restoring platform...');
-
+		if (this.platformPool.getLength() > this.textures.length) {			
 			platform = this.platformPool.getFirst();
 
 			this.platformPool.remove(platform);

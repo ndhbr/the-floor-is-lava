@@ -40,20 +40,21 @@ export class CountdownScene extends Phaser.Scene {
 		let seconds = 3;
 		this.tweens.add({
 			targets: countdown,
-			scale: 0,
+			alpha: 0,
 			ease: 'Linear',
 			duration: 1000,
 			yoyo: false,
 			repeat: 3,
 			onRepeat: () => {
-				countdown.scaleX = 0;
+				countdown.alpha = 1;
 
 				seconds--;
-				countdown.setText(seconds + '');
 
 				if (seconds == 0) {
 					this.scene.stop();
 					this.scene.resume('Game');
+				} else {
+					countdown.setText(seconds + '');
 				}
 			}
 		});

@@ -8,8 +8,19 @@ export class SoundService {
 		this.buttonService = new ButtonService(this.scene);
 	}
 
-	public addSoundButton(): Phaser.GameObjects.Container {
+	public async addSoundButton(): Promise<Phaser.GameObjects.Container> {
 		let container: Phaser.GameObjects.Container;
+		let startFrame = 0;
+
+		let data = await FBInstant.player.getDataAsync(['soundMuted']);
+		let fbMute = false;
+		if (data != null && data.soundMuted) {
+			fbMute = true;
+			this.scene.sound.mute = fbMute;
+		}
+
+		if (this.isSoundMuted() || fbMute)
+			startFrame += 2;
 
 		this.buttonService.generateButton(
 			this.scene.physics.world.bounds.right - 50,
@@ -17,24 +28,27 @@ export class SoundService {
 			container,
 			'button-pixel-orange-sound',
 			'',
-			(button: Phaser.GameObjects.Container) => {
+			async (button: Phaser.GameObjects.Container) => {
 				let btn = <Phaser.GameObjects.Sprite> button.getAt(0);
 
 				if (!this.scene.sound.mute) {
 					btn.setFrame(2);
 					this.scene.sound.mute = true;
+					await FBInstant.player.setDataAsync({
+						soundMuted: true
+					});
 				} else {
 					btn.setFrame(0);
 					this.scene.sound.mute = false;
+					await FBInstant.player.setDataAsync({
+						soundMuted: false
+					});
 				}
-			}
+			},
+			startFrame
 		);
 
 		return container;
-	}
-
-	public playSound(): void {
-		//
 	}
 
 	public isSoundMuted(): boolean {

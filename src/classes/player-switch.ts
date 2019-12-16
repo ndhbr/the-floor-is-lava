@@ -9,6 +9,7 @@ enum PlayerNames {
 	__START,
 	Lion,
 	Crocodile,
+	Ninja,
 	__END
 }
 
@@ -58,11 +59,13 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 		const right = this.addControl(Direction.RIGHT);
 
 		left.on('pointerdown', () => {
+			this.scene.sound.play('menuSelect');
 			this.drawPlayer(Direction.LEFT);
 		});
 
 		right.on('pointerdown', () => {
-			this.drawPlayer(Direction.RIGHT)
+			this.scene.sound.play('menuSelect');
+			this.drawPlayer(Direction.RIGHT);
 		});
 
 		this.drawPlayer();
@@ -78,25 +81,29 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 			let i: number;
 
 			for (i = 2; i < this.players.length + 1; i++) {
-				console.log('Tinting' + i);
-
 				if (this.players[i] != null)
 					this.players[i].setTint(color);
 			}
 
 			return -1;
 		} else {
-			if (this.highscore < 2000) {
-				this.players[PlayerNames.Crocodile].setTint(color);
+			switch (playerName) {
+				case PlayerNames.Crocodile:
+					if (this.highscore < 2000) {
+						this.players[PlayerNames.Crocodile].setTint(color);
 
-				if (playerName == PlayerNames.Crocodile)
-					return 2000;
+						return 2000;
+					}
 
-				return -1;
-			} else {
-				this.players[PlayerNames.Crocodile].clearTint();
+					return -1;
+				case PlayerNames.Ninja:
+					if (this.highscore < 1000) {
+						this.players[PlayerNames.Ninja].setTint(color);
 
-				return -1;
+						return 1000;
+					}
+
+					return -1;
 			}
 		}
 	}
@@ -112,16 +119,17 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 				this.players[this.activePlayer].setVisible(false);
 			}
 
-			if (Direction.LEFT)
+			if (direction == Direction.LEFT) {
 				this.activePlayer--;
-			else if (Direction.RIGHT)
+
+				if (this.activePlayer === PlayerNames.__START)
+					this.activePlayer = PlayerNames.__END - 1;
+			} else if (direction == Direction.RIGHT) {
 				this.activePlayer++;
 
-			if (this.activePlayer === PlayerNames.__START)
-				this.activePlayer = PlayerNames.__END - 1;
-
-			if (this.activePlayer === PlayerNames.__END)
-				this.activePlayer = PlayerNames.__START + 1;
+				if (this.activePlayer === PlayerNames.__END)
+					this.activePlayer = PlayerNames.__START + 1;
+			}
 		}
 
 		if (this.players[this.activePlayer] == null) {
@@ -202,7 +210,7 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 	private addHighscoreText(scoreNeeded: number) {
 		let text = `Du brauchst mehr Punkte!`;
 
-		if(scoreNeeded != -1) {
+		if(scoreNeeded > -1) {
 			text = `Schaffe ${scoreNeeded}m, um diesen Spieler freizuschalten!`;
 		}
 
@@ -220,9 +228,11 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 			this.highscoreText.setOrigin(0.5, 0.5);
 			this.add(this.highscoreText);
 		} else {
-			this.highscoreText.setText(text);
+			console.log(text);
+
 			this.highscoreText.setActive(true);
 			this.highscoreText.setVisible(true);
+			this.highscoreText.setText(text);
 		}
 	}
 }

@@ -7,8 +7,16 @@ export class ButtonService {
 
 	public generateButton(x: number, y: number,
 		container: Phaser.GameObjects.Container,
-		type: string, text: string, callback: (container) => void): void {
+		type: string, text: string, callback: (container) => void,
+		startFrame?: number): void {
 		const textPositionY = -2;
+		let frameUp = 0;
+		let frameDown = 1;
+
+		if (startFrame) {
+			frameUp += startFrame;
+			frameDown += startFrame;
+		}
 
 		container = this.scene.add.container(
 			x,
@@ -19,7 +27,7 @@ export class ButtonService {
 			0,
 			0,
 			type,
-			0
+			frameUp
 		);
 		buttonBg.setInteractive();
 		buttonBg.setScale(2);
@@ -40,12 +48,13 @@ export class ButtonService {
 
 		buttonBg.on('pointerdown', () => {
 			buttonText.y = textPositionY + 4;
-			buttonBg.setFrame(1);
+			buttonBg.setFrame(frameDown);
 		}, this);
 
 		buttonBg.on('pointerup', () => {
 			buttonText.y = textPositionY;
-			buttonBg.setFrame(0);
+			buttonBg.setFrame(frameUp);
+			this.scene.sound.play('menuSelect');
 			callback(container);
 		}, this);
 

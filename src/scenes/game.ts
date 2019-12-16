@@ -49,6 +49,7 @@ export class GameScene extends Phaser.Scene {
 
 		if(this.enteredPortal == null) {
 			this.enteredPortal = this.events.addListener('onEnteredPortal', () => {
+				this.sound.play('portal');
 				this.toggleRoom();
 			});
 		}
@@ -102,6 +103,7 @@ export class GameScene extends Phaser.Scene {
 		this.pauseButton.setDepth(4);
 		this.pauseButton.setInteractive();
 		this.pauseButton.on('pointerdown', () => {
+			this.sound.play('menuSelect');
 			this.pauseGame();
 		}, this);
 
@@ -134,6 +136,12 @@ export class GameScene extends Phaser.Scene {
 				this.pauseGame();
 			}
 		});
+
+		// Lava
+		// this.sound.play('lava', {
+		// 	loop: true,
+		// 	volume: 0.1
+		// });
 
 		// Countdown
 		this.countdown();

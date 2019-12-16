@@ -22,6 +22,8 @@ export class PreloaderScene extends Phaser.Scene {
 			{ frameWidth: 48, frameHeight: 64 });
 		this.load.spritesheet('playerLion', 'assets/player-lion.png',
 			{ frameWidth: 48, frameHeight: 64 });
+		this.load.spritesheet('playerNinja', 'assets/player-ninja.png',
+			{ frameWidth: 48, frameHeight: 64 });
 		this.load.spritesheet('lava', 'assets/lava-animated.png',
 			{ frameWidth: 32, frameHeight: 32 });
 		this.load.spritesheet('pauseButton', 'assets/play-pause-buttons.png',
@@ -67,6 +69,13 @@ export class PreloaderScene extends Phaser.Scene {
 
 		this.load.bitmapFont('basis33', 'fonts/basis33_0.png', 'fonts/basis33.xml');
 
+		this.load.audio('hit', 'assets/sounds/hit.wav');
+		this.load.audio('jump', 'assets/sounds/jump.wav');
+		this.load.audio('menuSelect', 'assets/sounds/menu_select.wav');
+		this.load.audio('portal', 'assets/sounds/portal.wav');
+		// this.load.audio('lava', 'assets/sounds/lava.wav');
+		this.load.audio('death', 'assets/sounds/death.mp3');
+
 		this.preloadActiveLanguageFile();
 	}
 
@@ -82,6 +91,7 @@ export class PreloaderScene extends Phaser.Scene {
 
 		this.addPlayerAnimations('playerLion');
 		this.addPlayerAnimations('playerCrocodile');
+		this.addPlayerAnimations('playerNinja');
 	}
 
 	public startGame(): void {

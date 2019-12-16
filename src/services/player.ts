@@ -23,7 +23,7 @@ export class PlayerService {
 		this.startPosition = {
 			livingRoom: {
 				x: 50,
-				y: 90
+				y: 100
 			},
 			basement: {
 				x: 50,
@@ -35,7 +35,9 @@ export class PlayerService {
 	}
 
 	update() {
-		if (this.player.body.touching.up) {
+		if (this.player.body.touching.up) {		
+			this.scene.sound.play('hit');
+
 			this.player.anims.play(`dizzy-${this.player.texture.key}`);
 			this.player.anims.stopAfterDelay(200);
 		} else if (!this.player.body.touching.down) {
@@ -99,11 +101,13 @@ export class PlayerService {
 				this.player.setVelocityY(-600);
 			}
 
+			this.scene.sound.play('jump');
 			this.playerJumps++;
 		}
 	}
 
 	die() {
+		this.scene.sound.play('death');
 		this.player.anims.stop();
 		this.player.anims.play(`die-${this.player.texture.key}`);
 	}

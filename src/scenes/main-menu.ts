@@ -139,7 +139,7 @@ export class MainMenuScene extends Phaser.Scene {
 				if (entries.length > 0) {
 					let entry = entries.shift();
 
-					if (entry.getPlayer().getID() != FBInstant.player.getID()) {
+					if (true || entry.getPlayer().getID() != FBInstant.player.getID()) {
 						this.beatScore = new DefaultText(
 							this,
 							this.physics.world.bounds.centerX,
@@ -149,6 +149,7 @@ export class MainMenuScene extends Phaser.Scene {
 							32
 						);
 						this.beatScore.setOrigin(0.5, 0.5);
+						this.beatScore.setMaxWidth(this.physics.world.bounds.width - 50);
 
 						Animations.weirdFadeIn(this, this.beatScore);
 					}

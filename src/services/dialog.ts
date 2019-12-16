@@ -82,6 +82,8 @@ export class DialogService {
 		);
 		closeButton.setInteractive();
 		closeButton.on('pointerdown', () => {
+			this.scene.sound.play('menuSelect');
+
 			container.setActive(false);
 			container.setVisible(false);
 		});
@@ -112,6 +114,8 @@ export class DialogService {
 		actionYes.setTint(0xf2b000);
 		actionYes.setInteractive();
 		actionYes.on('pointerdown', () => {
+			this.scene.sound.play('menuSelect');
+
 			yesCallback();
 		});
 
@@ -128,6 +132,8 @@ export class DialogService {
 			actionNo.setTint(0xf2b000);
 			actionNo.setInteractive();
 			actionNo.on('pointerdown', () => {
+				this.scene.sound.play('menuSelect');
+
 				if (noCallback != null) {
 					noCallback();
 				} else {
