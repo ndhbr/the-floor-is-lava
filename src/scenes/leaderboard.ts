@@ -40,7 +40,11 @@ export class LeaderboardScene extends Phaser.Scene {
 		this.leaderboardEntriesGroup = new Phaser.GameObjects.Group(this);
 	}
 
-    public preload(): void {}
+    public preload(): void {
+		this.load.spritesheet('close', 'assets/close.png',
+			{ frameWidth: 24, frameHeight: 24 });
+		this.load.image('leaderboardBadge', 'assets/leaderboard-badge.png');
+	}
 
     public create(data: any): void {
         this.addBackdrop();

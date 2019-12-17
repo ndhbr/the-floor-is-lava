@@ -29,8 +29,6 @@ export class PreloaderScene extends Phaser.Scene {
 			{ frameWidth: 48, frameHeight: 64 });
 		this.load.spritesheet('lava', 'assets/lava-animated.png',
 			{ frameWidth: 32, frameHeight: 32 });
-		this.load.spritesheet('pauseButton', 'assets/play-pause-buttons.png',
-			{ frameWidth: 32, frameHeight: 32 });
 		this.load.spritesheet('button-pixel-orange', 'assets/buttons-pixel-orange.png',
 			{ frameWidth: 125, frameHeight: 27 });
 		this.load.spritesheet('button-pixel-orange-small', 'assets/buttons-pixel-orange-small.png',
@@ -39,11 +37,8 @@ export class PreloaderScene extends Phaser.Scene {
 			{ frameWidth: 24, frameHeight: 24 });
 		this.load.spritesheet('button-pixel-orange-share', 'assets/buttons-pixel-orange-share.png',
 			{ frameWidth: 24, frameHeight: 24 });
-		this.load.spritesheet('close', 'assets/close.png',
-			{ frameWidth: 24, frameHeight: 24 });
-		this.load.spritesheet('portal', 'assets/portal.png',
-			{ frameWidth: 64, frameHeight: 16 });
 
+		this.load.image('ceilingLamp', 'assets/ceiling-lamp.png');
 		this.load.image('triangle', 'assets/triangle.png');
 		this.load.image('closeWithoutBox', 'assets/close-without-box.png');
 		this.load.image('heading', 'assets/heading.png');
@@ -51,37 +46,19 @@ export class PreloaderScene extends Phaser.Scene {
 		this.load.image('concrete', 'assets/concrete.png');
 		this.load.image('concreteWithLava', 'assets/concrete-with-lava.png');
 		this.load.image('concreteWithRoof', 'assets/concrete-with-roof.png');
-		this.load.image('table', 'assets/table.png');
-		this.load.image('couch', 'assets/couch.png');
-		this.load.image('bed', 'assets/bed.png');
-		this.load.image('cactus', 'assets/cactus.png');
-		this.load.image('ceilingLamp', 'assets/ceiling-lamp.png');
-		this.load.image('closet', 'assets/closet.png');
 		this.load.image('floor', 'assets/floor.png');
 		this.load.image('cobblestone', ['assets/cobblestone.png', 'assets/default_map.png']);
 		this.load.image('wood', ['assets/wood.png', 'assets/default_map.png']);
 		this.load.image('woodDark', 'assets/wood-dark.png');
-		this.load.image('startPlatform', 'assets/start-platform.png');
-		this.load.image('box', 'assets/box.png');
-		this.load.image('stove', 'assets/stove.png');
-		this.load.image('barrels', 'assets/barrels.png');
-		this.load.image('wineShelf', 'assets/wine-shelf.png');
-		this.load.image('leaderboardBadge', 'assets/leaderboard-badge.png');
 		this.load.image('backgroundBasement0', 'assets/background-basement-0.png');
 		this.load.image('backgroundBasement1', 'assets/background-basement-1.png');
 		this.load.image('backgroundLivingRoom0', 'assets/background-livingroom-0.png');
 		this.load.image('backgroundLivingRoom1', 'assets/background-livingroom-1.png');
 
 		this.load.bitmapFont('basis33', 'fonts/basis33_0.png', 'fonts/basis33.xml');
-
-		this.load.audio('hit', 'assets/sounds/hit.wav');
-		this.load.audio('jump', 'assets/sounds/jump.wav');
+		
 		this.load.audio('menuSelect', 'assets/sounds/menu_select.wav');
-		this.load.audio('portal', 'assets/sounds/portal.wav');
 		// this.load.audio('lava', 'assets/sounds/lava.wav');
-		this.load.audio('death', 'assets/sounds/death.mp3');
-		this.load.audio('8Bit_1', 'assets/sounds/8Bit_1.wav');
-		this.load.audio('8Bit_3', 'assets/sounds/8Bit_3.wav');
 
 		this.preloadActiveLanguageFile();
 	}

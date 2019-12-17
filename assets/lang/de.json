@@ -8,7 +8,8 @@
 		"LEADERBOARD": "Rangliste",
 		"HIGHSCORE": "Highscore",
 		"BEAT_TEXT_1": "Schlage",
-		"BEAT_TEXT_2": "mit"
+		"BEAT_TEXT_2": "mit",
+		"LOADING": "Wird geladen..."
 	},
 	"GAME_OVER_MENU": {
 		"CONTINUE": "Weiter (Video)",
@@ -25,6 +26,9 @@
 		"HEADING": "Pause",
 		"RESUME": "Fortsetzen",
 		"MENU": "Hauptmenü"
+	},
+	"GAME": {
+		"LOADING": "Wird geladen..."
 	},
 	"DIALOG": {
 		"CANCEL": "Abbrechen",

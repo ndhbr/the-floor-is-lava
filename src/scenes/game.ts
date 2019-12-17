@@ -6,6 +6,8 @@ import { LavaService } from '../services/lava';
 import { PlatformService } from '../services/platform';
 import { Room } from '../enums/rooms';
 import { Scene } from '../interfaces/scene';
+import { DefaultText } from '../classes/default-text';
+import { TranslateService } from '../services/translate';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -24,6 +26,7 @@ export class GameScene extends Phaser.Scene implements Scene {
 	lavaService: LavaService;
 	livingRoomPlatformService: PlatformService;
 	basementPlatformService: PlatformService;
+	translateService: TranslateService;
 
 	gameOver: boolean;
 	pauseButton: Phaser.GameObjects.TileSprite;
@@ -47,6 +50,7 @@ export class GameScene extends Phaser.Scene implements Scene {
 		this.lavaService = new LavaService(this);
 		this.livingRoomPlatformService = new PlatformService(this, Room.LIVING_ROOM);
 		this.basementPlatformService = new PlatformService(this, Room.BASEMENT);
+		this.translateService = new TranslateService(this);
 
 		if(this.enteredPortal == null) {
 			this.enteredPortal = this.events.addListener('onEnteredPortal', () => {
@@ -60,7 +64,52 @@ export class GameScene extends Phaser.Scene implements Scene {
 		}
 	}
 
-    public preload(): void {}
+    public preload(): void {
+        const backdrop = this.add.rectangle(
+            this.physics.world.bounds.centerX,
+            this.physics.world.bounds.centerY,
+            this.physics.world.bounds.width,
+            this.physics.world.bounds.height,
+            0x000000,
+            0.8
+		);
+		
+		const loadingText = new DefaultText(
+			this,
+			this.physics.world.bounds.centerX,
+			this.physics.world.bounds.centerY,
+			this.translateService.localise('GAME', 'LOADING'),
+			32
+		).setOrigin(0.5, 0.5);
+
+		this.load.spritesheet('pauseButton', 'assets/play-pause-buttons.png',
+			{ frameWidth: 32, frameHeight: 32 });
+
+		this.load.spritesheet('portal', 'assets/portal.png',
+			{ frameWidth: 64, frameHeight: 16 });
+
+		this.load.image('table', 'assets/table.png');
+		this.load.image('couch', 'assets/couch.png');
+		this.load.image('bed', 'assets/bed.png');
+		this.load.image('cactus', 'assets/cactus.png');
+		this.load.image('closet', 'assets/closet.png');
+		this.load.image('startPlatform', 'assets/start-platform.png');
+		this.load.image('box', 'assets/box.png');
+		this.load.image('stove', 'assets/stove.png');
+		this.load.image('barrels', 'assets/barrels.png');
+		this.load.image('wineShelf', 'assets/wine-shelf.png');
+
+		this.load.audio('hit', 'assets/sounds/hit.wav');
+		this.load.audio('jump', 'assets/sounds/jump.wav');
+		this.load.audio('death', 'assets/sounds/death.mp3');
+		this.load.audio('portal', 'assets/sounds/portal.wav');
+		this.load.audio('8Bit_3', 'assets/sounds/8Bit_3.wav');
+
+		backdrop.setVisible(false);
+		backdrop.setActive(false);
+		loadingText.setVisible(false);
+		loadingText.setActive(false);
+	}
 
     public create(data: any): void {
 		// Activate lights

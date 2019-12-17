@@ -47,7 +47,31 @@ export class MainMenuScene extends Phaser.Scene implements Scene {
 		this.translateService = new TranslateService(this);
 	}
 
-	public preload(): void {}
+	public preload(): void {
+		const backdrop = this.add.rectangle(
+            this.physics.world.bounds.centerX,
+            this.physics.world.bounds.centerY,
+            this.physics.world.bounds.width,
+            this.physics.world.bounds.height,
+            0x000000,
+            0.8
+		);
+		
+		const loadingText = new DefaultText(
+			this,
+			this.physics.world.bounds.centerX,
+			this.physics.world.bounds.centerY,
+			this.translateService.localise('MAIN_MENU', 'LOADING'),
+			32
+		).setOrigin(0.5, 0.5);
+
+		this.load.audio('8Bit_1', 'assets/sounds/8Bit_1.wav');
+
+		backdrop.setVisible(false);
+		backdrop.setActive(false);
+		loadingText.setVisible(false);
+		loadingText.setActive(false);
+	}
 
 	public create(data: any): void {
 		this.lights.enable().setAmbientColor(0xaaaaaa);
@@ -72,7 +96,7 @@ export class MainMenuScene extends Phaser.Scene implements Scene {
 
 		this.heading = this.add.sprite(
 			this.physics.world.bounds.centerX,
-			140,
+			90,
 			'heading'
 		);
 		this.heading.setOrigin(0.5, 0.5);
@@ -128,7 +152,7 @@ export class MainMenuScene extends Phaser.Scene implements Scene {
 		this.highscore = new DefaultText(
 			this,
 			this.physics.world.bounds.centerX,
-			220,
+			180,
 			`${this.translateService.localise('MAIN_MENU', 'HIGHSCORE')}:`+
 			` ${playerEntry.getScore()}m`,
 			32
@@ -153,7 +177,7 @@ export class MainMenuScene extends Phaser.Scene implements Scene {
 						this.beatScore = new DefaultText(
 							this,
 							this.physics.world.bounds.centerX,
-							240,
+							200,
 							`${this.translateService.localise('MAIN_MENU', 'BEAT_TEXT_1')} ${entry.getPlayer().getName()}`
 							+ ` ${this.translateService.localise('MAIN_MENU', 'BEAT_TEXT_2')}: ${(entry.getScore()) ? `${entry.getScore()}m` : '0m'}`,
 							32,
