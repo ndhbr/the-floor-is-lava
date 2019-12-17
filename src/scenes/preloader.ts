@@ -75,6 +75,8 @@ export class PreloaderScene extends Phaser.Scene {
 		this.load.audio('portal', 'assets/sounds/portal.wav');
 		// this.load.audio('lava', 'assets/sounds/lava.wav');
 		this.load.audio('death', 'assets/sounds/death.mp3');
+		this.load.audio('8Bit_1', 'assets/sounds/8Bit_1.wav');
+		this.load.audio('8Bit_3', 'assets/sounds/8Bit_3.wav');
 
 		this.preloadActiveLanguageFile();
 	}

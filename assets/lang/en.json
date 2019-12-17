@@ -2,7 +2,9 @@
 	"MAIN_MENU": {
 		"PLAY": "Play",
 		"LEADERBOARD": "Leaderboard",
-		"HIGHSCORE": "High score"
+		"HIGHSCORE": "High score",
+		"BEAT_TEXT_1": "Beat",
+		"BEAT_TEXT_2": "with"
 	},
 	"GAME_OVER_MENU": {
 		"CONTINUE": "Continue (Video)",

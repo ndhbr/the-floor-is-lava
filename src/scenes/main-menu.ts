@@ -105,6 +105,11 @@ export class MainMenuScene extends Phaser.Scene {
 
 		this.playerSwitch = new PlayerSwitch(this);
 		this.soundService.addSoundButton();
+
+		this.sound.stopAll();
+		this.sound.play('8Bit_1', {loop: true, volume: 0.2});
+
+		this.addCopyright();
 	}
 
 	public update(time: number) {
@@ -144,9 +149,10 @@ export class MainMenuScene extends Phaser.Scene {
 							this,
 							this.physics.world.bounds.centerX,
 							270,
-							`Beat ${entry.getPlayer().getName()}`
-							+ `with: ${(entry.getScore()) ? `${entry.getScore()} m` : '0'}`,
-							32
+							`${this.translateService.localise('MAIN_MENU', 'BEAT_TEXT_1')} ${entry.getPlayer().getName()}`
+							+ ` ${this.translateService.localise('MAIN_MENU', 'BEAT_TEXT_2')}: ${(entry.getScore()) ? `${entry.getScore()}m` : '0m'}`,
+							32,
+							1
 						);
 						this.beatScore.setOrigin(0.5, 0.5);
 						this.beatScore.setMaxWidth(this.physics.world.bounds.width - 50);
@@ -162,5 +168,17 @@ export class MainMenuScene extends Phaser.Scene {
 
 	private async showLeaderboard() {
 		this.scene.launch('Leaderboard');
+	}
+
+	private addCopyright(): void {
+		const copyright = new DefaultText(
+			this,
+			this.physics.world.bounds.centerX,
+			this.physics.world.bounds.bottom - 12,
+			'Made with love by ndhbr.de',
+			24
+		);
+		copyright.setOrigin(0.5, 0.5);
+		copyright.setTint(0x888888);
 	}
 }

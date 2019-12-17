@@ -97,10 +97,10 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 
 					return -1;
 				case PlayerNames.Ninja:
-					if (this.highscore < 1000) {
+					if (this.highscore < 5000) {
 						this.players[PlayerNames.Ninja].setTint(color);
 
-						return 1000;
+						return 5000;
 					}
 
 					return -1;
@@ -202,8 +202,9 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 
 	private removeHighscoreText() {
 		if (this.highscoreText != null) {
-			this.highscoreText.setActive(false);
-			this.highscoreText.setVisible(false);
+			console.log('Test 222');
+			
+			this.highscoreText.destroy();
 		}
 	}
 
@@ -214,25 +215,20 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 			text = `Schaffe ${scoreNeeded}m, um diesen Spieler freizuschalten!`;
 		}
 
-		if (this.highscoreText == null) {
-			this.highscoreText = new DefaultText(
-				this.scene,
-				0,
-				80,
-				text,
-				24,
-				1
-			);
+		if (this.highscoreText != null)
+			this.highscoreText.destroy();
 
-			this.highscoreText.setMaxWidth(this.scene.physics.world.bounds.width - 50);
-			this.highscoreText.setOrigin(0.5, 0.5);
-			this.add(this.highscoreText);
-		} else {
-			console.log(text);
+		this.highscoreText = new DefaultText(
+			this.scene,
+			0,
+			80,
+			text,
+			24,
+			1
+		);
 
-			this.highscoreText.setActive(true);
-			this.highscoreText.setVisible(true);
-			this.highscoreText.setText(text);
-		}
+		this.highscoreText.setMaxWidth(this.scene.physics.world.bounds.width - 50);
+		this.highscoreText.setOrigin(0.5, 0.5);
+		this.add(this.highscoreText);
 	}
 }

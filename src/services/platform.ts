@@ -146,7 +146,7 @@ export class PlatformService {
 				},
 				{
 					key: 'cactus',
-					height: 64,
+					height: 48,
 					scale: 1.5
 				},
 				{
@@ -164,7 +164,7 @@ export class PlatformService {
 				},
 				{
 					key: 'cactus',
-					height: 64,
+					height: 48,
 					scale: 1.5
 				},
 				{

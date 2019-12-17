@@ -124,6 +124,9 @@ export class PauseMenuScene extends Phaser.Scene {
 		);
 
 		this.soundService.addSoundButton();
+
+		this.sound.stopAll();
+		this.sound.play('8Bit_1', {loop: true, volume: 0.2});
 	}
 
 	public update(time: number): void {}

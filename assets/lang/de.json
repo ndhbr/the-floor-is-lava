@@ -2,7 +2,9 @@
 	"MAIN_MENU": {
 		"PLAY": "Jetzt spielen",
 		"LEADERBOARD": "Rangliste",
-		"HIGHSCORE": "Highscore"
+		"HIGHSCORE": "Highscore",
+		"BEAT_TEXT_1": "Schlage",
+		"BEAT_TEXT_2": "mit"
 	},
 	"GAME_OVER_MENU": {
 		"CONTINUE": "Weiter (Video)",

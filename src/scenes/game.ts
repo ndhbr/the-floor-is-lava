@@ -137,6 +137,9 @@ export class GameScene extends Phaser.Scene {
 			}
 		});
 
+		this.sound.stopAll();
+		this.sound.play('8Bit_3', {loop: true, volume: 0.2});
+
 		// Lava
 		// this.sound.play('lava', {
 		// 	loop: true,
