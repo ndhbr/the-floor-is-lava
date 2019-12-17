@@ -5,6 +5,7 @@ import { PlayerService } from '../services/player';
 import { LavaService } from '../services/lava';
 import { PlatformService } from '../services/platform';
 import { Room } from '../enums/rooms';
+import { Scene } from '../interfaces/scene';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -12,7 +13,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     key: 'Game',
 };
 
-export class GameScene extends Phaser.Scene {
+export class GameScene extends Phaser.Scene implements Scene {
 
 	enteredPortal: Phaser.Events.EventEmitter;
 	performanceTest: Array<number> = [];
@@ -148,6 +149,7 @@ export class GameScene extends Phaser.Scene {
 
 		// Countdown
 		this.countdown();
+		this.playBackgroundMusic();
 	}
 
     public update(time: number): void {
@@ -278,5 +280,10 @@ export class GameScene extends Phaser.Scene {
 		}
 
 		return null;
+	}
+
+	playBackgroundMusic() {
+		this.sound.stopAll();
+		this.sound.play('8Bit_3', {loop: true, volume: 0.2});
 	}
 }

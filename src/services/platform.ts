@@ -1,5 +1,4 @@
 import { Room } from "../enums/rooms";
-import { TheFloorIsLava } from "../app";
 
 const DEFAULT_SPEED = -250;
 
@@ -187,7 +186,7 @@ export class PlatformService {
 		// console.log('Platforms: ' + this.platformGroup.getLength());
 		// console.log('Platformpool: ' + this.platformPool.getLength());
 
-		if (this.platformPool.getLength() > this.textures.length) {			
+		if (this.platformPool.getLength() > this.textures.length) {
 			platform = this.platformPool.getFirst();
 
 			this.platformPool.remove(platform);

@@ -8,6 +8,7 @@ import { SoundService } from '../services/sound';
 import { Animations } from '../services/animations';
 import { TranslateService } from '../services/translate';
 import { PlayerSwitch } from '../classes/player-switch';
+import { Scene } from '../interfaces/scene';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -15,7 +16,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     key: 'MainMenu',
 };
 
-export class MainMenuScene extends Phaser.Scene {
+export class MainMenuScene extends Phaser.Scene implements Scene {
 
 	ready: boolean;
 	heading: Phaser.GameObjects.Sprite;
@@ -110,6 +111,7 @@ export class MainMenuScene extends Phaser.Scene {
 		this.sound.play('8Bit_1', {loop: true, volume: 0.2});
 
 		this.addCopyright();
+		this.playBackgroundMusic();
 	}
 
 	public update(time: number) {
@@ -180,5 +182,10 @@ export class MainMenuScene extends Phaser.Scene {
 		);
 		copyright.setOrigin(0.5, 0.5);
 		copyright.setTint(0x888888);
+	}
+
+	playBackgroundMusic() {
+		this.sound.stopAll();
+		this.sound.play('8Bit_1', {loop: true, volume: 0.2});
 	}
 }

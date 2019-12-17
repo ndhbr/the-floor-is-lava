@@ -5,6 +5,7 @@ import { SoundService } from '../services/sound';
 import { Animations } from '../services/animations';
 import { TranslateService } from '../services/translate';
 import { DialogService } from '../services/dialog';
+import { Scene } from '../interfaces/scene';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -12,7 +13,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     key: 'PauseMenu',
 };
 
-export class PauseMenuScene extends Phaser.Scene {
+export class PauseMenuScene extends Phaser.Scene implements Scene {
 
 	heading: DefaultText;
 	backdrop: Phaser.GameObjects.Rectangle;
@@ -124,10 +125,13 @@ export class PauseMenuScene extends Phaser.Scene {
 		);
 
 		this.soundService.addSoundButton();
-
-		this.sound.stopAll();
-		this.sound.play('8Bit_1', {loop: true, volume: 0.2});
+		this.playBackgroundMusic();
 	}
 
 	public update(time: number): void {}
+
+	playBackgroundMusic() {
+		this.sound.stopAll();
+		this.sound.play('8Bit_1', {loop: true, volume: 0.2});
+	}
 }

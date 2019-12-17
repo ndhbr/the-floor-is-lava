@@ -5,6 +5,7 @@ import { SoundService } from '../services/sound';
 import { TranslateService } from '../services/translate';
 import { AdService } from '../services/ad';
 import { DialogService } from '../services/dialog';
+import { Scene } from '../interfaces/scene';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -12,7 +13,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     key: 'GameOverMenu',
 };
 
-export class GameOverMenuScene extends Phaser.Scene {
+export class GameOverMenuScene extends Phaser.Scene implements Scene {
 
 	backdrop: Phaser.GameObjects.Rectangle;
 
@@ -128,6 +129,7 @@ export class GameOverMenuScene extends Phaser.Scene {
 		);
 
 		this.soundService.addSoundButton();
+		this.playBackgroundMusic();
 	}
 
 	public update(time: number): void {}
@@ -135,5 +137,10 @@ export class GameOverMenuScene extends Phaser.Scene {
 	private async loadAds() {
 		this.videoAd = await AdService.loadRewardedVideo();
 		this.interstitialAd = await AdService.loadInterstitial();
+	}
+
+	playBackgroundMusic() {
+		this.sound.stopAll();
+		this.sound.play('8Bit_1', {loop: true, volume: 0.2});
 	}
 }
