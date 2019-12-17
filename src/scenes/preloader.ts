@@ -1,5 +1,7 @@
 import * as Phaser from 'phaser';
 import { SoundService } from '../services/sound';
+import { DefaultText } from '../classes/default-text';
+import { TranslateService } from '../services/translate';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -9,6 +11,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 export class PreloaderScene extends Phaser.Scene {
 
 	soundService: SoundService;
+	translateService: TranslateService;
 
 	constructor() {
 		super(sceneConfig);
@@ -33,6 +36,8 @@ export class PreloaderScene extends Phaser.Scene {
 		this.load.spritesheet('button-pixel-orange-small', 'assets/buttons-pixel-orange-small.png',
 			{ frameWidth: 47, frameHeight: 21 });
 		this.load.spritesheet('button-pixel-orange-sound', 'assets/buttons-pixel-orange-sound.png',
+			{ frameWidth: 24, frameHeight: 24 });
+		this.load.spritesheet('button-pixel-orange-share', 'assets/buttons-pixel-orange-share.png',
 			{ frameWidth: 24, frameHeight: 24 });
 		this.load.spritesheet('close', 'assets/close.png',
 			{ frameWidth: 24, frameHeight: 24 });
@@ -82,7 +87,25 @@ export class PreloaderScene extends Phaser.Scene {
 	}
 
 	public create(): void {
+		this.translateService = new TranslateService(this);
 		this.soundService = new SoundService(this);
+
+		new DefaultText(
+			this,
+			this.physics.world.bounds.centerX,
+			this.physics.world.bounds.centerY - 24,
+			this.translateService.localise('PRELOADER', 'LOADING'),
+			48
+		).setOrigin(0.5, 0.5);
+
+		new DefaultText(
+			this,
+			this.physics.world.bounds.centerX,
+			this.physics.world.bounds.centerY + 24,
+			this.translateService.localise('PRELOADER', 'LAVA'),
+			32
+		).setOrigin(0.5, 0.5);
+
 
 		this.anims.create({
 			key: 'portal',

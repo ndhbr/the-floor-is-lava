@@ -1,4 +1,5 @@
 import { Room } from "../enums/rooms";
+import { Animations } from "./animations";
 
 const DEFAULT_SPEED = -250;
 
@@ -343,17 +344,7 @@ export class PlatformService {
 
 	private fadeIn(target: any) {
 		// let a = performance.now();
-
-		target.alpha = 0;
-
-		this.scene.tweens.add({
-			targets: target,
-			alphaTopLeft: { value: 1, duration: 250 },
-			alphaTopRight: { value: 1, duration: 250, delay: 100 },
-			alphaBottomLeft: { value: 1, duration: 250 },
-			alphaBottomRight: { value: 1, duration: 250, delay: 100 }
-		});
-
+		Animations.weirdFadeIn(this.scene, target);
 		// console.log('Faded in in: ' + (performance.now() - a));
 	}
 }

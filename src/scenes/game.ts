@@ -120,6 +120,8 @@ export class GameScene extends Phaser.Scene implements Scene {
 			this.pauseButton.setVisible(true);
 
 			if (data != null && data.action == 'continue') {
+				this.countdown();
+		
 				if (this.playerService.getCurrentRoom() == Room.LIVING_ROOM) {
 					this.livingRoomPlatformService.clearPlatforms();
 					this.livingRoomPlatformService.addStartPlatform();

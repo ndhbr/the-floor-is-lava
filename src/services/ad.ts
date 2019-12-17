@@ -5,7 +5,13 @@ const adIds = {
 
 export class AdService {
 
+	static gameCount: number = 0;
+
 	constructor() {}
+
+	static incrementGameCount() {
+		this.gameCount++;
+	}
 
 	static async loadRewardedVideo(): Promise<FBInstant.AdInstance> {
 		const video = await FBInstant.getRewardedVideoAsync(adIds.REWARDED_VIDEO);
@@ -14,9 +20,13 @@ export class AdService {
 	}
 
 	static async loadInterstitial(): Promise<FBInstant.AdInstance> {
-		const interstitial = await FBInstant.getInterstitialAdAsync(adIds.INTERSTITIAL);
-		await interstitial.loadAsync();
-		return interstitial;
+		if (this.gameCount == 1 || (this.gameCount > 1 && this.gameCount % 5)) {
+			const interstitial = await FBInstant.getInterstitialAdAsync(adIds.INTERSTITIAL);
+			await interstitial.loadAsync();
+			return interstitial;
+		}
+
+		return null;
 	}
 
 	static async showRewardedVideo(video: FBInstant.AdInstance): Promise<void> {
@@ -31,13 +41,17 @@ export class AdService {
 	}
 
 	static async showInterstitial(interstitial: FBInstant.AdInstance): Promise<void> {
-		if (interstitial != null) {
-			await interstitial.showAsync();
-		} else {
-			console.log('Too slow to load interstitial.');
-
-			const interstitial = await AdService.loadInterstitial();
-			await interstitial.showAsync();
+		if (this.gameCount == 1 || (this.gameCount > 1 && this.gameCount % 5)) {
+			if (interstitial != null) {
+				await interstitial.showAsync();
+			} else {
+				console.log('Too slow to load interstitial.');
+	
+				const interstitial = await AdService.loadInterstitial();
+				await interstitial.showAsync();
+			}
 		}
+
+		return null;
 	}
 }

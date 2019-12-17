@@ -6,6 +6,7 @@ import { Animations } from '../services/animations';
 import { TranslateService } from '../services/translate';
 import { DialogService } from '../services/dialog';
 import { Scene } from '../interfaces/scene';
+import { Base64Images } from '../base64-images';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -68,40 +69,24 @@ export class PauseMenuScene extends Phaser.Scene implements Scene {
 			this.translateService.localise('PAUSE_MENU', 'RESUME'),
 			(button: Phaser.GameObjects.Container) => {
 				this.scene.start('Countdown');
-				return;
+			}
+		);
 
-				let textObject = <Phaser.GameObjects.Text> button.getAt(1);
-
-				if (this.countdown == null) {
-					textObject.setText('3');
-
-					let seconds = 2;
-					this.countdown = setInterval(() => {
-						textObject.setText(seconds+'');
-
-						if (seconds == 0) {
-							this.scene.stop();
-							this.scene.resume('Game');
-
-							clearInterval(this.countdown);
-							this.countdown = null;
-						} else {
-							seconds--;
-						}
-					}, 1000);
-				} else {
-					textObject.setText('Resume');
-
-					clearInterval(this.countdown);
-					this.countdown = null;
-				}
+		this.buttonService.generateButton(
+			this.physics.world.bounds.centerX,
+			270,
+			this.resumeButton,
+			'button-pixel-orange',
+			this.translateService.localise('GAME_OVER_MENU', 'CHALLENGE'),
+			async (button: Phaser.GameObjects.Container) => {
+				await FBInstant.context.chooseAsync();
 			}
 		);
 
 		let menuDialog: Phaser.GameObjects.Container;
 		this.buttonService.generateButton(
 			this.physics.world.bounds.centerX,
-			270,
+			360,
 			this.menuButton,
 			'button-pixel-orange',
 			this.translateService.localise('PAUSE_MENU', 'MENU'),
@@ -126,9 +111,28 @@ export class PauseMenuScene extends Phaser.Scene implements Scene {
 
 		this.soundService.addSoundButton();
 		this.playBackgroundMusic();
+		this.addShareButton();
 	}
 
 	public update(time: number): void {}
+
+	private addShareButton() {
+		let buttonContainer: Phaser.GameObjects.Container;
+		this.buttonService.generateButton(
+			this.physics.world.bounds.right - 110,
+			this.physics.world.bounds.bottom - 50,
+			buttonContainer,
+			'button-pixel-orange-share',
+			'',
+			async () => {
+				await FBInstant.shareAsync({
+					intent: 'CHALLENGE',
+					image: Base64Images.getShareImage(),
+					text: this.translateService.localise('SHARE', 'CHALLENGE')	
+				});
+			}
+		);
+	}
 
 	playBackgroundMusic() {
 		this.sound.stopAll();

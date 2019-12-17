@@ -1,4 +1,8 @@
 {
+	"PRELOADER": {
+		"LOADING": "Laden...",
+		"LAVA": "Fülle Welt mit Lava"
+	},
 	"MAIN_MENU": {
 		"PLAY": "Jetzt spielen",
 		"LEADERBOARD": "Rangliste",
@@ -9,6 +13,7 @@
 	"GAME_OVER_MENU": {
 		"CONTINUE": "Weiter (Video)",
 		"PLAY_AGAIN": "Neu starten",
+		"CHALLENGE": "Fordere heraus",
 		"MENU": "Menü"
 	},
 	"LEADERBOARD": {
@@ -26,5 +31,8 @@
 		"YES": "Ja",
 		"ARE_YOU_SURE": "Bist du sicher?",
 		"SCORE_WILL_BE_LOST": "Du verlierst deinen aktuellen Spielstand."
+	},
+	"SHARE": {
+		"CHALLENGE": "Ich wette du kommst nicht so weit. Komm und schlag mich 🤣"
 	}
 }

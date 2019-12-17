@@ -31,7 +31,6 @@ export class Animations {
 
 	public static fadeOut(scene: Phaser.Scene, object: any, speed?: number,
 		callback?: () => void) {
-
 		object.alpha = 1;
 
 		if (speed != null)

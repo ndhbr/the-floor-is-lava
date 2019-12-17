@@ -202,8 +202,6 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 
 	private removeHighscoreText() {
 		if (this.highscoreText != null) {
-			console.log('Test 222');
-			
 			this.highscoreText.destroy();
 		}
 	}

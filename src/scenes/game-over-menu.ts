@@ -6,6 +6,7 @@ import { TranslateService } from '../services/translate';
 import { AdService } from '../services/ad';
 import { DialogService } from '../services/dialog';
 import { Scene } from '../interfaces/scene';
+import { Base64Images } from '../base64-images';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -46,6 +47,7 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 
 	public create(data: {score: number}): void {
 		this.loadAds();
+		AdService.incrementGameCount();
 
 		this.backdrop = this.add.rectangle(
 			this.physics.world.bounds.centerX,
@@ -94,7 +96,7 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 			'button-pixel-orange',
 			this.translateService.localise('GAME_OVER_MENU', 'PLAY_AGAIN'),
 			async (button: Phaser.GameObjects.Container) => {
-				// await AdService.showInterstitial(this.interstitialAd);
+				await AdService.showInterstitial(this.interstitialAd);
 
 				this.scene.stop();
 				this.scene.stop('Game');
@@ -102,10 +104,21 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 			}
 		);
 
-		let menuDialog: Phaser.GameObjects.Container;
 		this.buttonService.generateButton(
 			this.physics.world.bounds.centerX,
 			430,
+			this.resumeButton,
+			'button-pixel-orange',
+			this.translateService.localise('GAME_OVER_MENU', 'CHALLENGE'),
+			async (button: Phaser.GameObjects.Container) => {
+				await FBInstant.context.chooseAsync();
+			}
+		);
+
+		let menuDialog: Phaser.GameObjects.Container;
+		this.buttonService.generateButton(
+			this.physics.world.bounds.centerX,
+			500,
 			this.menuButton,
 			'button-pixel-orange',
 			this.translateService.localise('GAME_OVER_MENU', 'MENU'),
@@ -130,13 +143,32 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 
 		this.soundService.addSoundButton();
 		this.playBackgroundMusic();
+		this.addShareButton();
 	}
 
 	public update(time: number): void {}
 
 	private async loadAds() {
-		this.videoAd = await AdService.loadRewardedVideo();
+		// this.videoAd = await AdService.loadRewardedVideo(); maybe loading is unnecessary
 		this.interstitialAd = await AdService.loadInterstitial();
+	}
+
+	private addShareButton() {
+		let buttonContainer: Phaser.GameObjects.Container;
+		this.buttonService.generateButton(
+			this.physics.world.bounds.right - 110,
+			this.physics.world.bounds.bottom - 50,
+			buttonContainer,
+			'button-pixel-orange-share',
+			'',
+			async () => {
+				await FBInstant.shareAsync({
+					intent: 'CHALLENGE',
+					image: Base64Images.getShareImage(),
+					text: this.translateService.localise('SHARE', 'CHALLENGE')	
+				});
+			}
+		);
 	}
 
 	playBackgroundMusic() {

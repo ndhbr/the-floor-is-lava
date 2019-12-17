@@ -1,4 +1,8 @@
 {
+	"PRELOADER": {
+		"LOADING": "Loading...",
+		"LAVA": "Filling world with lava"
+	},
 	"MAIN_MENU": {
 		"PLAY": "Play",
 		"LEADERBOARD": "Leaderboard",
@@ -9,6 +13,7 @@
 	"GAME_OVER_MENU": {
 		"CONTINUE": "Continue (Video)",
 		"PLAY_AGAIN": "Play again",
+		"CHALLENGE": "Challenge friends",
 		"MENU": "Menu"
 	},
 	"LEADERBOARD": {
@@ -26,5 +31,8 @@
 		"YES": "Yes",
 		"ARE_YOU_SURE": "Are you sure?",
 		"SCORE_WILL_BE_LOST": "Your current score will be lost."
+	},
+	"SHARE": {
+		"CHALLENGE": "I bet you do not get this far. Try to defeat me 🤣"
 	}
 }

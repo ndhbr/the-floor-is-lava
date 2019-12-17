@@ -12,8 +12,8 @@ const DEFAULT_HEIGHT = 720;
 const DEFAULT_WIDTH = (window.innerWidth / window.innerHeight) * DEFAULT_HEIGHT;
 
 const config: Phaser.Types.Core.GameConfig = {
-    title: 'First Game',
-    type: Phaser.AUTO,
+    title: 'The Floor Is Lava',
+    type: Phaser.WEBGL,
     scale: {
         parent: 'game',
         mode: Phaser.Scale.FIT,

@@ -9,6 +9,7 @@ import { Animations } from '../services/animations';
 import { TranslateService } from '../services/translate';
 import { PlayerSwitch } from '../classes/player-switch';
 import { Scene } from '../interfaces/scene';
+import { Base64Images } from '../base64-images';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -112,6 +113,8 @@ export class MainMenuScene extends Phaser.Scene implements Scene {
 
 		this.addCopyright();
 		this.playBackgroundMusic();
+		this.createShortcut();
+		this.addShareButton();
 	}
 
 	public update(time: number) {
@@ -150,13 +153,13 @@ export class MainMenuScene extends Phaser.Scene implements Scene {
 						this.beatScore = new DefaultText(
 							this,
 							this.physics.world.bounds.centerX,
-							270,
+							240,
 							`${this.translateService.localise('MAIN_MENU', 'BEAT_TEXT_1')} ${entry.getPlayer().getName()}`
 							+ ` ${this.translateService.localise('MAIN_MENU', 'BEAT_TEXT_2')}: ${(entry.getScore()) ? `${entry.getScore()}m` : '0m'}`,
 							32,
 							1
 						);
-						this.beatScore.setOrigin(0.5, 0.5);
+						this.beatScore.setOrigin(0.5, 0);
 						this.beatScore.setMaxWidth(this.physics.world.bounds.width - 50);
 
 						Animations.weirdFadeIn(this, this.beatScore);
@@ -182,6 +185,32 @@ export class MainMenuScene extends Phaser.Scene implements Scene {
 		);
 		copyright.setOrigin(0.5, 0.5);
 		copyright.setTint(0x888888);
+	}
+
+	private async createShortcut(): Promise<void> {
+		let canCreateShortcut = await FBInstant.canCreateShortcutAsync();
+
+        if (canCreateShortcut) {
+            await FBInstant.createShortcutAsync();
+        }
+	}
+
+	private addShareButton() {
+		let buttonContainer: Phaser.GameObjects.Container;
+		this.buttonService.generateButton(
+			this.physics.world.bounds.right - 110,
+			this.physics.world.bounds.bottom - 50,
+			buttonContainer,
+			'button-pixel-orange-share',
+			'',
+			async () => {
+				await FBInstant.shareAsync({
+					intent: 'CHALLENGE',
+					image: Base64Images.getShareImage(),
+					text: this.translateService.localise('SHARE', 'CHALLENGE')	
+				});
+			}
+		);
 	}
 
 	playBackgroundMusic() {

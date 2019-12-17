@@ -46,14 +46,13 @@ export class CountdownScene extends Phaser.Scene {
 			yoyo: false,
 			repeat: 3,
 			onRepeat: () => {
-				countdown.alpha = 1;
-
 				seconds--;
 
 				if (seconds == 0) {
 					this.scene.stop();
 					this.scene.resume('Game');
 				} else {
+					countdown.alpha = 1;
 					countdown.setText(seconds + '');
 				}
 			}
