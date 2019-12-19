@@ -38,5 +38,8 @@
 	},
 	"SHARE": {
 		"CHALLENGE": "Ich wette du kommst nicht so weit. Komm und schlag mich 🤣"
+	},
+	"LOADING": {
+		"LOADING": "Laden..."
 	}
 }

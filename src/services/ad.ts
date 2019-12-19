@@ -6,6 +6,7 @@ const adIds = {
 export class AdService {
 
 	static gameCount: number = 0;
+	static interstitial: FBInstant.AdInstance;
 
 	constructor() {}
 
@@ -20,7 +21,7 @@ export class AdService {
 	}
 
 	static async loadInterstitial(): Promise<FBInstant.AdInstance> {
-		if (this.gameCount == 1 || (this.gameCount > 1 && this.gameCount % 5)) {
+		if (this.gameCount == 1 || (this.gameCount > 1 && this.gameCount % 5 == 0)) {
 			const interstitial = await FBInstant.getInterstitialAdAsync(adIds.INTERSTITIAL);
 			await interstitial.loadAsync();
 			return interstitial;
@@ -40,18 +41,39 @@ export class AdService {
 		}
 	}
 
-	static async showInterstitial(interstitial: FBInstant.AdInstance): Promise<void> {
-		if (this.gameCount == 1 || (this.gameCount > 1 && this.gameCount % 5)) {
-			if (interstitial != null) {
+	static async showInterstitial(interstitial?: FBInstant.AdInstance): Promise<void> {
+		if (this.gameCount == 1 || (this.gameCount > 1 && this.gameCount % 5 == 0)) {
+			if (interstitial == null && AdService.interstitial != null) {
+				await AdService.interstitial.showAsync();
+			} else if (interstitial != null) {
 				await interstitial.showAsync();
 			} else {
 				console.log('Too slow to load interstitial.');
-	
+
 				const interstitial = await AdService.loadInterstitial();
 				await interstitial.showAsync();
 			}
 		}
+	}
 
-		return null;
+	static async createShortcut(): Promise<void> {
+		if (this.gameCount == 1) {
+			let playerData = await FBInstant.player.getDataAsync(['shortcut']);
+
+			if (!playerData.shortcut) {
+				let canCreateShortcut = await FBInstant.canCreateShortcutAsync();
+
+				if (canCreateShortcut) {
+					try {
+						await FBInstant.createShortcutAsync();
+						await FBInstant.player.setDataAsync({shortcut: true});
+					} catch (error) {
+						console.error('SHORTCUT', 'Did not create shortcut.');
+					}
+				}
+			} else {
+				console.log('SHORTCUT', 'Shortcut already existing.');
+			}
+		}
 	}
 }

@@ -31,13 +31,14 @@ export class PreloaderScene extends Phaser.Scene {
 			{ frameWidth: 32, frameHeight: 32 });
 		this.load.spritesheet('button-pixel-orange', 'assets/buttons-pixel-orange.png',
 			{ frameWidth: 125, frameHeight: 27 });
-		this.load.spritesheet('button-pixel-orange-small', 'assets/buttons-pixel-orange-small.png',
-			{ frameWidth: 47, frameHeight: 21 });
 		this.load.spritesheet('button-pixel-orange-sound', 'assets/buttons-pixel-orange-sound.png',
 			{ frameWidth: 24, frameHeight: 24 });
 		this.load.spritesheet('button-pixel-orange-share', 'assets/buttons-pixel-orange-share.png',
 			{ frameWidth: 24, frameHeight: 24 });
+		this.load.spritesheet('portal', 'assets/portal.png',
+			{ frameWidth: 64, frameHeight: 16 });
 
+		this.load.image('playerComingSoon', 'assets/player-coming-soon.png');
 		this.load.image('ceilingLamp', 'assets/ceiling-lamp.png');
 		this.load.image('triangle', 'assets/triangle.png');
 		this.load.image('closeWithoutBox', 'assets/close-without-box.png');
@@ -56,7 +57,7 @@ export class PreloaderScene extends Phaser.Scene {
 		this.load.image('backgroundLivingRoom1', 'assets/background-livingroom-1.png');
 
 		this.load.bitmapFont('basis33', 'fonts/basis33_0.png', 'fonts/basis33.xml');
-		
+
 		this.load.audio('menuSelect', 'assets/sounds/menu_select.wav');
 		// this.load.audio('lava', 'assets/sounds/lava.wav');
 
@@ -82,7 +83,6 @@ export class PreloaderScene extends Phaser.Scene {
 			this.translateService.localise('PRELOADER', 'LAVA'),
 			32
 		).setOrigin(0.5, 0.5);
-
 
 		this.anims.create({
 			key: 'portal',

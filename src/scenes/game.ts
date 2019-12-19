@@ -8,6 +8,7 @@ import { Room } from '../enums/rooms';
 import { Scene } from '../interfaces/scene';
 import { DefaultText } from '../classes/default-text';
 import { TranslateService } from '../services/translate';
+import { AdService } from '../services/ad';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -73,7 +74,7 @@ export class GameScene extends Phaser.Scene implements Scene {
             0x000000,
             0.8
 		);
-		
+
 		const loadingText = new DefaultText(
 			this,
 			this.physics.world.bounds.centerX,
@@ -84,9 +85,6 @@ export class GameScene extends Phaser.Scene implements Scene {
 
 		this.load.spritesheet('pauseButton', 'assets/play-pause-buttons.png',
 			{ frameWidth: 32, frameHeight: 32 });
-
-		this.load.spritesheet('portal', 'assets/portal.png',
-			{ frameWidth: 64, frameHeight: 16 });
 
 		this.load.image('table', 'assets/table.png');
 		this.load.image('couch', 'assets/couch.png');
@@ -103,7 +101,7 @@ export class GameScene extends Phaser.Scene implements Scene {
 		this.load.audio('jump', 'assets/sounds/jump.wav');
 		this.load.audio('death', 'assets/sounds/death.mp3');
 		this.load.audio('portal', 'assets/sounds/portal.wav');
-		this.load.audio('8Bit_3', 'assets/sounds/8Bit_3.wav');
+		// this.load.audio('8Bit_3', 'assets/sounds/8Bit_3.wav');
 
 		backdrop.setVisible(false);
 		backdrop.setActive(false);
@@ -170,7 +168,7 @@ export class GameScene extends Phaser.Scene implements Scene {
 
 			if (data != null && data.action == 'continue') {
 				this.countdown();
-		
+
 				if (this.playerService.getCurrentRoom() == Room.LIVING_ROOM) {
 					this.livingRoomPlatformService.clearPlatforms();
 					this.livingRoomPlatformService.addStartPlatform();
@@ -189,8 +187,8 @@ export class GameScene extends Phaser.Scene implements Scene {
 			}
 		});
 
-		this.sound.stopAll();
-		this.sound.play('8Bit_3', {loop: true, volume: 0.2});
+		// this.sound.stopAll();
+		// this.sound.play('8Bit_3', {loop: true, volume: 0.2});
 
 		// Lava
 		// this.sound.play('lava', {
@@ -200,7 +198,9 @@ export class GameScene extends Phaser.Scene implements Scene {
 
 		// Countdown
 		this.countdown();
-		this.playBackgroundMusic();
+		AdService.loadInterstitial().then((interstitial: FBInstant.AdInstance) => {
+			AdService.interstitial = interstitial;
+		});
 	}
 
     public update(time: number): void {
@@ -334,7 +334,7 @@ export class GameScene extends Phaser.Scene implements Scene {
 	}
 
 	playBackgroundMusic() {
-		this.sound.stopAll();
-		this.sound.play('8Bit_3', {loop: true, volume: 0.2});
+		// this.sound.stopAll();
+		// this.sound.play('8Bit_3', {loop: true, volume: 0.2});
 	}
 }

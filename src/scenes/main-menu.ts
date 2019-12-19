@@ -56,7 +56,7 @@ export class MainMenuScene extends Phaser.Scene implements Scene {
             0x000000,
             0.8
 		);
-		
+
 		const loadingText = new DefaultText(
 			this,
 			this.physics.world.bounds.centerX,
@@ -65,7 +65,7 @@ export class MainMenuScene extends Phaser.Scene implements Scene {
 			32
 		).setOrigin(0.5, 0.5);
 
-		this.load.audio('8Bit_1', 'assets/sounds/8Bit_1.wav');
+		// this.load.audio('8Bit_1', 'assets/sounds/8Bit_1.wav');
 
 		backdrop.setVisible(false);
 		backdrop.setActive(false);
@@ -132,8 +132,8 @@ export class MainMenuScene extends Phaser.Scene implements Scene {
 		this.playerSwitch = new PlayerSwitch(this);
 		this.soundService.addSoundButton();
 
-		this.sound.stopAll();
-		this.sound.play('8Bit_1', {loop: true, volume: 0.2});
+		// this.sound.stopAll();
+		// this.sound.play('8Bit_1', {loop: true, volume: 0.2});
 
 		this.addCopyright();
 		this.playBackgroundMusic();
@@ -212,11 +212,22 @@ export class MainMenuScene extends Phaser.Scene implements Scene {
 	}
 
 	private async createShortcut(): Promise<void> {
-		let canCreateShortcut = await FBInstant.canCreateShortcutAsync();
+		let playerData = await FBInstant.player.getDataAsync(['shortcut']);
 
-        if (canCreateShortcut) {
-            await FBInstant.createShortcutAsync();
-        }
+		if (!playerData.shortcut) {
+			let canCreateShortcut = await FBInstant.canCreateShortcutAsync();
+
+			if (canCreateShortcut) {
+				try {
+					await FBInstant.createShortcutAsync();
+					await FBInstant.player.setDataAsync({shortcut: true});
+				} catch (error) {
+					console.error('SHORTCUT', 'Did not create shortcut.');
+				}
+			}
+		} else {
+			console.log('SHORTCUT', 'Shortcut already existing.');
+		}
 	}
 
 	private addShareButton() {
@@ -231,14 +242,14 @@ export class MainMenuScene extends Phaser.Scene implements Scene {
 				await FBInstant.shareAsync({
 					intent: 'CHALLENGE',
 					image: Base64Images.getShareImage(),
-					text: this.translateService.localise('SHARE', 'CHALLENGE')	
+					text: this.translateService.localise('SHARE', 'CHALLENGE')
 				});
 			}
 		);
 	}
 
 	playBackgroundMusic() {
-		this.sound.stopAll();
-		this.sound.play('8Bit_1', {loop: true, volume: 0.2});
+		// this.sound.stopAll();
+		// this.sound.play('8Bit_1', {loop: true, volume: 0.2});
 	}
 }

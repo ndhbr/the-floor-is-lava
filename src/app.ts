@@ -6,6 +6,7 @@ import { PauseMenuScene } from './scenes/pause-menu';
 import { GameOverMenuScene } from './scenes/game-over-menu';
 import { MainMenuScene } from './scenes/main-menu';
 import { LeaderboardScene } from './scenes/leaderboard';
+import { LoadingScene } from './scenes/loading';
 
 // DEBUG URL: https://www.facebook.com/embed/instantgames/566170080885812/player?game_url=https%3A%2F%2Flocalhost%3A8080
 const DEFAULT_HEIGHT = 720;
@@ -27,7 +28,11 @@ const config: Phaser.Types.Core.GameConfig = {
             debug: false
         }
     },
-	scene: [PreloaderScene, MainMenuScene, GameScene, CountdownScene, GameOverMenuScene, PauseMenuScene, LeaderboardScene],
+	scene: [
+		PreloaderScene, MainMenuScene, GameScene,
+		CountdownScene, GameOverMenuScene, PauseMenuScene,
+		LeaderboardScene, LoadingScene
+	],
 	backgroundColor: '#2b2b2b',
 	render: {
 		pixelArt: true

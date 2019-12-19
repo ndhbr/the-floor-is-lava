@@ -1,6 +1,5 @@
 import * as Phaser from 'phaser';
 import { DefaultText } from '../classes/default-text';
-import { Animations } from '../services/animations';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,

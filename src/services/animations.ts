@@ -1,5 +1,7 @@
 export class Animations {
 
+	static defaultSpeed: number = 100;
+
 	constructor() {}
 
     public static weirdFadeIn(scene: Phaser.Scene, object: any) {
@@ -7,18 +9,18 @@ export class Animations {
 
         scene.tweens.add({
 			targets: object,
-			alphaTopLeft: { value: 1, duration: 250 },
-			alphaTopRight: { value: 1, duration: 250, delay: 250 },
-			alphaBottomLeft: { value: 1, duration: 250, delay: 250 },
-			alphaBottomRight: { value: 1, duration: 250 }
+			alphaTopLeft: { value: 1, duration: this.defaultSpeed },
+			alphaTopRight: { value: 1, duration: this.defaultSpeed, delay: this.defaultSpeed },
+			alphaBottomLeft: { value: 1, duration: this.defaultSpeed, delay: this.defaultSpeed },
+			alphaBottomRight: { value: 1, duration: this.defaultSpeed }
 		});
 	}
-	
+
 	public static fadeIn(scene: Phaser.Scene, object: any, speed?: number) {
 		object.alpha = 0;
-	
+
 		if (speed != null)
-			speed = 250;
+			speed = this.defaultSpeed;
 
         scene.tweens.add({
 			targets: object,
@@ -34,7 +36,7 @@ export class Animations {
 		object.alpha = 1;
 
 		if (speed != null)
-			speed = 250;
+			speed = this.defaultSpeed;
 
 		scene.tweens.add({
 			targets: object,

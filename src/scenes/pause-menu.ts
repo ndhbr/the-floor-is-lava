@@ -128,14 +128,14 @@ export class PauseMenuScene extends Phaser.Scene implements Scene {
 				await FBInstant.shareAsync({
 					intent: 'CHALLENGE',
 					image: Base64Images.getShareImage(),
-					text: this.translateService.localise('SHARE', 'CHALLENGE')	
+					text: this.translateService.localise('SHARE', 'CHALLENGE')
 				});
 			}
 		);
 	}
 
 	playBackgroundMusic() {
-		this.sound.stopAll();
-		this.sound.play('8Bit_1', {loop: true, volume: 0.2});
+		// this.sound.stopAll();
+		// this.sound.play('8Bit_1', {loop: true, volume: 0.2});
 	}
 }

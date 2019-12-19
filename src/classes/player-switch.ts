@@ -10,6 +10,7 @@ enum PlayerNames {
 	Lion,
 	Crocodile,
 	Ninja,
+	ComingSoon,
 	__END
 }
 
@@ -104,6 +105,9 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 					}
 
 					return -1;
+				case PlayerNames.ComingSoon:
+					this.players[PlayerNames.ComingSoon].setTint(color);
+					return -2;
 			}
 		}
 	}
@@ -133,12 +137,20 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 		}
 
 		if (this.players[this.activePlayer] == null) {
-			this.players[this.activePlayer] = this.scene.physics.add.sprite(
-				0,
-				0,
-				`player${PlayerNames[this.activePlayer]}`,
-				11
-			);
+			if (this.activePlayer !== PlayerNames.ComingSoon) {
+				this.players[this.activePlayer] = this.scene.physics.add.sprite(
+					0,
+					0,
+					`player${PlayerNames[this.activePlayer]}`,
+					11
+				);
+			} else {
+				this.players[this.activePlayer] = this.scene.physics.add.sprite(
+					0,
+					0,
+					'playerComingSoon'
+				);
+			}
 
 			this.add(this.players[this.activePlayer]);
 		} else {
@@ -154,7 +166,8 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 			this.removeHighscoreText();
 		}
 
-		this.players[this.activePlayer].anims.play(`standing-player${PlayerNames[this.activePlayer]}`);
+		if (this.activePlayer !== PlayerNames.ComingSoon)
+			this.players[this.activePlayer].anims.play(`standing-player${PlayerNames[this.activePlayer]}`);
 	}
 
 	private addControl(type: Direction): Phaser.GameObjects.Sprite {
@@ -211,6 +224,8 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 
 		if(scoreNeeded > -1) {
 			text = `Schaffe ${scoreNeeded}m, um diesen Spieler freizuschalten!`;
+		} else if (scoreNeeded == -2) {
+			text = `Coming soon...`;
 		}
 
 		if (this.highscoreText != null)

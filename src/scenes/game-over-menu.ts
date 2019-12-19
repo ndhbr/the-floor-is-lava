@@ -30,7 +30,6 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 	menuButton: Phaser.GameObjects.Container;
 
 	videoAd: FBInstant.AdInstance;
-	interstitialAd: FBInstant.AdInstance;
 
 	constructor() {
 		super(sceneConfig);
@@ -46,8 +45,10 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 	public preload(): void {}
 
 	public create(data: {score: number}): void {
-		this.loadAds();
 		AdService.incrementGameCount();
+		AdService.showInterstitial().then(() => {
+			AdService.createShortcut();
+		});
 
 		this.backdrop = this.add.rectangle(
 			this.physics.world.bounds.centerX,
@@ -83,9 +84,15 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 			'button-pixel-orange',
 			this.translateService.localise('GAME_OVER_MENU', 'CONTINUE'),
 			async (button: Phaser.GameObjects.Container) => {
-				await AdService.showRewardedVideo(this.videoAd);
-				this.scene.stop();
-				this.scene.resume('Game', {action: 'continue'});
+				try {
+					this.scene.launch('Loading');
+					await AdService.showRewardedVideo(this.videoAd);
+					this.scene.stop('Loading');
+					this.scene.stop();
+					this.scene.resume('Game', {action: 'continue'});
+				} catch (error) {
+					this.scene.stop('Loading');
+				}
 			}
 		);
 
@@ -96,8 +103,6 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 			'button-pixel-orange',
 			this.translateService.localise('GAME_OVER_MENU', 'PLAY_AGAIN'),
 			async (button: Phaser.GameObjects.Container) => {
-				await AdService.showInterstitial(this.interstitialAd);
-
 				this.scene.stop();
 				this.scene.stop('Game');
 				this.scene.start('Game');
@@ -148,11 +153,6 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 
 	public update(time: number): void {}
 
-	private async loadAds() {
-		// this.videoAd = await AdService.loadRewardedVideo(); maybe loading is unnecessary
-		this.interstitialAd = await AdService.loadInterstitial();
-	}
-
 	private addShareButton() {
 		let buttonContainer: Phaser.GameObjects.Container;
 		this.buttonService.generateButton(
@@ -165,14 +165,11 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 				await FBInstant.shareAsync({
 					intent: 'CHALLENGE',
 					image: Base64Images.getShareImage(),
-					text: this.translateService.localise('SHARE', 'CHALLENGE')	
+					text: this.translateService.localise('SHARE', 'CHALLENGE')
 				});
 			}
 		);
 	}
 
-	playBackgroundMusic() {
-		this.sound.stopAll();
-		this.sound.play('8Bit_1', {loop: true, volume: 0.2});
-	}
+	playBackgroundMusic() {}
 }
