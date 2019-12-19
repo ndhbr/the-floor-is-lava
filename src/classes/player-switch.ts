@@ -1,4 +1,5 @@
 import { DefaultText } from "./default-text";
+import { TranslateService } from "../services/translate";
 
 enum Direction {
 	LEFT,
@@ -24,6 +25,8 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 
 	particles: Phaser.GameObjects.Particles.ParticleEmitterManager;
 
+	translateService: TranslateService;
+
 	constructor(scene: Phaser.Scene) {
 		super(
 			scene,
@@ -34,6 +37,8 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 		scene.add.existing(this);
 		this.addParticles();
 		this.addPlayer();
+
+		this.translateService = new TranslateService(scene);
 	}
 
 	public getSelectedSprite(): Phaser.Physics.Arcade.Sprite {
@@ -220,12 +225,13 @@ export class PlayerSwitch extends Phaser.GameObjects.Container {
 	}
 
 	private addHighscoreText(scoreNeeded: number) {
-		let text = `Du brauchst mehr Punkte!`;
+		let text = this.translateService.localise('PLAYER_SWITCH', 'HIGHER_SCORE_NEEDED');
 
 		if(scoreNeeded > -1) {
-			text = `Schaffe ${scoreNeeded}m, um diesen Spieler freizuschalten!`;
+			text = `${this.translateService.localise('PLAYER_SWITCH', 'SCORE_MORE_1')}` +
+				` ${scoreNeeded}${this.translateService.localise('PLAYER_SWITCH', 'SCORE_MORE_2')}`;
 		} else if (scoreNeeded == -2) {
-			text = `Coming soon...`;
+			text = this.translateService.localise('PLAYER_SWITCH', 'COMING_SOON');
 		}
 
 		if (this.highscoreText != null)

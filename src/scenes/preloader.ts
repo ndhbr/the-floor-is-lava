@@ -107,8 +107,6 @@ export class PreloaderScene extends Phaser.Scene {
 		switch(language) {
 			case 'de':
 			case 'en':
-			case 'fr':
-			case 'es':
 				break;
 			default:
 				language = 'en';

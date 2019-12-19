@@ -11,6 +11,12 @@
 		"BEAT_TEXT_2": "mit",
 		"LOADING": "Wird geladen..."
 	},
+	"PLAYER_SWITCH": {
+		"HIGHER_SCORE_NEEDED": "Du brauchst mehr Punkte!",
+		"SCORE_MORE_1": "Schaffe",
+		"SCORE_MORE_2": "m, um diesen Spieler freizuschalten!",
+		"COMING_SOON": "Kommt bald..."
+	},
 	"GAME_OVER_MENU": {
 		"CONTINUE": "Weiter (Video)",
 		"PLAY_AGAIN": "Neu starten",

@@ -45,10 +45,7 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 	public preload(): void {}
 
 	public create(data: {score: number}): void {
-		AdService.incrementGameCount();
-		AdService.showInterstitial().then(() => {
-			AdService.createShortcut();
-		});
+		this.ads();
 
 		this.backdrop = this.add.rectangle(
 			this.physics.world.bounds.centerX,
@@ -172,4 +169,17 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 	}
 
 	playBackgroundMusic() {}
+
+	private async ads() {
+		try {
+			this.scene.launch('Loading');
+			AdService.incrementGameCount();
+			await AdService.showInterstitial();
+			this.scene.stop('Loading');
+		} catch (error) {
+			this.scene.stop('Loading');
+		}
+
+		await AdService.createShortcut();
+	}
 }
