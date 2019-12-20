@@ -65,49 +65,7 @@ export class GameScene extends Phaser.Scene implements Scene {
 		}
 	}
 
-    public preload(): void {
-        const backdrop = this.add.rectangle(
-            this.physics.world.bounds.centerX,
-            this.physics.world.bounds.centerY,
-            this.physics.world.bounds.width,
-            this.physics.world.bounds.height,
-            0x000000,
-            0.8
-		);
-
-		const loadingText = new DefaultText(
-			this,
-			this.physics.world.bounds.centerX,
-			this.physics.world.bounds.centerY,
-			this.translateService.localise('GAME', 'LOADING'),
-			32
-		).setOrigin(0.5, 0.5);
-
-		this.load.spritesheet('pauseButton', 'assets/play-pause-buttons.png',
-			{ frameWidth: 32, frameHeight: 32 });
-
-		this.load.image('table', 'assets/table.png');
-		this.load.image('couch', 'assets/couch.png');
-		this.load.image('bed', 'assets/bed.png');
-		this.load.image('cactus', 'assets/cactus.png');
-		this.load.image('closet', 'assets/closet.png');
-		this.load.image('startPlatform', 'assets/start-platform.png');
-		this.load.image('box', 'assets/box.png');
-		this.load.image('stove', 'assets/stove.png');
-		this.load.image('barrels', 'assets/barrels.png');
-		this.load.image('wineShelf', 'assets/wine-shelf.png');
-
-		this.load.audio('hit', 'assets/sounds/hit.wav');
-		this.load.audio('jump', 'assets/sounds/jump.wav');
-		this.load.audio('death', 'assets/sounds/death.mp3');
-		this.load.audio('portal', 'assets/sounds/portal.wav');
-		// this.load.audio('8Bit_3', 'assets/sounds/8Bit_3.wav');
-
-		backdrop.setVisible(false);
-		backdrop.setActive(false);
-		loadingText.setVisible(false);
-		loadingText.setActive(false);
-	}
+    public preload(): void {}
 
     public create(data: any): void {
 		// Activate lights
@@ -180,13 +138,6 @@ export class GameScene extends Phaser.Scene implements Scene {
 				this.playerService.resetPosition();
 			}
 		});
-
-		document.addEventListener('visibilitychange', () => {
-			if (this.scene.isActive('Game') && document.visibilityState === 'hidden') {
-				this.pauseGame();
-			}
-		});
-
 		// this.sound.stopAll();
 		// this.sound.play('8Bit_3', {loop: true, volume: 0.2});
 
@@ -220,7 +171,8 @@ export class GameScene extends Phaser.Scene implements Scene {
 			this.playerService.update();
 
 			if ((time - this.lastTextUpdate > 10) &&
-				(!this.basementPlatformService.startPlatformActive())) {
+				(!this.basementPlatformService.startPlatformActive()) &&
+				(!this.livingRoomPlatformService.startPlatformActive())) {
 				this.scoreService.incrementScore();
 				this.lastTextUpdate = time;
 			}

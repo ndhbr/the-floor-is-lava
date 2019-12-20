@@ -47,31 +47,7 @@ export class MainMenuScene extends Phaser.Scene implements Scene {
 		this.translateService = new TranslateService(this);
 	}
 
-	public preload(): void {
-		const backdrop = this.add.rectangle(
-            this.physics.world.bounds.centerX,
-            this.physics.world.bounds.centerY,
-            this.physics.world.bounds.width,
-            this.physics.world.bounds.height,
-            0x000000,
-            0.8
-		);
-
-		const loadingText = new DefaultText(
-			this,
-			this.physics.world.bounds.centerX,
-			this.physics.world.bounds.centerY,
-			this.translateService.localise('MAIN_MENU', 'LOADING'),
-			32
-		).setOrigin(0.5, 0.5);
-
-		// this.load.audio('8Bit_1', 'assets/sounds/8Bit_1.wav');
-
-		backdrop.setVisible(false);
-		backdrop.setActive(false);
-		loadingText.setVisible(false);
-		loadingText.setActive(false);
-	}
+	public preload(): void {}
 
 	public create(data: any): void {
 		this.lights.enable().setAmbientColor(0xaaaaaa);

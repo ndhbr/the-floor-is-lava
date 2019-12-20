@@ -40,11 +40,7 @@ export class LeaderboardScene extends Phaser.Scene {
 		this.leaderboardEntriesGroup = new Phaser.GameObjects.Group(this);
 	}
 
-    public preload(): void {
-		this.load.spritesheet('close', 'assets/close.png',
-			{ frameWidth: 24, frameHeight: 24 });
-		this.load.image('leaderboardBadge', 'assets/leaderboard-badge.png');
-	}
+    public preload(): void {}
 
     public create(data: any): void {
         this.addBackdrop();
@@ -152,6 +148,7 @@ export class LeaderboardScene extends Phaser.Scene {
 
 	private addLeaderboardBadge(x: number, y: number,
 		leaderboardEntry: FBInstant.LeaderboardEntry): Phaser.GameObjects.Container {
+		let currentLeaderboard: number = this.currentLeaderboard;
 		let container: Phaser.GameObjects.Container = this.add.container(
 			x,
 			y
@@ -199,10 +196,12 @@ export class LeaderboardScene extends Phaser.Scene {
 		if (!this.textures.exists(profilePictureKey)) {
 			this.load.on(`filecomplete-image-${profilePictureKey}`,
 			() => {
-				const profilePicture = this.addProfilePictureToContainer(profilePictureKey,
-					badge, container);
+				if (container.visible) {
+					const profilePicture = this.addProfilePictureToContainer(profilePictureKey,
+						badge, container);
 
-				Animations.weirdFadeIn(this, profilePicture);
+					Animations.weirdFadeIn(this, profilePicture);
+				}
 			}, this);
 
 			this.load.image(profilePictureKey, leaderboardEntry.getPlayer().getPhoto());

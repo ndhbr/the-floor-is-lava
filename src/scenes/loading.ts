@@ -28,7 +28,8 @@ export class LoadingScene extends Phaser.Scene {
 			this.physics.world.bounds.height,
 			0x000000,
 			0.6
-		);
+		).setInteractive();
+		backdrop.on('pointerdown', () => {});
 
 		const player = this.add.sprite(
 			this.physics.world.bounds.centerX,

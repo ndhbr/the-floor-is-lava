@@ -37,6 +37,10 @@ export class PreloaderScene extends Phaser.Scene {
 			{ frameWidth: 24, frameHeight: 24 });
 		this.load.spritesheet('portal', 'assets/portal.png',
 			{ frameWidth: 64, frameHeight: 16 });
+		this.load.spritesheet('pauseButton', 'assets/play-pause-buttons.png',
+			{ frameWidth: 32, frameHeight: 32 });
+		this.load.spritesheet('close', 'assets/close.png',
+			{ frameWidth: 24, frameHeight: 24 });
 
 		this.load.image('playerComingSoon', 'assets/player-coming-soon.png');
 		this.load.image('ceilingLamp', 'assets/ceiling-lamp.png');
@@ -47,7 +51,6 @@ export class PreloaderScene extends Phaser.Scene {
 		this.load.image('concrete', 'assets/concrete.png');
 		this.load.image('concreteWithLava', 'assets/concrete-with-lava.png');
 		this.load.image('concreteWithRoof', 'assets/concrete-with-roof.png');
-		this.load.image('floor', 'assets/floor.png');
 		this.load.image('cobblestone', ['assets/cobblestone.png', 'assets/default_map.png']);
 		this.load.image('wood', ['assets/wood.png', 'assets/default_map.png']);
 		this.load.image('woodDark', 'assets/wood-dark.png');
@@ -55,6 +58,22 @@ export class PreloaderScene extends Phaser.Scene {
 		this.load.image('backgroundBasement1', 'assets/background-basement-1.png');
 		this.load.image('backgroundLivingRoom0', 'assets/background-livingroom-0.png');
 		this.load.image('backgroundLivingRoom1', 'assets/background-livingroom-1.png');
+		this.load.image('leaderboardBadge', 'assets/leaderboard-badge.png');
+		this.load.image('table', 'assets/table.png');
+		this.load.image('couch', 'assets/couch.png');
+		this.load.image('bed', 'assets/bed.png');
+		this.load.image('cactus', 'assets/cactus.png');
+		this.load.image('closet', 'assets/closet.png');
+		this.load.image('startPlatform', 'assets/start-platform.png');
+		this.load.image('box', 'assets/box.png');
+		this.load.image('stove', 'assets/stove.png');
+		this.load.image('barrels', 'assets/barrels.png');
+		this.load.image('wineShelf', 'assets/wine-shelf.png');
+
+		this.load.audio('hit', 'assets/sounds/hit.wav');
+		this.load.audio('jump', 'assets/sounds/jump.wav');
+		this.load.audio('death', 'assets/sounds/death.mp3');
+		this.load.audio('portal', 'assets/sounds/portal.wav');
 
 		this.load.bitmapFont('basis33', 'fonts/basis33_0.png', 'fonts/basis33.xml');
 

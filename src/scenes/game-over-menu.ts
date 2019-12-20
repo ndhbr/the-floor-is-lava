@@ -180,6 +180,6 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 			this.scene.stop('Loading');
 		}
 
-		await AdService.createShortcut();
+		AdService.createShortcut();
 	}
 }

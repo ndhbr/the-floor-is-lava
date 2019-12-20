@@ -16,7 +16,8 @@ module.exports = {
       }
     ]
   },
-  devtool: 'inline-source-map',
+//  devtool: 'inline-source-map',
+  devtool: '',
   resolve: {
     extensions: [ '.ts', '.tsx', '.js' ]
   },
@@ -24,7 +25,6 @@ module.exports = {
     filename: 'app.bundle.js',
     path: path.resolve(__dirname, 'dist')
   },
-  mode: 'development',
   devServer: {
     contentBase: path.resolve(__dirname, 'dist'),
     https: true
@@ -51,7 +51,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'typeof CANVAS_RENDERER': JSON.stringify(true),
       'typeof WEBGL_RENDERER': JSON.stringify(true)
-    }),
+	})
   ],
   optimization: {
     splitChunks: {
@@ -59,7 +59,8 @@ module.exports = {
         commons: {
           test: /[\\/]node_modules[\\/]/,
           name: 'vendors',
-          chunks: 'all'
+		  chunks: 'all',
+		  filename: 'vendors.app.bundle.js'
         }
       }
     }
