@@ -149,9 +149,15 @@ export class GameScene extends Phaser.Scene implements Scene {
 
 		// Countdown
 		this.countdown();
-		AdService.loadInterstitial().then((interstitial: FBInstant.AdInstance) => {
-			AdService.interstitial = interstitial;
-		});
+
+		try {
+			AdService.loadInterstitial().then((interstitial: FBInstant.AdInstance) => {
+				AdService.interstitial = interstitial;
+			});
+		} catch (error) {
+			console.error(error);
+		}
+
 	}
 
     public update(time: number): void {
