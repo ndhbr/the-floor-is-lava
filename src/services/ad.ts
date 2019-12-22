@@ -16,14 +16,9 @@ export class AdService {
 	}
 
 	static async loadRewardedVideo(): Promise<FBInstant.AdInstance> {
-		try {
-			const video = await FBInstant.getRewardedVideoAsync(adIds.REWARDED_VIDEO);
-			await video.loadAsync();
-			return video;
-		} catch (error) {
-			console.error(error);
-			return null;
-		}
+		const video = await FBInstant.getRewardedVideoAsync(adIds.REWARDED_VIDEO);
+		await video.loadAsync();
+		return video;
 	}
 
 	static async loadInterstitial(): Promise<FBInstant.AdInstance> {
@@ -42,47 +37,39 @@ export class AdService {
 	}
 
 	static async showRewardedVideo(video?: FBInstant.AdInstance): Promise<void> {
-		try {
-			if (video == null && AdService.video != null) {
-				await AdService.video.showAsync();
-				AdService.video = null;
-			} if (video != null) {
+		if (video == null && AdService.video != null) {
+			await AdService.video.showAsync();
+			AdService.video = null;
+		} if (video != null) {
+			await video.showAsync();
+			video = null;
+		} else {
+			console.log('Too slow to load video.');
+
+			const video = await AdService.loadRewardedVideo();
+
+			if (video != null)
 				await video.showAsync();
-				video = null;
-			} else {
-				console.log('Too slow to load video.');
-
-				const video = await AdService.loadRewardedVideo();
-
-				if (video != null)
-					await video.showAsync();
-			}
-		} catch (error) {
-			console.error(error);
 		}
 	}
 
 	static async showInterstitial(interstitial?: FBInstant.AdInstance): Promise<void> {
-		try {
-			if (this.gameCount == 1 || (this.gameCount > 1 && this.gameCount % 5 == 0)) {
-				if (interstitial == null && AdService.interstitial != null) {
-					await AdService.interstitial.showAsync();
-					AdService.interstitial = null;
-				} else if (interstitial != null) {
+		if (this.gameCount == 1 || (this.gameCount > 1 && this.gameCount % 5 == 0)) {
+			if (interstitial == null && AdService.interstitial != null) {
+				await AdService.interstitial.showAsync();
+				AdService.interstitial = null;
+			} else if (interstitial != null) {
+				await interstitial.showAsync();
+				interstitial = null;
+			} else {
+				console.log('Too slow to load interstitial.');
+
+			const interstitial = await AdService.loadInterstitial();
+
+				if (interstitial != null) {
 					await interstitial.showAsync();
-					interstitial = null;
-				} else {
-					console.log('Too slow to load interstitial.');
-
-					const interstitial = await AdService.loadInterstitial();
-
-					if (interstitial != null) {
-						await interstitial.showAsync();
-					}
 				}
 			}
-		} catch (error) {
-			console.error(error);
 		}
 	}
 
