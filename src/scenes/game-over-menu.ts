@@ -29,8 +29,6 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 	resumeButton: Phaser.GameObjects.Container;
 	menuButton: Phaser.GameObjects.Container;
 
-	videoAd: FBInstant.AdInstance;
-
 	constructor() {
 		super(sceneConfig);
 	}
@@ -74,24 +72,28 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 		);
 		this.score.setOrigin(0.5, 0.5);
 
-		this.buttonService.generateButton(
-			this.physics.world.bounds.centerX,
-			270,
-			this.resumeButton,
-			'button-pixel-orange',
-			this.translateService.localise('GAME_OVER_MENU', 'CONTINUE'),
-			async (button: Phaser.GameObjects.Container) => {
-				try {
-					this.scene.launch('Loading');
-					await AdService.showRewardedVideo(this.videoAd);
-					this.scene.stop('Loading');
-					this.scene.stop();
-					this.scene.resume('Game', {action: 'continue'});
-				} catch (error) {
-					this.scene.stop('Loading');
+		if (AdService.video != null) {
+			this.buttonService.generateButton(
+				this.physics.world.bounds.centerX,
+				270,
+				this.resumeButton,
+				'button-pixel-orange',
+				this.translateService.localise('GAME_OVER_MENU', 'CONTINUE'),
+				async (button: Phaser.GameObjects.Container) => {
+					try {
+						this.scene.launch('Loading');
+						await AdService.showRewardedVideo();
+						this.scene.stop('Loading');
+						this.scene.stop();
+						this.scene.resume('Game', {action: 'continue'});
+					} catch (error) {
+						this.scene.stop('Loading');
+					}
 				}
-			}
-		);
+			);
+		} else {
+			console.log('Failed to load video.');
+		}
 
 		this.buttonService.generateButton(
 			this.physics.world.bounds.centerX,

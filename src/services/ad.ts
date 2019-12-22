@@ -7,6 +7,7 @@ export class AdService {
 
 	static gameCount: number = 0;
 	static interstitial: FBInstant.AdInstance;
+	static video: FBInstant.AdInstance;
 
 	constructor() {}
 
@@ -40,10 +41,14 @@ export class AdService {
 		return null;
 	}
 
-	static async showRewardedVideo(video: FBInstant.AdInstance): Promise<void> {
+	static async showRewardedVideo(video?: FBInstant.AdInstance): Promise<void> {
 		try {
-			if (video != null) {
+			if (video == null && AdService.video != null) {
+				await AdService.video.showAsync();
+				AdService.video = null;
+			} if (video != null) {
 				await video.showAsync();
+				video = null;
 			} else {
 				console.log('Too slow to load video.');
 
@@ -62,15 +67,18 @@ export class AdService {
 			if (this.gameCount == 1 || (this.gameCount > 1 && this.gameCount % 5 == 0)) {
 				if (interstitial == null && AdService.interstitial != null) {
 					await AdService.interstitial.showAsync();
+					AdService.interstitial = null;
 				} else if (interstitial != null) {
 					await interstitial.showAsync();
+					interstitial = null;
 				} else {
 					console.log('Too slow to load interstitial.');
 
 					const interstitial = await AdService.loadInterstitial();
 
-					if (interstitial != null)
+					if (interstitial != null) {
 						await interstitial.showAsync();
+					}
 				}
 			}
 		} catch (error) {

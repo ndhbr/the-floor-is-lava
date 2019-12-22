@@ -152,6 +152,10 @@ export class GameScene extends Phaser.Scene implements Scene {
 		AdService.loadInterstitial().then((interstitial: FBInstant.AdInstance) => {
 			AdService.interstitial = interstitial;
 		});
+
+		AdService.loadRewardedVideo().then((video: FBInstant.AdInstance) => {
+			AdService.video = video;
+		});
 	}
 
     public update(time: number): void {
