@@ -40,7 +40,7 @@ export class AdService {
 		if (video == null && AdService.video != null) {
 			await AdService.video.showAsync();
 			AdService.video = null;
-		} if (video != null) {
+		} else if (video != null) {
 			await video.showAsync();
 			video = null;
 		} else {
