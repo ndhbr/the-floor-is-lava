@@ -6,6 +6,7 @@ const adIds = {
 export class AdService {
 
 	static gameCount: number = 0;
+	static runDistance: number = 0;
 	static interstitial: FBInstant.AdInstance;
 	static video: FBInstant.AdInstance;
 
@@ -15,6 +16,10 @@ export class AdService {
 		this.gameCount++;
 	}
 
+	static incrementRunDistance(distance: number) {
+		this.runDistance += distance;
+	}
+
 	static async loadRewardedVideo(): Promise<FBInstant.AdInstance> {
 		const video = await FBInstant.getRewardedVideoAsync(adIds.REWARDED_VIDEO);
 		await video.loadAsync();
@@ -22,7 +27,7 @@ export class AdService {
 	}
 
 	static async loadInterstitial(): Promise<FBInstant.AdInstance> {
-		if (this.gameCount == 1 || (this.gameCount > 1 && this.gameCount % 5 == 0)) {
+		if (this.gameCount == 1 || this.runDistance > 5000) {
 			try {
 				const interstitial = await FBInstant.getInterstitialAdAsync(adIds.INTERSTITIAL);
 				await interstitial.loadAsync();
@@ -54,7 +59,9 @@ export class AdService {
 	}
 
 	static async showInterstitial(interstitial?: FBInstant.AdInstance): Promise<void> {
-		if (this.gameCount == 1 || (this.gameCount > 1 && this.gameCount % 5 == 0)) {
+		if (this.gameCount == 1 || this.runDistance > 3000) {
+			console.log(this.runDistance + ' Time for showing some ads.');
+			
 			if (interstitial == null && AdService.interstitial != null) {
 				await AdService.interstitial.showAsync();
 				AdService.interstitial = null;
@@ -64,12 +71,15 @@ export class AdService {
 			} else {
 				console.log('Too slow to load interstitial.');
 
-			const interstitial = await AdService.loadInterstitial();
+				const interstitial = await AdService.loadInterstitial();
 
 				if (interstitial != null) {
 					await interstitial.showAsync();
 				}
 			}
+
+			if (this.runDistance > 3000)
+				this.runDistance = 0;
 		}
 	}
 

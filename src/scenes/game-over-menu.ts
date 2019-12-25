@@ -20,6 +20,7 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 
 	heading: DefaultText;
 	score: DefaultText;
+	scoreNumber: number;
 
 	buttonService: ButtonService;
 	soundService: SoundService;
@@ -43,8 +44,6 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 	public preload(): void {}
 
 	public create(data: {score: number}): void {
-		this.ads();
-
 		this.backdrop = this.add.rectangle(
 			this.physics.world.bounds.centerX,
 			this.physics.world.bounds.centerY,
@@ -63,11 +62,12 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 		);
 		this.heading.setOrigin(0.5, 0.5);
 
+		this.scoreNumber = data.score;
 		this.score = new DefaultText(
 			this,
 			this.physics.world.bounds.centerX,
 			174,
-			`${data.score}m`,
+			`${this.scoreNumber}m`,
 			64
 		);
 		this.score.setOrigin(0.5, 0.5);
@@ -148,6 +148,7 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 		this.soundService.addSoundButton();
 		this.playBackgroundMusic();
 		this.addShareButton();
+		this.ads();
 	}
 
 	public update(time: number): void {}
@@ -176,6 +177,7 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 		try {
 			this.scene.launch('Loading');
 			AdService.incrementGameCount();
+			AdService.incrementRunDistance(this.scoreNumber);
 			await AdService.showInterstitial();
 			this.scene.stop('Loading');
 		} catch (error) {
