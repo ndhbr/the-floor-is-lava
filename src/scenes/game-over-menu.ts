@@ -130,7 +130,7 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 				if (menuDialog == null) {
 					menuDialog = await this.dialogService.add(
 						this.translateService.localise('DIALOG', 'ARE_YOU_SURE'),
-						this.translateService.localise('DIALOG', 'SCORE_WILL_BE_LOST'),
+						this.translateService.localise('DIALOG', 'BACK_TO_MENU'),
 						this.translateService.localise('DIALOG', 'YES'),
 						() => {
 							this.scene.stop();

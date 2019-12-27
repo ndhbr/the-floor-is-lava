@@ -5,7 +5,8 @@ import { TranslateService } from '../services/translate';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
-    visible: false,
+	visible: false,
+	key: 'Preloader'
 };
 
 export class PreloaderScene extends Phaser.Scene {

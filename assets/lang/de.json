@@ -40,10 +40,12 @@
 		"CANCEL": "Abbrechen",
 		"YES": "Ja",
 		"ARE_YOU_SURE": "Bist du sicher?",
+		"BACK_TO_MENU": "Du kehrst zum Hauptmenü zurück.",
 		"SCORE_WILL_BE_LOST": "Du verlierst deinen aktuellen Spielstand."
 	},
 	"SHARE": {
-		"CHALLENGE": "Ich wette du kommst nicht so weit. Komm und schlag mich 🤣"
+		"CHALLENGE": "Ich wette du kommst nicht so weit. Komm und schlag mich 🤣",
+		"INVITE": "Du hast einen hohen Spielstand erreicht. Teile ihn mit deinen Freunde!"
 	},
 	"LOADING": {
 		"LOADING": "Laden..."
