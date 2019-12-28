@@ -80,8 +80,7 @@ export class LeaderboardScene extends Phaser.Scene {
 			entries = await leaderboard.getEntriesAsync(8, 0);
 		}
 
-		for (i = 0; i < entries.length; i++)
-		{
+		for (i = 0; i < entries.length; i++) {
 			this.leaderboardEntriesGroup.add(this.addLeaderboardBadge(this.physics.world.bounds.centerX, currentY, entries[i]));
 			currentY += 64;
 		}

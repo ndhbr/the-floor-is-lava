@@ -172,6 +172,7 @@ export class MainMenuScene extends Phaser.Scene implements Scene {
 	}
 
 	private async showLeaderboard() {
+		this.scene.sleep();
 		this.scene.launch('Leaderboard');
 	}
 
