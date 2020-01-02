@@ -148,6 +148,7 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 		this.soundService.addSoundButton();
 		this.playBackgroundMusic();
 		this.addShareButton();
+		this.addCatchTheWormButton();
 		this.ads();
 	}
 
@@ -167,6 +168,20 @@ export class GameOverMenuScene extends Phaser.Scene implements Scene {
 					image: Base64Images.getShareImage(),
 					text: this.translateService.localise('SHARE', 'CHALLENGE')
 				});
+			}
+		);
+	}
+
+	private addCatchTheWormButton() {
+		let buttonContainer: Phaser.GameObjects.Container;
+		this.buttonService.generateButton(
+			this.physics.world.bounds.right - 194,
+			this.physics.world.bounds.bottom - 50,
+			buttonContainer,
+			'button-pixel-orange-catchtheworm',
+			'',
+			async (button: Phaser.GameObjects.Container) => {
+				await FBInstant.switchGameAsync('2519737888241507');
 			}
 		);
 	}

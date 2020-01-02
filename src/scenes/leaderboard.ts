@@ -73,9 +73,9 @@ export class LeaderboardScene extends Phaser.Scene {
 		this.currentLeaderboard = scope;
 
 		if (scope === Leaderboard.FRIENDS) {
-			entries = await leaderboard.getConnectedPlayerEntriesAsync(8, 0);
-			// entries = await leaderboard.getConnectedPlayerEntriesAsync(20, 0);
-			// console.log(entries);
+			// entries = await leaderboard.getConnectedPlayerEntriesAsync(8, 0);
+			entries = await leaderboard.getConnectedPlayerEntriesAsync(20, 0);
+			console.log(entries);
 		} else {
 			entries = await leaderboard.getEntriesAsync(8, 0);
 		}

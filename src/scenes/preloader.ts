@@ -36,6 +36,8 @@ export class PreloaderScene extends Phaser.Scene {
 			{ frameWidth: 24, frameHeight: 24 });
 		this.load.spritesheet('button-pixel-orange-share', 'assets/buttons-pixel-orange-share.png',
 			{ frameWidth: 24, frameHeight: 24 });
+		this.load.spritesheet('button-pixel-orange-catchtheworm', 'assets/buttons-pixel-orange-catchtheworm.png',
+			{ frameWidth: 48, frameHeight: 24 });
 		this.load.spritesheet('portal', 'assets/portal.png',
 			{ frameWidth: 64, frameHeight: 16 });
 		this.load.spritesheet('pauseButton', 'assets/play-pause-buttons.png',
